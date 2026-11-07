@@ -1,0 +1,31 @@
+{
+  "name": "aeroforge-web",
+  "version": "0.1.0",
+  "private": true,
+  "engines": { "node": "24.11.0", "npm": "11.6.1" },
+  "packageManager": "npm@11.6.1",
+  "scripts": {
+    "assets": "node scripts/prepare-assets.mjs",
+    "dev": "npm run assets && next dev",
+    "build": "npm run assets && next build --webpack",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "node --test tests/assets.test.mjs",
+    "serve": "node scripts/serve-static.mjs",
+    "smoke": "playwright test",
+    "verify": "npm run assets && npm run typecheck && npm test && npm run build && npm run smoke"
+  },
+  "dependencies": {
+    "next": "16.4.5",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "onnxruntime-web": "1.31.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0",
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "onnx-proto": "8.0.1",
+    "typescript": "5.9.3"
+  }
+}

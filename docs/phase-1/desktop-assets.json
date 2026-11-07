@@ -1,0 +1,58 @@
+{
+  "assets": [
+    {
+      "url": "http://127.0.0.1:4173/runtime/1.31.1/ort.wasm.min.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:4173/runtime/1.31.1/ort-wasm-simd-threaded.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:4173/runtime/1.31.1/ort-wasm-simd-threaded.wasm",
+      "status": 200,
+      "mime": "application/wasm"
+    },
+    {
+      "url": "http://127.0.0.1:4173/models/fixture-v1/affine.onnx",
+      "status": 200,
+      "mime": "application/octet-stream"
+    },
+    {
+      "url": "http://127.0.0.1:4173/runtime/1.31.1/ort.wasm.min.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:4173/runtime/1.31.1/ort-wasm-simd-threaded.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:4173/runtime/1.31.1/ort-wasm-simd-threaded.wasm",
+      "status": 200,
+      "mime": "application/wasm"
+    },
+    {
+      "url": "http://127.0.0.1:4173/models/fixture-v1/affine.onnx",
+      "status": 200,
+      "mime": "application/octet-stream"
+    }
+  ],
+  "cached": [
+    {
+      "name": "http://127.0.0.1:4173/runtime/1.31.1/ort-wasm-simd-threaded.wasm",
+      "transferSize": 0,
+      "decodedBodySize": 14848852
+    },
+    {
+      "name": "http://127.0.0.1:4173/models/fixture-v1/affine.onnx",
+      "transferSize": 0,
+      "decodedBodySize": 199
+    }
+  ],
+  "errors": [],
+  "external": []
+}
