@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "naca4-open-v1",
+  "trailingEdge": "finite",
+  "thicknessCoefficients": [0.2969, -0.126, -0.3516, 0.2843, -0.1015],
+  "candidateBounds": { "m": [0, 0.06], "p": [0.2, 0.6], "t": [0.08, 0.18] },
+  "presets": ["0008", "0012", "0015", "0018", "2412", "2415", "4412", "4418", "6412", "6618"]
+}

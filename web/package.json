@@ -2,6 +2,7 @@
   "name": "aeroforge-web",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "engines": { "node": "24.11.0", "npm": "11.6.1" },
   "packageManager": "npm@11.6.1",
   "scripts": {
@@ -9,7 +10,7 @@
     "dev": "npm run assets && next dev",
     "build": "npm run assets && next build --webpack",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "node --test tests/assets.test.mjs",
+    "test": "node --experimental-strip-types --test tests/assets.test.mjs tests/geometry.test.ts",
     "serve": "node scripts/serve-static.mjs",
     "smoke": "playwright test",
     "verify": "npm run assets && npm run typecheck && npm test && npm run build && npm run smoke"

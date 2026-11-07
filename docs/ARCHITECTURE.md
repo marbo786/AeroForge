@@ -1,6 +1,16 @@
-# Phase 1 static inference architecture
+# AeroForge architecture: Phases 1 and 2
 
-Scope: deployment feasibility only. The approved product architecture remains in `SPEC.md`; no aerodynamics or model-training work is included here.
+Implemented scope: static inference feasibility and analytic NACA geometry libraries. The approved product architecture remains in `SPEC.md`; solver integration, learned aerodynamic models and the Design Studio are not included yet.
+
+## Geometry library boundary
+
+`python/aeroforge/geometry.py` is the offline geometry engine, and `web/lib/geometry/naca4.ts` is its browser-compatible counterpart. Both consume `shared/naca4.json` for coefficients, version, candidate bounds and presets. Neither imports the ONNX fixture, solver code or a UI framework.
+
+Normalization precedes geometry generation and ID construction. Symmetric `p=0` is shared by both paths. IDs encode normalized float64 parameters losslessly and exclude sampling resolution and operating conditions. Complete coordinate and ID parity are tested through a Node bridge from pytest; independent Decimal station references prevent parity from being the sole correctness oracle.
+
+The Python library currently runs from the source checkout and has no runtime dependencies. Test setup uses pinned pytest. Native Node TypeScript stripping executes the TypeScript geometry tests without another test-runner dependency. No geometry UI was added; the Phase 1 production smoke suite remains a separate regression check. See `PHYSICS.md` for the full contract.
+
+## Static inference feasibility
 
 ```text
 build: pinned npm dependencies

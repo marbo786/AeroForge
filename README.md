@@ -2,11 +2,25 @@
 
 Design. Simulate. Optimize.
 
-AeroForge is a phased aerodynamic design studio project. **The current implementation is Phase 1 only:** a static Next.js feasibility application executing a small, deterministic ONNX graph in the browser. It does not predict airfoil performance and contains no trained aerodynamic weights.
+AeroForge is a phased aerodynamic design studio project. **Phases 1 and 2 are implemented:** a static Next.js browser ONNX feasibility application and tested Python/TypeScript NACA four-digit geometry libraries. The current UI remains the infrastructure test; it does not predict airfoil performance and contains no trained aerodynamic weights.
 
 Read [the full specification](docs/SPEC.md) and [the progress tracker](PROGRESS.md) before development. Each subsequent phase requires approval.
 
-## Run the feasibility test
+## Geometry engine
+
+The Python and browser-compatible TypeScript libraries implement camber, slope, normal thickness offsets, cosine sampling and ordered contours. They share bounds, coefficients and ten presets. Symmetric airfoils canonicalize `p=0`; lossless geometry IDs agree across languages. No UI integration or solver is included in Phase 2.
+
+See [the physics contract](docs/PHYSICS.md) for equations, units, finite trailing-edge convention, APIs and limitations. From the repository root, with pytest 9.0.2 installed in your Python environment:
+
+```sh
+python -m pytest -q
+```
+
+For a new test environment, use a virtual environment and install `requirements-test.txt`. Geometry itself has no Python runtime dependencies. The Python suite also requires Node 24.11.0 to execute its cross-language parity check.
+
+Phase 2 validation passed: 62 Python tests (including complete Python/TypeScript geometry parity across 28 cases), 21 Node tests (19 geometry and 2 asset tests), TypeScript, a production static build and all 10 browser smoke tests. Analytic station fixtures use an independent 60-digit Decimal oracle; they are not solver or experimental aerodynamic data.
+
+## Run the feasibility application
 
 Use Node.js 24.11.0 and npm 11.6.1:
 
@@ -47,4 +61,4 @@ The fixture is reproducibly generated with `onnx-proto`, ONNX IR 8 and opset 13.
 
 There is no inference backend, database, account system, paid service, or third-party core-runtime request. The static verification server is a local development tool, not a production dependency. Deployment to a public host has not been performed.
 
-Next phases cover NACA geometry; a real solver pilot and quality-controlled dataset; trained/evaluated models; the responsive Design Studio; real charts, comparison and URL sharing; and public-release verification. XFOIL availability remains unresolved. Dataset provenance, evaluation results, scientific accuracy, and aerodynamic performance screenshots will be documented when those phases are completed.
+Next phases cover a real solver pilot and quality-controlled dataset; trained/evaluated models; the responsive Design Studio; real charts, comparison and URL sharing; and public-release verification. XFOIL availability remains unresolved. Dataset provenance, evaluation results, scientific accuracy, and aerodynamic performance screenshots will be documented when those phases are completed.

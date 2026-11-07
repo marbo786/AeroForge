@@ -4,11 +4,48 @@ Last updated: 2026-11-07 (Asia/Karachi).
 
 ## Current phase and session rule
 
-Phase 1: deployment and ONNX feasibility is complete. The user approved Phase 1 on 2026-11-07 and supplied `https://github.com/marbo786/AeroForge`. Only the infrastructure spike was implemented. Phase 2 has not started and requires a new instruction.
+Phase 2: physics geometry engine is complete. The user explicitly approved Phase 2 on 2026-11-07. Only analytic geometry, normalization, presets and their tests/documentation were added. Phase 3 has not started and requires a new instruction.
 
 Every coding session must begin by reading `docs/SPEC.md` and this file. The complete user specification is preserved byte-for-byte in `docs/SPEC.md`; this tracker supplements it and does not weaken its requirements. Work on one approved phase, validate it, update this tracker, commit it when possible, summarize, and stop. Never begin the next phase silently.
 
-## Phase 1 completed tasks and results
+## Phase 2 completed tasks and results
+
+- Re-read the full specification and progress tracker; inspected the clean Phase 1 checkout and existing tests/CI. Continued on the existing `codex/phase-1-onnx` branch without changing remote history.
+- Implemented Python `python/aeroforge/geometry.py` and browser-compatible TypeScript `web/lib/geometry/naca4.ts`: standard piecewise mean line, analytic slope, finite-edge thickness polynomial, true normal surface offsets, cosine stations and ordered contour generation.
+- Added `shared/naca4.json` as the common source of coefficients, schema version, candidate geometry bounds and ten preset codes. NACA parsing and preset lookup apply the same normalization.
+- Froze the proposed symmetric convention: exactly zero camber becomes positive `m=0, p=0` before any divisions, coordinate calculation or identity construction. Finite irrelevant p values cannot create duplicate symmetric geometries; nonfinite p is still rejected.
+- Added explicit ratio/percent normalization, strict numeric/finite/range checks, no silent coercion/clamping/rounding, and lossless versioned float64 geometry identifiers. IDs agree across languages and do not depend on sampling resolution or future operating conditions.
+- Kept the standard finite trailing edge (`-0.1015` coefficient): normal TE gap is `0.021*t`. Surface offsets are not clipped at the leading/trailing edges. Default sampling is 201 points per surface; contours contain `2N-1` points and exactly one leading-edge point.
+- Added independent 60-digit Decimal station references for NACA 0012, 2412, 4418 and 6618 at eight stations each, together with a reproducible reference script. These are equation references, not solver/experimental data.
+- Added Python and TypeScript reference, symmetry, camber derivative, coordinate consistency, normal-offset, contour, bounds, units, preset and ID tests. The Python suite executes the actual TypeScript engine over 28 cases and compares all coordinate arrays and exact IDs.
+- Added pinned pytest 9.0.2 test requirements and pytest source-path configuration. The Python geometry implementation has no runtime dependencies; no packages or binaries were installed for this phase.
+- Extended existing CI to run Python geometry tests before production browser verification. Existing Node 24.11.0 TypeScript stripping runs the geometry tests without a new JavaScript dependency. `web/package.json` declares ESM and the TypeScript configuration permits explicit `.ts` test imports; existing package versions remain pinned.
+- Added `docs/PHYSICS.md` and updated README/architecture documentation. The specification file is unchanged. No UI, solver, data-generation pipeline, ML training or aerodynamic predictions were added.
+
+### Phase 2 tests and validation
+
+| Check | Actual result |
+| --- | --- |
+| `python -m pytest -q` from repository root | 62 passed; final run 1.14 seconds |
+| Node tests through `npm run verify` | 21 passed: 19 geometry and 2 existing asset tests |
+| Strict TypeScript | Passed `next typegen && tsc --noEmit` |
+| Production static build | Passed on Next.js 16.4.5; `/` and `/spike/` remain static |
+| Existing production browser suite | All 10 passed at 1440px and 390px; 27.6 seconds |
+| Cross-language parity | 27 boundary/interior grid cases plus 1 non-digit continuous geometry; full upper/lower/contour arrays within `1e-13` chord, exact normalized parameters and IDs |
+| Reference fixture reproducibility | Independent Decimal regeneration equals the committed fixture |
+
+Validation initially exposed a cosine mirror-symmetry test tolerance of `2e-16`, smaller than a few float64 rounding ULPs. Corrected that test to `1e-15` in both languages; no geometry equations or reference values were changed to conceal an error. Independent station-reference and cross-language coordinate tolerances remain `1e-13` chord. Normal-offset consistency checks use `1e-15`.
+
+### Phase 2 technical decisions and limitations
+
+- Geometry APIs intentionally support the project's candidate bounds, not every possible four-digit NACA designation. These bounds are not a validated aerodynamic model domain.
+- A geometry ID records exact normalized float64 values using big-endian hex. No ID-only rounding merges distinct shapes. Future sampling must create deterministic parameter tuples; near-equal floating values are not automatically merged.
+- The finite-edge equation and symmetric canonicalization are now `naca4-open-v1`. Any equation/trailing-edge convention change requires an explicit schema change and corresponding dataset/model metadata review.
+- Source-checkout Python imports locate the shared JSON in the repository. Standalone wheel packaging and solver point-file formatting are deferred.
+- The geometry API is tested as a library. It is not wired into the feasibility UI; the main Design Studio remains Phase 5 work. No new frontend visual changes were made or claimed.
+- No Phase 2 blocker remains. XFOIL acquisition/compatibility remains a later Phase 3 decision. No solver or label-source fallback was selected, no remote push/deployment was performed, and no Phase 3 work began.
+
+## Phase 1 completed tasks and results (historical)
 
 - Re-read both source-of-truth documents. Inspected the supplied repository through the GitHub connector: public, empty, default branch `main`; local workspace contained only Phase 0 planning files.
 - Resolved the local Git command blocker by using approved execution outside the restricted wrapper. Initialized local branch `codex/phase-1-onnx` and configured `origin` to the supplied repository. No global Git configuration or identity was changed.
@@ -124,7 +161,7 @@ tests/                Python physics/data/ML tests and cross-language fixtures
 docs/                 specification, architecture, physics, ML and deployment evidence
 ```
 
-Avoid independent undocumented Python/TypeScript geometry implementations: share reference fixtures and parity tests. Propose canonical `p=0` when `m=0`, with an explicit symmetric branch before any division by `p`; freeze that convention in geometry IDs and model metadata. Propose the standard finite/open trailing edge initially and document the thickness polynomial and solver point ordering in Phase 2. Neither convention is implemented yet.
+Phase 2 now implements both geometry engines with shared configuration, independent analytic reference fixtures and full coordinate parity tests. Canonical `p=0` when `m=0`, explicit symmetric branching and standard finite/open trailing-edge equations are frozen in `naca4-open-v1`; `docs/PHYSICS.md` documents their details. Future solver/model work must preserve these conventions or explicitly version a change.
 
 Use ratios internally for `m,p,t`, degrees for angle, dimensionless Reynolds number, and feature order `[m, canonical_p, t, aoa_deg, log10(Re)]`. Freeze units, tensor shapes, dtype, transforms, output ordering `[CL, CD]`, and schema versions in the inference contract. Any drag transform must be selected using validation evidence and inverted identically in browser and Python.
 
@@ -206,22 +243,24 @@ Do not launch large simulation batches before a pilot of roughly 20 distinct geo
 
 ## Pending tasks and approvals
 
-- Phase 1 was explicitly authorized and completed. Await a new instruction before Phase 2.
+- Phases 1 and 2 were explicitly authorized and completed. Await a new instruction before Phase 3.
 - Retain Cloudflare Pages static export, npm lockfile, self-hosted WASM and the verified one-thread CPU/browser baseline; public deployment remains unperformed.
 - XFOIL acquisition is a later separate decision, not authorization to change the label source. Recommend investigating the official Windows binary first in Phase 3.
 - Confirm an isolated supported Python interpreter/toolchain route when ML setup is needed; no system installation has been performed.
 - Public GitHub/Cloudflare configuration, paid changes, substantial downloads, destructive changes, and overwriting user content retain the explicit approval gates in the specification.
-- Future docs (`README.md`, `docs/ARCHITECTURE.md`, `docs/PHYSICS.md`, `docs/ML.md`, `docs/DEPLOYMENT.md`) and MIT license review belong to their corresponding implementation phases. No fabricated benchmarks, screenshots, URLs, or accuracy claims.
+- README, architecture, physics and deployment documents now exist. Future ML documentation and MIT license review belong to their corresponding phases. No fabricated benchmarks, screenshots, URLs, or accuracy claims.
 
 ## Next phase
 
-Phase 2: NACA geometry engine, only after explicit instruction. Begin by reading both planning files, inspecting the Phase 1 code, and stating a short implementation plan. Implement and test reference geometry, normalization/canonicalization and presets only; do not begin solver acquisition or model training.
+Phase 3: simulation data pipeline, only after explicit instruction. Begin by reading both planning files and rechecking XFOIL availability. Establish an explicitly approved real label source, bounded solver invocation, reproducible configuration, convergence/failure records and a pilot quality report. Do not generate large batches or begin ML training before the pilot/data-source gate passes. Any binary acquisition, system toolchain change or NeuralFoil fallback retains the approval gates in `docs/SPEC.md`.
 
 ## Commit history
 
 Phase 0 had no commit: the directory was not initialized and restricted Git probes failed with a path error. Phase 1 resolved invocation through approved execution and initialized the repository without resetting history.
 
-Phase 1 commit: `add static browser onnx feasibility spike` on `codex/phase-1-onnx`. This initial commit includes the preserved Phase 0 planning files and the completed, tested Phase 1 implementation. Resolve its hash with `git log -1 --format=%H`; a commit cannot include its own final hash. No remote push is included.
+Phase 1 commit: `9de96eb98a343d7b165769239a4600198e04cb5c` (`add static browser onnx feasibility spike`) on `codex/phase-1-onnx`. This initial commit includes the preserved Phase 0 planning files and the completed, tested Phase 1 implementation.
+
+Phase 2 commit: `implement naca geometry generator`, continuing on the same branch. Resolve the final commit hash with `git log -1 --format=%H`; a commit cannot include its own final hash. No remote push is included.
 
 ## Phase 0 session closeout (historical)
 
