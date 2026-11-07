@@ -1,0 +1,129 @@
+{
+  "attempted": 168,
+  "converged": 164,
+  "eligible": 163,
+  "rejected": 4,
+  "suspect": 1,
+  "eligible_fraction": 0.9702380952380952,
+  "elapsed_seconds": 49.06518989999313,
+  "point_seconds_p50": 0.1954482500004815,
+  "by_geometry": {
+    "0014": {
+      "attempted": 21,
+      "eligible": 21
+    },
+    "1416": {
+      "attempted": 21,
+      "eligible": 21
+    },
+    "2512": {
+      "attempted": 21,
+      "eligible": 18
+    },
+    "3318": {
+      "attempted": 21,
+      "eligible": 21
+    },
+    "4514": {
+      "attempted": 21,
+      "eligible": 21
+    },
+    "5310": {
+      "attempted": 21,
+      "eligible": 20
+    },
+    "6216": {
+      "attempted": 21,
+      "eligible": 20
+    },
+    "6512": {
+      "attempted": 21,
+      "eligible": 21
+    }
+  },
+  "by_reynolds": {
+    "100000": {
+      "attempted": 56,
+      "eligible": 54
+    },
+    "250000": {
+      "attempted": 56,
+      "eligible": 54
+    },
+    "500000": {
+      "attempted": 56,
+      "eligible": 55
+    }
+  },
+  "by_angle": {
+    "-4": {
+      "attempted": 24,
+      "eligible": 20
+    },
+    "-2": {
+      "attempted": 24,
+      "eligible": 24
+    },
+    "0": {
+      "attempted": 24,
+      "eligible": 24
+    },
+    "2": {
+      "attempted": 24,
+      "eligible": 24
+    },
+    "4": {
+      "attempted": 24,
+      "eligible": 23
+    },
+    "6": {
+      "attempted": 24,
+      "eligible": 24
+    },
+    "8": {
+      "attempted": 24,
+      "eligible": 24
+    }
+  },
+  "reason_counts": {
+    "invalid_transition_location": 1,
+    "missing_or_duplicate_polar_row": 4,
+    "viscous_nonconvergence": 4
+  },
+  "repeat_checks": [
+    {
+      "attempt_id": "a0000",
+      "eligible": true,
+      "matches_polar_precision": true,
+      "raw_directory": "repeat/a0000"
+    },
+    {
+      "attempt_id": "a0001",
+      "eligible": true,
+      "matches_polar_precision": true,
+      "raw_directory": "repeat/a0001"
+    },
+    {
+      "attempt_id": "a0002",
+      "eligible": true,
+      "matches_polar_precision": true,
+      "raw_directory": "repeat/a0002"
+    }
+  ],
+  "acceptance_checks": {
+    "eligible_fraction": true,
+    "geometry_coverage": true,
+    "reproducibility": true,
+    "no_process_failures": true
+  },
+  "acceptance_passed": true,
+  "domain_note": "Sparse pilot only. Points at alpha>=10 are excluded as unvalidated stall risk. No continuous prediction domain or physical accuracy is established.",
+  "artifact_hashes": {
+    "attempts.jsonl": "bd982fab5aa3ae6e9403d6e1e59c246d5d0e92e115db8332e1e0782f9bf766bd",
+    "attempts.parquet": "e24aee98d719532014b6ffe4e69764cac321c966d5d0161505950e49ce27ca49",
+    "labels.csv": "f385e7d4d724e335fcbdcd6c4206e7540241c2c6927a84cac25ae3ee84efeb51",
+    "labels.parquet": "e97c26a651accb02b7f79b431122babb05e4b8b7b609d05c82bed4d44ffdd1b3",
+    "config.json": "1cae937ab6b4aaf243a91156a7f86f4f11647579c344bbda7f2b4d188e216fe4",
+    "manifest.json": "e2f17c816aa23946b5ab9efd4266daec52069a656c7effae23be43431b7a6a42"
+  }
+}

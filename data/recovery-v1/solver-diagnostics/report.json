@@ -1,0 +1,124 @@
+{
+  "purpose": "diagnostic repeat/panel sensitivity only; never mixed into training labels",
+  "records": [
+    {
+      "source_attempt": "a0182",
+      "panel_nodes": 160,
+      "original": {
+        "alpha_deg": -4.0,
+        "cl": -0.2848,
+        "cd": 0.05137,
+        "cdp": 0.04617,
+        "cm": -0.0319,
+        "top_xtr": 0.9993,
+        "bottom_xtr": 0.1178
+      },
+      "quality": {
+        "status": "accepted",
+        "converged": true,
+        "eligible": true,
+        "reasons": [],
+        "warnings": [],
+        "coefficients": {
+          "alpha_deg": -4.0,
+          "cl": -0.2848,
+          "cd": 0.05137,
+          "cdp": 0.04617,
+          "cm": -0.0319,
+          "top_xtr": 0.9993,
+          "bottom_xtr": 0.1178
+        },
+        "internal_marching_warning": true
+      }
+    },
+    {
+      "source_attempt": "a0182",
+      "panel_nodes": 320,
+      "original": {
+        "alpha_deg": -4.0,
+        "cl": -0.2848,
+        "cd": 0.05137,
+        "cdp": 0.04617,
+        "cm": -0.0319,
+        "top_xtr": 0.9993,
+        "bottom_xtr": 0.1178
+      },
+      "quality": {
+        "status": "accepted",
+        "converged": true,
+        "eligible": true,
+        "reasons": [],
+        "warnings": [],
+        "coefficients": {
+          "alpha_deg": -4.0,
+          "cl": -0.2909,
+          "cd": 0.0504,
+          "cdp": 0.04535,
+          "cm": -0.0311,
+          "top_xtr": 0.9999,
+          "bottom_xtr": 0.1192
+        },
+        "internal_marching_warning": true
+      }
+    },
+    {
+      "source_attempt": "a0128",
+      "panel_nodes": 160,
+      "original": {
+        "alpha_deg": 2.0,
+        "cl": 0.5513,
+        "cd": 0.04747,
+        "cdp": 0.03972,
+        "cm": -0.1335,
+        "top_xtr": 0.7388,
+        "bottom_xtr": 0.6224
+      },
+      "quality": {
+        "status": "accepted",
+        "converged": true,
+        "eligible": true,
+        "reasons": [],
+        "warnings": [],
+        "coefficients": {
+          "alpha_deg": 2.0,
+          "cl": 0.5513,
+          "cd": 0.04747,
+          "cdp": 0.03972,
+          "cm": -0.1335,
+          "top_xtr": 0.7388,
+          "bottom_xtr": 0.6224
+        },
+        "internal_marching_warning": true
+      }
+    },
+    {
+      "source_attempt": "a0128",
+      "panel_nodes": 320,
+      "original": {
+        "alpha_deg": 2.0,
+        "cl": 0.5513,
+        "cd": 0.04747,
+        "cdp": 0.03972,
+        "cm": -0.1335,
+        "top_xtr": 0.7388,
+        "bottom_xtr": 0.6224
+      },
+      "quality": {
+        "status": "accepted",
+        "converged": true,
+        "eligible": true,
+        "reasons": [],
+        "warnings": [],
+        "coefficients": {
+          "alpha_deg": 2.0,
+          "cl": 0.5646,
+          "cd": 0.04695,
+          "cdp": 0.03917,
+          "cm": -0.1353,
+          "top_xtr": 0.743,
+          "bottom_xtr": 0.6274
+        }
+      }
+    }
+  ]
+}

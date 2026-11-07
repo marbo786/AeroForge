@@ -58,3 +58,18 @@ await writeFile(new URL('manifest.json', modelDir), JSON.stringify({
   sha256: createHash('sha256').update(bytes).digest('hex'),
 }, null, 2) + '\n');
 console.log(`Prepared ${bytes.length}-byte ONNX fixture and ONNX Runtime Web ${version} CPU assets.`);
+
+// Phase 4 research artifacts are served for production verification only.
+// The visible feasibility UI continues to use its explicitly labeled affine fixture.
+const research = new URL('../../artifacts/pilot-surrogate-v1/', import.meta.url);
+const researchTarget = new URL('public/models/pilot-surrogate-v1/', root);
+await mkdir(researchTarget, { recursive: true });
+for (const name of ['model.json', 'preprocessing.json', 'golden.json', 'mlp.onnx', 'ridge.onnx', 'forest.onnx']) {
+  await copyFile(new URL(name, research), new URL(name, researchTarget));
+}
+const recovery = new URL('../../artifacts/recovery-v1-complete/', import.meta.url);
+const recoveryTarget = new URL('public/models/recovery-v1-complete/', root);
+await mkdir(recoveryTarget, { recursive: true });
+for (const name of ['model.json', 'preprocessing.json', 'golden.json', 'selected.onnx']) {
+  await copyFile(new URL(name, recovery), new URL(name, recoveryTarget));
+}

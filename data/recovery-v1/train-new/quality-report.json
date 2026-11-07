@@ -1,0 +1,161 @@
+{
+  "attempted": 336,
+  "converged": 330,
+  "eligible": 325,
+  "rejected": 6,
+  "suspect": 5,
+  "eligible_fraction": 0.9672619047619048,
+  "elapsed_seconds": 94.37976179999532,
+  "point_seconds_p50": 0.19334759999765083,
+  "by_geometry": {
+    "0009": {
+      "attempted": 21,
+      "eligible": 21
+    },
+    "0011": {
+      "attempted": 21,
+      "eligible": 21
+    },
+    "0013": {
+      "attempted": 21,
+      "eligible": 21
+    },
+    "0016": {
+      "attempted": 21,
+      "eligible": 20
+    },
+    "1212": {
+      "attempted": 21,
+      "eligible": 21
+    },
+    "1616": {
+      "attempted": 21,
+      "eligible": 20
+    },
+    "2214": {
+      "attempted": 21,
+      "eligible": 19
+    },
+    "2410": {
+      "attempted": 21,
+      "eligible": 19
+    },
+    "3210": {
+      "attempted": 21,
+      "eligible": 20
+    },
+    "3414": {
+      "attempted": 21,
+      "eligible": 21
+    },
+    "3618": {
+      "attempted": 21,
+      "eligible": 21
+    },
+    "4216": {
+      "attempted": 21,
+      "eligible": 21
+    },
+    "4410": {
+      "attempted": 21,
+      "eligible": 20
+    },
+    "5214": {
+      "attempted": 21,
+      "eligible": 21
+    },
+    "5612": {
+      "attempted": 21,
+      "eligible": 18
+    },
+    "6418": {
+      "attempted": 21,
+      "eligible": 21
+    }
+  },
+  "by_reynolds": {
+    "100000": {
+      "attempted": 112,
+      "eligible": 105
+    },
+    "250000": {
+      "attempted": 112,
+      "eligible": 111
+    },
+    "500000": {
+      "attempted": 112,
+      "eligible": 109
+    }
+  },
+  "by_angle": {
+    "-4": {
+      "attempted": 48,
+      "eligible": 43
+    },
+    "-2": {
+      "attempted": 48,
+      "eligible": 45
+    },
+    "0": {
+      "attempted": 48,
+      "eligible": 47
+    },
+    "2": {
+      "attempted": 48,
+      "eligible": 48
+    },
+    "4": {
+      "attempted": 48,
+      "eligible": 48
+    },
+    "6": {
+      "attempted": 48,
+      "eligible": 48
+    },
+    "8": {
+      "attempted": 48,
+      "eligible": 46
+    }
+  },
+  "reason_counts": {
+    "invalid_transition_location": 5,
+    "missing_or_duplicate_polar_row": 6,
+    "viscous_nonconvergence": 6
+  },
+  "repeat_checks": [
+    {
+      "attempt_id": "a0000",
+      "eligible": true,
+      "matches_polar_precision": true,
+      "raw_directory": "repeat/a0000"
+    },
+    {
+      "attempt_id": "a0001",
+      "eligible": true,
+      "matches_polar_precision": true,
+      "raw_directory": "repeat/a0001"
+    },
+    {
+      "attempt_id": "a0002",
+      "eligible": true,
+      "matches_polar_precision": true,
+      "raw_directory": "repeat/a0002"
+    }
+  ],
+  "acceptance_checks": {
+    "eligible_fraction": true,
+    "geometry_coverage": true,
+    "reproducibility": true,
+    "no_process_failures": true
+  },
+  "acceptance_passed": true,
+  "domain_note": "Sparse pilot only. Points at alpha>=10 are excluded as unvalidated stall risk. No continuous prediction domain or physical accuracy is established.",
+  "artifact_hashes": {
+    "attempts.jsonl": "ff9d21d1b9f3f78fa30992fb8fa27c7fdef77c428ae409a9224ab2e055eb62d2",
+    "attempts.parquet": "e7d6449e92021bce785ee65211c5979dac8c68393cfd2dbf9b631c936264c4e9",
+    "labels.csv": "db96fc07975424a9389195a167a14909c4ccd09ce4181d03ed1fb0216103945c",
+    "labels.parquet": "6727d16c2045963d02769661e75f0142241c4b84db2326af96ea5f3f32278152",
+    "config.json": "0e941d64a619f406b4e32fdffbb8a2e00d607b8547816df17c8a57740c213923",
+    "manifest.json": "7b76f5cd0380aae7d12bffec1d6f5d51466066eb9c1d99870bcd18024daf95e4"
+  }
+}

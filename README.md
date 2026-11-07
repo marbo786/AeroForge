@@ -2,9 +2,15 @@
 
 Design. Simulate. Optimize.
 
-AeroForge is a phased aerodynamic design studio project. **Phases 1–3 are implemented:** static browser ONNX feasibility, tested NACA geometry libraries, and a real XFOIL pilot data pipeline. The current UI remains the infrastructure test; it does not predict airfoil performance and contains no trained aerodynamic weights.
+AeroForge is a phased aerodynamic design studio project. **Phases 1–4 are implemented:** static browser inference feasibility, tested NACA geometry, traceable XFOIL data and an independently evaluated aerodynamic surrogate. The visible UI remains the infrastructure test; the Design Studio has not been built.
 
 Read [the full specification](docs/SPEC.md) and [the progress tracker](PROGRESS.md) before development. Each subsequent phase requires approval.
+
+Phase 4 recovery **passed**: the validation-selected independent lift/drag MLP achieved fresh final-test CL/CD MAEs of **0.01484 / 0.000683**, meeting unchanged 0.05 / 0.0015 targets. The eight final geometries were simulated only after selection/export freeze. The 49,781-byte model runs in production browser WASM with numerical agreement below 1e-5. See [the full experiment and limitations report](docs/ML.md); the original failed pilot metrics and artifacts are preserved there. Phase 5 has not started.
+
+The ML audit tests require `requirements-ml.txt` in addition to the data/test requirements. The local run uses `.venv-ml\Scripts\python.exe -m pytest -q`; it reuses the working CPU PyTorch installation and keeps export packages project-local. Final checks: 104 Python tests, 21 Node tests, TypeScript, static production build and 14 browser smoke tests passed.
+
+The selected model takes five float32 features `[m, canonical_p, t, alpha_deg, log10(Re)]` and returns `[CL, CD]`, with feature construction/scaling/inversion embedded. Its evidence covers a finite non-stall panel at Re 100,000 / 250,000 / 500,000. It does not establish experimental accuracy, post-stall validity, continuous-domain certainty or Re 1,000,000 support. The [recovery data](data/recovery-v1/README.md) retain all failures and the consumed original test remains diagnostic-only.
 
 ## Real solver pilot
 
@@ -69,4 +75,4 @@ The fixture is reproducibly generated with `onnx-proto`, ONNX IR 8 and opset 13.
 
 There is no inference backend, database, account system, paid service, or third-party core-runtime request. The static verification server is a local development tool, not a production dependency. Deployment to a public host has not been performed.
 
-Next phases cover expanded quality-controlled data as needed for trained/evaluated models; the responsive Design Studio; real charts, comparison and URL sharing; and public-release verification. XFOIL 6.99 now works in the verified local Windows setup. Model evaluation results, scientific validation, and aerodynamic performance screenshots will be documented when those phases are completed.
+Next phases cover the responsive Design Studio; real charts, comparison and URL sharing; and public-release verification. XFOIL 6.99 and browser model inference work in the verified setup. Experimental physical validation, calibrated uncertainty, broader supported-domain evidence and aerodynamic performance screenshots are not claimed by the current implementation.

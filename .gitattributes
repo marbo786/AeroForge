@@ -1,2 +1,6 @@
 # Solver evidence is hashed byte-for-byte, including original Fortran line endings.
 data/pilot-v1/** -text -whitespace
+artifacts/pilot-surrogate-v1/** -text
+data/recovery-v1/** -text -whitespace
+artifacts/recovery*/** -text
+artifacts/recovery-diagnosis/*.csv whitespace=cr-at-eol

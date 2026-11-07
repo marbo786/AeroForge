@@ -1,0 +1,20 @@
+{
+  "created_utc": "2026-11-07T14:07:40.748351+00:00",
+  "selection_sha256": "0a817e969f9b298a76ecbdd137644a2e793e95e96b17cc726b216785ff2ea503",
+  "plan_sha256": "6e0625494afe2f79f1b261b505b10eacd414cd14070d1e46d59e1c922aa156c4",
+  "selected_checkpoint_sha256": "d45c2ba5d0a8be0e4c82609e80ed36426290ca59ce1fb95bdcd81b98609fa15d",
+  "selected_onnx_sha256": "b30fa4b09cbaa62c8616d28dd10fedbdf1029337c1fe4eba0f0fdd1448a46ba8",
+  "forest_sha256": "f4fc9e05402e5175907947373897b46fa24f2a12cd814e4522db2b4fabc8f32c",
+  "onnx_max_absolute_error": 1.1920928955078125e-07,
+  "locked_final_geometry_codes": [
+    "0010",
+    "1510",
+    "2316",
+    "3512",
+    "4314",
+    "5518",
+    "6416",
+    "6616"
+  ],
+  "final_data_absent_at_unlock": true
+}

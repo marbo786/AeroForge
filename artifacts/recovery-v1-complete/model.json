@@ -1,0 +1,54 @@
+{
+  "version": "recovery-v1-complete",
+  "selected_family": "nn_separate_64_hybrid",
+  "model_file": "selected.onnx",
+  "model_sha256": "b30fa4b09cbaa62c8616d28dd10fedbdf1029337c1fe4eba0f0fdd1448a46ba8",
+  "preprocessing_sha256": "a45c75b4088ae358a9c0b56d2b68ab2ae7e3aba388ef8e1351209c0155a0c6ae",
+  "features": [
+    "m",
+    "canonical_p",
+    "t",
+    "alpha_deg",
+    "log10_reynolds"
+  ],
+  "outputs": [
+    "cl",
+    "cd"
+  ],
+  "input_shape": [
+    "batch",
+    5
+  ],
+  "output_shape": [
+    "batch",
+    2
+  ],
+  "research_only": false,
+  "accuracy_targets_passed": true,
+  "onnx_agreement_passed": true,
+  "domain": {
+    "m": [
+      0,
+      0.06
+    ],
+    "cambered_p": [
+      0.2,
+      0.6
+    ],
+    "t": [
+      0.08,
+      0.18
+    ],
+    "alpha_deg": [
+      -4,
+      8
+    ],
+    "sampled_reynolds": [
+      100000,
+      250000,
+      500000
+    ],
+    "continuous_domain_validated": false,
+    "warning": "Validated on a finite new-geometry test panel against XFOIL; not experimental, post-stall or continuous-domain validation."
+  }
+}

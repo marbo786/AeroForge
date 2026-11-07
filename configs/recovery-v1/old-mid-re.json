@@ -1,0 +1,66 @@
+{
+  "schema_version": "xfoil-recovery-v1",
+  "solver_version": "6.99",
+  "executable_sha256": "c17342f84ae260c2b11a74cd0e2fb8189a5f8954c6bb7a8467a0f27055c7faea",
+  "mode": "viscous",
+  "mach": 0,
+  "ncrit": 9,
+  "transition": "e^n with forced-transition limits at x/c=1 on both surfaces",
+  "xtr_top": 1,
+  "xtr_bottom": 1,
+  "iteration_limit": 150,
+  "panel_nodes": 160,
+  "panel_bunching": 1,
+  "te_le_density_ratio": 0.15,
+  "refined_le_density_ratio": 0.2,
+  "refined_top": [
+    1,
+    1
+  ],
+  "refined_bottom": [
+    1,
+    1
+  ],
+  "geometry_points_per_surface": 201,
+  "timeout_seconds": 20,
+  "initialization": "fresh process and boundary layer for each single operating point; no warm-start sweep",
+  "geometry_codes": [
+    "0008",
+    "0012",
+    "0015",
+    "0018",
+    "2412",
+    "2415",
+    "4412",
+    "4418",
+    "6412",
+    "6618",
+    "2210",
+    "2610",
+    "2618",
+    "4210",
+    "4610",
+    "4618",
+    "6210",
+    "6218",
+    "6610",
+    "2418"
+  ],
+  "reynolds_numbers": [
+    250000
+  ],
+  "angles_deg": [
+    -4,
+    -2,
+    0,
+    2,
+    4,
+    6,
+    8
+  ],
+  "acceptance": {
+    "minimum_eligible_fraction": 0.7,
+    "minimum_geometries_with_eligible_labels": 20,
+    "reproducibility_checks": 3
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "version": "pilot-surrogate-v1",
+  "selected_family": "mlp",
+  "model_file": "mlp.onnx",
+  "model_sha256": "283f20c996e9d73709b5d7e6406323ceecc55f33c981048b440494e0e43d9bf5",
+  "preprocessing_sha256": "406dbed40534c6233a4677db3f9feaa5c4b379e0aee02def68d189d8eba33880",
+  "dataset_sha256": "0d29cf858ed7938a1b2f718aead2a9ea8391a0e14fbd863ac1a0accaf708f18c",
+  "training_config_sha256": "4c8f8274ed8448231bc7bd4adbadda773123c8e49f887a78a29af139e1092cc2",
+  "features": [
+    "m",
+    "canonical_p",
+    "t",
+    "alpha_deg",
+    "log10_reynolds"
+  ],
+  "outputs": [
+    "cl",
+    "cd"
+  ],
+  "input_shape": [
+    "batch",
+    5
+  ],
+  "output_shape": [
+    "batch",
+    2
+  ],
+  "opset": 17,
+  "research_only": true,
+  "accuracy_targets_passed": false,
+  "onnx_agreement_passed": true,
+  "domain": {
+    "m": [
+      0,
+      0.06
+    ],
+    "cambered_p": [
+      0.2,
+      0.6
+    ],
+    "t": [
+      0.08,
+      0.18
+    ],
+    "alpha_deg": [
+      -4,
+      8
+    ],
+    "sampled_reynolds": [
+      100000,
+      500000
+    ],
+    "continuous_domain_validated": false,
+    "warning": "Pilot research model only; missing solver cases, sparse geometry coverage and no post-stall validation."
+  }
+}

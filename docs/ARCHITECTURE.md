@@ -1,6 +1,20 @@
-# AeroForge architecture: Phases 1–3
+# AeroForge architecture: Phases 1–4
 
-Implemented scope: static inference feasibility, analytic NACA geometry libraries and a real XFOIL pilot pipeline. The approved product architecture remains in `SPEC.md`; learned aerodynamic models and the Design Studio are not included yet.
+Implemented scope: static inference feasibility, analytic geometry, real XFOIL data and a trained/evaluated ONNX surrogate. The approved product architecture remains in `SPEC.md`; the Design Studio is not included yet.
+
+## Accepted Phase 4 recovery
+
+`python/aeroforge/recovery.py` trains and compares physics-feature Ridge/forest/GP models and shared/independent neural models. A controlled 33/8/8 train/validation/final geometry allocation, plus three separate consumed-test diagnostic geometries, replaces the inadequate original pilot split. `scripts/finalize_recovery.py` freezes model/selection hashes and numerical export parity before final simulations and permits one final reporting pass.
+
+The selected lift-residual/log-drag networks have independent 64x64 SiLU hidden layers. Their ONNX graph embeds twelve physical/interaction features, train-only scaling and output inversion behind the unchanged five-feature external interface. Artifacts and inference metadata are under `artifacts/recovery-v1-complete/`; source/ONNX/browser consistency and fresh test accuracy gates pass. `model.json` states the finite-panel scientific limits and sampled Re values.
+
+The unchanged static feasibility UI still displays only its labeled affine fixture. New trained-model browser verification is test-harness code; it adds no inference service or Phase 5 UI. The original failed experiment remains below and in its original artifacts for transparency.
+
+## Original Phase 4 research experiment (historical failure)
+
+The working-tree experiment in `python/aeroforge/ml.py` trains Ridge, Random Forest and PyTorch MLP candidates from the validated pilot, using a predeclared geometry split and training-only preprocessing. The validation-selected MLP exports with embedded scaling/log-drag inversion and runs in the production WASM verification harness. Research artifacts and hashes are under `artifacts/pilot-surrogate-v1/`.
+
+Held-out predictive error missed the configured targets. This work is not committed or promoted as an approved aerodynamic model; the visible feasibility UI remains unchanged. `docs/ML.md` records the frozen protocol, measured failures and the need for fresh test evidence before further tuning. The Design Studio is still out of scope.
 
 ## Offline solver pipeline
 

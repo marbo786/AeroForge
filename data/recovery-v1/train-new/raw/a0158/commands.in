@@ -1,0 +1,30 @@
+PLOP
+G
+
+LOAD ../../geometries/g07.dat
+PPAR
+N 160
+P 1
+T 0.15
+R 0.2
+XT 1 1
+XB 1 1
+
+
+PANE
+PSAV panels.dat
+OPER
+VISC 250000
+MACH 0
+ITER 150
+VPAR
+N 9
+XTR 1 1
+
+PACC
+polar.txt
+
+ALFA 4
+PACC
+
+QUIT

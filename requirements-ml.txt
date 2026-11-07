@@ -1,0 +1,12 @@
+# CPU PyTorch; use the CPU wheel index when installing on a fresh machine.
+torch==2.12.0
+numpy==2.2.6
+scikit-learn==1.7.2
+onnx==1.19.1
+onnxruntime==1.23.2
+skl2onnx==1.19.1
+scipy==1.15.3
+joblib==1.5.2
+threadpoolctl==3.6.0
+ml_dtypes==0.6.0
+protobuf==6.33.6

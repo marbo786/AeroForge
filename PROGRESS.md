@@ -4,11 +4,103 @@ Last updated: 2026-11-07 (Asia/Karachi).
 
 ## Current phase and session rule
 
-Phase 3: XFOIL simulation data pipeline and real pilot are complete. The user explicitly approved Phase 3 on 2026-11-07. Pilot acceptance checks and the complete Python audit suite pass. Phase 4 has not started and requires a new instruction.
+Phase 4 is complete after the user-authorized accuracy recovery on 2026-11-07. The recovery model passes unchanged accuracy targets on a fresh independent geometry-disjoint final panel, numerical ONNX/browser checks, model-size and software validation. The original failed experiment is preserved. Phase 5 has not started and requires a new instruction.
 
 Every coding session must begin by reading `docs/SPEC.md` and this file. The complete user specification is preserved byte-for-byte in `docs/SPEC.md`; this tracker supplements it and does not weaken its requirements. Work on one approved phase, validate it, update this tracker, commit it when possible, summarize, and stop. Never begin the next phase silently.
 
-## Phase 3 completed tasks and results
+## Phase 4 recovery: completed tasks and acceptance
+
+- Read `docs/SPEC.md`, this tracker, `docs/ML.md` and the solver/training/evaluation code before changes. Followed the attached recovery request: diagnosed CD error before new training or simulation, retained all historical metrics/artifacts and never began Phase 5.
+- Created a read-only distribution/prediction audit in `scripts/diagnose_recovery.py`, saved under `artifacts/recovery-diagnosis/`, and documented it in `docs/ML.md` before expansion. The original 227-row/20-geometry pilot had two Re levels, no -2-degree rows and no duplicate operating points. CD ranged 0.00521–0.05543; the five worst rows contributed 20.4% of absolute drag error.
+- Root cause evidence: original training CD MAE 0.001755 already missed the target; old validation was easier than the consumed test; low-Re mean CD error was 0.003020 versus 0.000854 at high Re. Large errors occurred at -4 through 4 degrees too, not just near positive-angle stall. Log-target MSE underweighted large original-unit drag errors. No valid high-drag rows were removed.
+- Repeated the two worst old cases at 160 panels, reproducing all saved polar coefficients. Separate 320-panel diagnostics changed CD by 0.00097/0.00052, showing nonzero discretization uncertainty smaller than the original model errors. These refined-panel values remain diagnostic-only and are never mixed into training.
+- Predeclared `configs/recovery-v1/plan.json`: seed 20261107; 33 train, 8 validation, 8 fresh final and 3 consumed-test diagnostic geometries. A pretraining integrity amendment explicitly retained original test geometries 0012/4210/6618 as diagnostic-only, including their new operating points. No final data existed at tuning time.
+- Justified and estimated additional coverage before generation: 852 simulations, 5–10 single-CPU minutes, 10–15 MB, no downloads. Five bounded same-configuration XFOIL batches actually took about 249 seconds including repeat/output work and used about 10.2 MB. They produced 819 eligible labels, with 21 nonconverged and 12 suspect exclusions under unchanged rules. Added intermediate camber/thickness/position coverage, Re 250,000 and -2 degrees; no duplicate operating points or post-stall expansion.
+- Combined evidence: 1,046 eligible cases over 52 geometries. Recovery rows: train 657, validation 163, consumed diagnostics 61, fresh final 165. All canonical geometry roles are disjoint. Source hashes, commands, actual paneled geometry, polars, failure logs and output tables remain traceable in `data/recovery-v1/`.
+- Ran a controlled 19-candidate comparison: six fixed RBF/Matérn GP variants, three engineered-feature Ridge penalties, three tuned 300-tree forest leaf sizes and seven shared/independent neural configurations with log MSE, original-unit MSE, Huber and hybrid objectives. All use validation-only selection; configurations, seed, metrics, times, state/checkpoint sizes and latency are recorded with a comparison table.
+- Tested physical feature transformations and a freely corrected thin-airfoil-inspired lift residual, with positive log-CD outputs. The public tensor contract remains five features; twelve internal features, train-only scaling and output inversion are embedded in the graph. Safe symmetric-p handling remains canonical. These are engineering priors, not exact aerodynamic laws.
+- Selected **two independent 12→64→64→1 SiLU networks**, totaling 10,114 parameters, using 0.7 original-unit tolerance-scaled Smooth-L1 plus 0.3 standardized transformed-target MSE. AdamW lr 0.003, weight decay 0.0001, batch 64, max 800 epochs, patience 80; stopped at 468 epochs and restored the validation-best checkpoint. Validation MAEs: CL 0.010784, CD 0.000643. It beat the strongest GP validation score, so no inferior model was chosen for deployment convenience.
+- A first sweep stopped on an artifact-writing variable-reuse defect after its baselines. Fixed that implementation error and reran the unchanged settings into a new directory, preserving the incomplete attempt. No fresh final simulations/results existed then; no test-driven search was performed.
+- Froze selection/checkpoint/plan hashes and verified ONNX parity before unlocking the final simulation. `unlock.json` predates the final dataset manifest and records its prior absence. The one-use final evaluation command refuses a repeat. After selection, simulated exactly the eight reserved geometries and performed one final reporting pass on selected/baseline/original models.
+
+### Recovery independent final results
+
+All comparison rows below use the same 165 newly generated final cases from 8 reserved geometries, except the explicitly labeled historical row.
+
+| Model / panel | CL MAE | CD MAE |
+| --- | ---: | ---: |
+| Original MLP, original consumed 35-row panel (historical) | 0.05897 | 0.003283 |
+| Original frozen MLP, fresh 165-row final panel | 0.04259 | 0.001821 |
+| Recovery Ridge, fresh final | 0.05303 | 0.002597 |
+| Recovery Random Forest, fresh final | 0.02491 | 0.001268 |
+| Recovery Matérn GP, fresh final | 0.01951 | 0.000896 |
+| Selected recovery MLP, fresh final | **0.01484** | **0.000683** |
+
+Selected final CL RMSE/R²: 0.02553/0.99733. CD RMSE/R²: 0.001165/0.98260. Both unchanged MAE targets pass. The recovered model's old consumed-panel MAEs are 0.01749/0.001024, retained as diagnostics only. The old and new final panels are not treated as equally difficult or interchangeable.
+
+Final slices and error quantiles are recorded by geometry, Re, angle and camber family. CD p95/max absolute error remains 0.002781/0.005219; CL p95/max 0.05187/0.12565. Low Re remains hardest (CD MAE 0.001293 versus 0.000531/0.000244 at the higher Re levels), and high-camber 5518/6616 are difficult. No domain trimming or retraining occurred after final evaluation.
+
+### Recovery export, tests and limits
+
+| Gate | Actual result |
+| --- | --- |
+| Fresh independent final accuracy | Passed CL <=0.05 and CD <=0.0015 |
+| Selected ONNX model size | 49,781 bytes, below 1 MB |
+| Source/native ONNX max absolute error | 1.19e-7 on 881 development/diagnostic vectors; final inputs also audited |
+| Source/browser WASM max error | 1.49e-7 on 881 vectors, below 1e-5 |
+| Python suite | 104 passed (data hashes/raw coefficients, split/scaler provenance, lock chronology, frozen metrics, weights/ONNX) |
+| Node suite | 21 passed |
+| TypeScript / static production build | Passed |
+| Production browser suite | 14 passed at 1440px and 390px, 31.2 seconds |
+| Browser timing | Desktop single p50/p95 0.3/0.5 ms; batch-17 0.3/0.5 ms; hardware/timer dependent |
+
+The mobile viewport runs on the same Windows Chrome machine, not phone hardware. Browser uses same-origin versioned assets, one-thread WASM, no inference backend and no cross-origin isolation. Training/simulation dependencies are not shipped as browser dependencies. The original model's failed metadata remains unchanged and separately tested. The visible feasibility UI has not become a Design Studio.
+
+Artifacts and the 19-row comparison table are under `artifacts/recovery-v1-complete/`; all old failure evidence remains. Added recovery tests, docs, model metadata and byte-preserving Git attributes. No system installs, new downloads, public deployment or remote push were performed during recovery. A known third-party Windows pyreadline shutdown warning after pytest remains nonblocking with exit code zero.
+
+Acceptance is finite-panel agreement with eligible XFOIL 6.99 labels only. It does not establish experimental physical accuracy, calibrated uncertainty, complete continuous-domain coverage, post-stall behavior or Re >500,000 support. Dataset size is below the initial 2,000–5,000 suggestion, but the explicit targets and independent panel passed; broader evidence remains a documented limitation rather than an invented guarantee. Phase 5 must expose applicability warnings and preserve input/preprocessing/versioning conventions.
+
+## Original Phase 4 work and failed acceptance gate (historical)
+
+- Read the specification/progress tracker, inspected the validated pilot and existing geometry/runtime/tests, and checked the Python environment. Used only the existing 227 eligible XFOIL labels; no new solver data or label-source substitution.
+- Froze `configs/training-v1.json` before training: seed 42, explicit 14/3/3 canonical geometry groups, training-only feature/target standardization, log-CD targets and validation score mean(CL_MAE/0.05, CD_MAE/0.0015). No row-level leakage or metric-driven resplitting.
+- Training/validation/test row counts are 156/36/35. Validation geometries are 0015, 2618 and 4412; untouched final test geometries were 0012, 4210 and 6618. Each partition includes symmetric/cambered coverage, but three held-out geometries are a severe uncertainty limitation.
+- Trained four Ridge alphas, three 200-tree Random Forest leaf-size settings and four PyTorch MLP configurations. Used AdamW, SiLU, validation early stopping/LR scheduling, deterministic operations and one CPU thread. All tuning used validation only. Recorded family finalists and the winner before evaluating the test metrics.
+- Validation selected the MLP with hidden widths [128,256,256,128] and learning rate 0.003, score 0.8423 versus forest 1.0642 and Ridge 1.4485. Its validation MAEs were CL 0.04202 and CD 0.001266. The selected checkpoint was not refitted after selection.
+- The final test FAILED both predeclared targets: MLP CL MAE 0.05897 >0.05 and CD MAE 0.003283 >0.0015. CL RMSE/R² are 0.08607/0.97239; CD RMSE/R² are 0.006539/0.73338. Metadata records `accuracy_targets_passed=false`, `research_only=true` and no continuous validated domain.
+- Forest final-test MAEs were CL 0.08821 and CD 0.003154; Ridge CL 0.08986 and CD 0.005367. The forest's better test drag MAE was not used to change the validation-based selection. No model was retuned, no split changed and no domain narrowed using final-test outcomes.
+- Produced full metrics plus error slices by angle, Re, geometry ID and camber family. NACA 6618 is particularly weak (CL MAE 0.11008, CD MAE 0.005358); drag on NACA 4210 is also weak (MAE 0.003614). These are diagnostics, not permission to cherry-pick a favorable public domain.
+- Exported all three family finalists to ONNX opset 17 with dynamic batch shapes and embedded train-only scalers plus log-CD inversion. Maximum source/native-ONNX differences across 299 representative inputs: Ridge 3.73e-9, forest 1.67e-6, MLP 3.58e-7, all below 1e-5 in original coefficient units. The MLP is 534,037 bytes; the forest is 1,725,127 bytes and exceeds the preferred 1 MB target but was not the winner.
+- Verified the selected trained MLP in the production static export using ONNX Runtime Web 1.31.1 WASM, at both test viewport widths. Maximum source/browser difference 2.98e-7, shape [299,2], one thread, no cross-origin isolation and no page errors. Single-row p50/p95 approximately 0.2/0.3 ms; 17-row desktop batch 0.6/0.7 ms. Mobile viewport emulation used the same computer and is not phone hardware evidence.
+- Added training/export code, audit tests, saved MLP weights, preprocessor/config/data/model hashes, golden vectors, candidate histories, evaluation and browser evidence under `artifacts/pilot-surrogate-v1/`. Added `docs/ML.md` with methodology, all held-out metrics, reproduction and limitations.
+- Created project-local `.venv-ml` exposing the working installed CPU torch 2.12.0+cpu stack. Installed only pinned ONNX 1.19.1, native runtime 1.23.2 and sklearn-onnx 1.19.1 plus small dependencies there; no GPU/system interpreter install. Scientific requirements and actual environment are recorded. CI dependency changes are prepared but not remotely executed.
+- No Design Studio/UI integration was added. The visible feasibility page still runs the labeled Phase 1 affine fixture. The real trained model runs only through production verification code and remains explicitly research-only.
+
+### Phase 4 test and gate results
+
+| Check | Actual outcome |
+| --- | --- |
+| Geometry-disjoint isolation / train-only scalers | Pass: 14/3/3 groups, no overlap |
+| Python test suite in `.venv-ml` | 93 passed, including saved-weight/ONNX/metric audits |
+| Node geometry/asset tests | 21 passed |
+| TypeScript and static production build | Passed |
+| Production browser smoke suite | 12 passed (10 existing + 2 trained-model checks), 28.5 seconds |
+| Native/browser numerical agreement | Passed <1e-5 |
+| Selected model preferred size | Passed <1 MB |
+| Held-out predictive accuracy | FAILED both targets |
+| Phase 4 acceptance / commit | NOT passed; no commit |
+
+Software-test success does not override the predictive failure. Tests explicitly check that this research model's failed accuracy status is not hidden. The training CLI exited nonzero after writing results because accuracy failed. A third-party pyreadline console cleanup warning occurred after one passing Windows pytest run without changing its successful exit; model results were unaffected.
+
+The 299 parity inputs comprise 227 dataset feature rows and 72 unlabeled boundary/interior inputs. The latter test numerical conversion only, not physical validity. Error slices were added as reporting from frozen predictions, without rerunning training or changing selection.
+
+### Phase 4 blocker and required next decision
+
+Per `docs/SPEC.md`, failed acceptance must be explained, and a blocked phase must be documented and stopped rather than committed. Therefore this phase is not marked complete and no Phase 4 commit is created, despite the user's requested commit at successful completion.
+
+Recommended corrective work needs a new instruction: approve a broader reproducible XFOIL dataset, with more distinct geometries and Re levels and analysis of failed non-stall regions; reserve fresh unseen-geometry test data before tuning; use the now-consumed test set as diagnostic evidence only. Any revised error budget or supported domain must be explicit and independently validated. Do not repeatedly search this test set for a passing model or proceed to Phase 5.
+
+## Phase 3 completed tasks and results (historical)
 
 - Re-read `docs/SPEC.md` and this tracker; inspected the clean Phase 2 checkout and geometry implementation. XFOIL and gfortran remained absent from PATH.
 - Established the approved real data source using MIT's small Windows XFOIL 6.99 distribution, acquired under the Phase 3 authorization into ignored `tools/xfoil/`. No system toolchain or package installation was needed; no NeuralFoil or other label-source fallback was used.
@@ -288,7 +380,7 @@ Do not launch large simulation batches before a pilot of roughly 20 distinct geo
 
 ## Pending tasks and approvals
 
-- Phases 1–3 were explicitly authorized and completed. Await a new instruction before Phase 4.
+- Phases 1–4 are complete after the authorized recovery. Await explicit instruction before Phase 5.
 - Retain Cloudflare Pages static export, npm lockfile, self-hosted WASM and the verified one-thread CPU/browser baseline; public deployment remains unperformed.
 - The official Windows XFOIL 6.99 build is now established locally and pinned. A different solver binary or any label-source change requires explicit provenance/compatibility review; NeuralFoil substitution is not authorized.
 - Confirm an isolated supported Python interpreter/toolchain route when ML setup is needed; no system installation has been performed.
@@ -297,7 +389,7 @@ Do not launch large simulation batches before a pilot of roughly 20 distinct geo
 
 ## Next phase
 
-Phase 4: dataset expansion as justified by the passed pilot, geometry-disjoint splitting, training-only preprocessing, baselines and MLP evaluation, validation-based model selection, versioned export and numerical ONNX agreement. Begin only on explicit instruction and read both planning documents first. Agree error/selection criteria before looking at the final test set, determine actual supported-domain coverage, and retain all solver-quality exclusions. No Phase 4 work has started.
+Phase 5: main Design Studio, only on explicit instruction. Begin by reading both planning documents and the accepted model/physics contracts. Build the responsive editor and real inference telemetry with loading/error/applicability handling and actual desktop/mobile screenshot inspection. Preserve finite-domain limitations, frozen preprocessing/model versioning and the Phase 1 static runtime architecture. Do not begin Phase 6 chart/comparison/sharing scope silently.
 
 ## Commit history
 
@@ -307,7 +399,9 @@ Phase 1 commit: `9de96eb98a343d7b165769239a4600198e04cb5c` (`add static browser 
 
 Phase 2 commit: `c66ad2a924233a6ce257a43b5206bc3fb8c1c0c8` (`implement naca geometry generator`), continuing on the same branch.
 
-Phase 3 commit: `add xfoil simulation pipeline`, continuing on the same branch. Resolve the final commit hash with `git log -1 --format=%H`; a commit cannot include its own final hash. No remote push is included.
+Phase 3 commit: `14c5507c26135170c9b8f50c7bc98141f02cd806` (`add xfoil simulation pipeline`), continuing on the same branch.
+
+Original Phase 4 attempt was not committed because its predictive accuracy failed. The authorized recovery now passes all accepted gates. Phase 4 commit: `train and validate aerodynamic surrogate`, including the transparent original failure plus completed recovery on the existing branch. Resolve the final hash with `git log -1 --format=%H`; a commit cannot embed its own final hash. No remote push is included.
 
 ## Phase 0 session closeout (historical)
 

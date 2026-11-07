@@ -1,0 +1,6 @@
+{
+  "ridge": "ridge_0.01",
+  "forest": "forest_1",
+  "neural": "nn_separate_64_hybrid",
+  "gaussian_process": "gp_matern15_3.0_0.001"
+}

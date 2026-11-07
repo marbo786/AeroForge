@@ -1,0 +1,16 @@
+{
+  "schema_version": "xfoil-recovery-v1",
+  "label_source": "XFOIL viscous solver",
+  "created_utc": "2026-11-07T13:57:56.461169+00:00",
+  "solver_version": "6.99",
+  "solver_sha256": "c17342f84ae260c2b11a74cd0e2fb8189a5f8954c6bb7a8467a0f27055c7faea",
+  "solver_archive_url": "https://web.mit.edu/drela/Public/web/xfoil/XFOIL6.99.zip",
+  "solver_archive_sha256": "e13e8fe5cc38d8ac2626e9d3b17643bdcfaa63791619f042afdaa7cd103bcb08",
+  "geometry_schema": "naca4-open-v1",
+  "config_sha256": "1cae937ab6b4aaf243a91156a7f86f4f11647579c344bbda7f2b4d188e216fe4",
+  "python_version": "3.10.10",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "pandas_version": "2.3.3",
+  "pyarrow_version": "22.0.0",
+  "license_note": "XFOIL is GPL; executable/archive are local tools, not redistributed in this dataset."
+}
