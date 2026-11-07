@@ -4,9 +4,42 @@ Last updated: 2026-11-07 (Asia/Karachi).
 
 ## Current phase and session rule
 
-Phase 4 is complete after the user-authorized accuracy recovery on 2026-11-07. The recovery model passes unchanged accuracy targets on a fresh independent geometry-disjoint final panel, numerical ONNX/browser checks, model-size and software validation. The original failed experiment is preserved. Phase 5 has not started and requires a new instruction.
+Phase 5 is complete on 2026-11-07 (Asia/Karachi), following explicit authorization. The responsive Design Studio uses accurate SVG geometry and real local ONNX inference with validation, telemetry, loading/error/retry and applicability states. Desktop/mobile screenshots were captured, inspected and refined. Phase 6 has not started and requires a new instruction. The accepted Phase 4 model and all original evidence remain unchanged.
 
 Every coding session must begin by reading `docs/SPEC.md` and this file. The complete user specification is preserved byte-for-byte in `docs/SPEC.md`; this tracker supplements it and does not weaken its requirements. Work on one approved phase, validate it, update this tracker, commit it when possible, summarize, and stop. Never begin the next phase silently.
+
+## Phase 5: completed tasks and acceptance
+
+- Re-read the specification, tracker and handoff; inspected the accepted model metadata, shared geometry engine, runtime, production tests and static architecture. Read and applied the frontend-design skill. Implemented only the approved editor/single-condition telemetry scope.
+- Built a graphite engineering workbench with cyan section outlines, amber evidence warnings, compact parameter controls and a central chord-normalized drawing. Self-hosted Geist and JetBrains Mono avoid external font requests. Downloaded only the small official JetBrains font (92,380 bytes) and OFL license; no JavaScript dependencies or system installations were added.
+- `/` and `/studio/` render the real Design Studio. `/spike/` preserves the labeled infrastructure fixture and its independent regression tests. Ordinary anchors preserve the verified static navigation behavior.
+- Reused the tested NACA equations and 201-point-per-surface contour, preserving finite trailing edge and symmetric canonicalization. The SVG maintains equal axis scales and shows the actual surface, mean camber, grid, chord dimension, leading/trailing-edge annotations and positive nose-up incidence about quarter chord. Brief shape/rotation transitions respect reduced motion.
+- Added ten presets, synchronized range/numeric controls with units, reset and explicit draft validation. Symmetric camber position displays canonical zero and is disabled. Invalid edits retain an identified last valid geometry and withhold coefficients. Mobile leads with geometry, collapses controls behind an accessible expanded-state button, supports touch controls and stacks telemetry.
+- Added `web/lib/inference/surrogate.ts`: raw five-feature contract, strict geometry/angle/Re checks, embedded-transform awareness, lazy same-origin runtime/model loading, SHA-256 verification of the accepted model, reused one-thread WASM session, output-shape/finite/positive-drag checks and safe L/D. Model bytes, weights, scalers, solver evidence and evaluation reservations were not changed.
+- Debounced inference by 80 ms and cancelled display updates from superseded requests. Added honest loading states, withheld/stale-result handling, visible error/retry instructions and page-reload guidance for a failed WASM initialization. Latency is the measured session execution, including first-run overhead, excluding download/init; no synthetic readouts.
+- Retained candidate operating controls through 12 degrees / Re 1,000,000, but withhold predictions beyond -4 to 8 degrees / Re 100,000–500,000. Visible finite-panel XFOIL, nonexperimental, non-post-stall and continuous-domain caveats remain. Intermediate Re values are labeled interpolation; low-Re drag risk is surfaced. Bounds do not imply full continuous-domain validation.
+- Captured and actually inspected initial production screenshots at 1440x1000 and 390x844. Dedicated refinement moved incidence text off the surface, separated the trailing-edge/axis labels, enlarged mobile SVG annotations and applied the specified mono typeface. Captured and inspected final full-page images at the same viewport sizes: `docs/phase-5/desktop.png` and `mobile.png`; initial captures are preserved beside them. Both layouts and expanded mobile controls pass overflow checks.
+- Updated README, architecture and `docs/phase-5/README.md`. Next.js generated `web/AGENTS.md` during the diagnostic development run; retained its local-version documentation guidance and consulted the bundled font/CSS guides. `docs/SPEC.md` is unchanged, with original SHA-256 `FCFC6299EB5405FE6C0C0DAAB7B10DC4B34AE0647B56DFD68760BBEF066AD464`.
+
+### Phase 5 validation results
+
+| Gate | Actual result |
+| --- | --- |
+| Python suite | 104 passed, 37.38 seconds |
+| Node suite | 23 passed, including raw/canonical feature contract and pre-runtime domain rejection |
+| Strict TypeScript | Passed |
+| Static production build | Passed; `/`, `/studio/` and `/spike/` exported statically |
+| Production Playwright suite | 22 passed, 43.4 seconds, Windows installed Chrome |
+| Studio numeric/geometry checks | Displayed CL/CD match frozen source-model vectors at display precision; SVG contour matches tested generator; positive incidence orientation verified |
+| Interaction/error checks | Presets, reset, symmetric p, numeric validation, keyboard sliders, rapid changes, reduced motion, model failure/retry, corrupt model/hash rejection, missing WASM and bounds withholding passed at both sizes |
+| Browser network/console | Normal studio flow has zero external requests and zero browser console/page errors |
+| Visual review | Initial and refined 1440px/390px captures opened and inspected; no horizontal overflow |
+
+Initial failures were investigated and fixed. A float32 golden boundary encoded slightly below 8% thickness was restored to its intended physical UI precision in the test, preserving strict validation. A real React hydration failure came from multiple JSX fragments inside the SVG title; a single formatted string fixes SSR/client agreement and the clean-console gate. Diagnostic `next dev` exposed Turbopack's narrower root excluding the shared geometry/model JSON; dev now uses webpack consistently with the verified production build. A restricted-run localhost denial and generated-file EPERM were resolved through approved local test/build execution; neither was counted as a passing check.
+
+Mobile evidence is viewport/touch emulation on desktop Chrome, not phone performance or broad browser validation. Model performance/accuracy remains finite XFOIL agreement as documented in Phase 4. No charts, comparison, URL sharing, deployment, remote push, training or new simulation were performed. No Phase 5 blocker remains.
+
+Phase 5 commit: `build interactive design studio` on the existing `codex/phase-1-onnx` branch. Resolve the hash with `git log -1 --format=%H`; a commit cannot include its own hash. The pre-existing untracked `docs/HANDOFF.md` was read and left outside this phase commit. Stop and await instruction for Phase 6.
 
 ## Phase 4 recovery: completed tasks and acceptance
 
@@ -380,7 +413,7 @@ Do not launch large simulation batches before a pilot of roughly 20 distinct geo
 
 ## Pending tasks and approvals
 
-- Phases 1–4 are complete after the authorized recovery. Await explicit instruction before Phase 5.
+- Phases 1–5 are complete. Await explicit instruction before Phase 6.
 - Retain Cloudflare Pages static export, npm lockfile, self-hosted WASM and the verified one-thread CPU/browser baseline; public deployment remains unperformed.
 - The official Windows XFOIL 6.99 build is now established locally and pinned. A different solver binary or any label-source change requires explicit provenance/compatibility review; NeuralFoil substitution is not authorized.
 - Confirm an isolated supported Python interpreter/toolchain route when ML setup is needed; no system installation has been performed.
@@ -389,7 +422,7 @@ Do not launch large simulation batches before a pilot of roughly 20 distinct geo
 
 ## Next phase
 
-Phase 5: main Design Studio, only on explicit instruction. Begin by reading both planning documents and the accepted model/physics contracts. Build the responsive editor and real inference telemetry with loading/error/applicability handling and actual desktop/mobile screenshot inspection. Preserve finite-domain limitations, frozen preprocessing/model versioning and the Phase 1 static runtime architecture. Do not begin Phase 6 chart/comparison/sharing scope silently.
+Phase 6: real batched lift/drag charts, focused two-design comparison, validated reproducible URLs and further model-information/interaction polish, only on explicit instruction. Preserve finite-domain caveats, accepted model/preprocessing contracts and static same-origin architecture. Do not begin Phase 7 deployment silently.
 
 ## Commit history
 

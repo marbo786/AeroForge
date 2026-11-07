@@ -68,6 +68,7 @@ for (const name of ['model.json', 'preprocessing.json', 'golden.json', 'mlp.onnx
   await copyFile(new URL(name, research), new URL(name, researchTarget));
 }
 const recovery = new URL('../../artifacts/recovery-v1-complete/', import.meta.url);
+// The accepted recovery model powers the Phase 5 studio; transforms are embedded.
 const recoveryTarget = new URL('public/models/recovery-v1-complete/', root);
 await mkdir(recoveryTarget, { recursive: true });
 for (const name of ['model.json', 'preprocessing.json', 'golden.json', 'selected.onnx']) {

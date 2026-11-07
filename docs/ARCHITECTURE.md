@@ -1,6 +1,12 @@
-# AeroForge architecture: Phases 1–4
+# AeroForge architecture: Phases 1–5
 
-Implemented scope: static inference feasibility, analytic geometry, real XFOIL data and a trained/evaluated ONNX surrogate. The approved product architecture remains in `SPEC.md`; the Design Studio is not included yet.
+Implemented scope: static inference feasibility, analytic geometry, real XFOIL data, a trained/evaluated ONNX surrogate and the responsive Design Studio. The approved product architecture remains in `SPEC.md`.
+
+## Phase 5 browser studio
+
+`web/app/studio/studio.tsx` supplies both `/` and `/studio/`. Validated numeric drafts feed the shared geometry engine and a proportionally scaled SVG. `web/lib/inference/surrogate.ts` owns domain checks, the accepted manifest, SHA-256 verification, cached session loading and coefficient validation. It sends the raw five-feature contract to the graph, which embeds every trained transformation. Async cancellation prevents superseded requests from displaying stale coefficients. Invalid/out-of-envelope inputs withhold telemetry while preserving a labeled last valid drawing. The model's finite XFOIL agreement limits are always visible.
+
+Local Geist/JetBrains fonts, custom scoped CSS, native controls and brief reduced-motion-aware SVG transitions implement the workstation without new JavaScript dependencies. Ordinary anchors preserve the verified static-route behavior. The infrastructure fixture remains isolated at `/spike/`. See `phase-5/README.md` for design, screenshot and validation details. Charts, comparison and shared URL state are not part of this phase.
 
 ## Accepted Phase 4 recovery
 
@@ -8,7 +14,7 @@ Implemented scope: static inference feasibility, analytic geometry, real XFOIL d
 
 The selected lift-residual/log-drag networks have independent 64x64 SiLU hidden layers. Their ONNX graph embeds twelve physical/interaction features, train-only scaling and output inversion behind the unchanged five-feature external interface. Artifacts and inference metadata are under `artifacts/recovery-v1-complete/`; source/ONNX/browser consistency and fresh test accuracy gates pass. `model.json` states the finite-panel scientific limits and sampled Re values.
 
-The unchanged static feasibility UI still displays only its labeled affine fixture. New trained-model browser verification is test-harness code; it adds no inference service or Phase 5 UI. The original failed experiment remains below and in its original artifacts for transparency.
+Phase 4 initially exposed trained-model execution only through the browser test harness. Phase 5 now uses the accepted model in the visible studio without an inference service. The original failed experiment remains below and in its original artifacts for transparency.
 
 ## Original Phase 4 research experiment (historical failure)
 

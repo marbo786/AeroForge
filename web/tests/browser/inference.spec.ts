@@ -15,8 +15,7 @@ test("production export runs real batched WASM inference with local assets and w
       assets.push({ url: r.url(), status: r.status(), mime: r.headers()["content-type"] ?? "" });
     }
   });
-  await page.goto("/");
-  await page.getByRole("link", { name: "Open inference test" }).click();
+  await page.goto("/spike/");
   await expect(page.getByRole("status")).toHaveText("Ready to load");
   expect(assets).toHaveLength(0); // Runtime/model are deferred until requested.
   await page.getByLabel("Input values").fill("0, 3, -2, 0.25");

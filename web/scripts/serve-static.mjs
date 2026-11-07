@@ -6,7 +6,7 @@ import { gzipSync } from 'node:zlib';
 
 const root = resolve(fileURLToPath(new URL('../out/', import.meta.url)));
 const port = Number(process.env.PORT ?? 4173);
-const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.wasm': 'application/wasm', '.onnx': 'application/octet-stream', '.json': 'application/json', '.txt': 'text/plain', '.ico': 'image/x-icon', '.svg': 'image/svg+xml' };
+const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.wasm': 'application/wasm', '.onnx': 'application/octet-stream', '.json': 'application/json', '.txt': 'text/plain', '.ico': 'image/x-icon', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
 // Local verification server only. It serves files, never performs inference.
 createServer(async (req, res) => {
   try {
