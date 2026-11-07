@@ -1,0 +1,2 @@
+# Solver evidence is hashed byte-for-byte, including original Fortran line endings.
+data/pilot-v1/** -text -whitespace

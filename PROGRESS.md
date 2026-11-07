@@ -4,11 +4,56 @@ Last updated: 2026-11-07 (Asia/Karachi).
 
 ## Current phase and session rule
 
-Phase 2: physics geometry engine is complete. The user explicitly approved Phase 2 on 2026-11-07. Only analytic geometry, normalization, presets and their tests/documentation were added. Phase 3 has not started and requires a new instruction.
+Phase 3: XFOIL simulation data pipeline and real pilot are complete. The user explicitly approved Phase 3 on 2026-11-07. Pilot acceptance checks and the complete Python audit suite pass. Phase 4 has not started and requires a new instruction.
 
 Every coding session must begin by reading `docs/SPEC.md` and this file. The complete user specification is preserved byte-for-byte in `docs/SPEC.md`; this tracker supplements it and does not weaken its requirements. Work on one approved phase, validate it, update this tracker, commit it when possible, summarize, and stop. Never begin the next phase silently.
 
-## Phase 2 completed tasks and results
+## Phase 3 completed tasks and results
+
+- Re-read `docs/SPEC.md` and this tracker; inspected the clean Phase 2 checkout and geometry implementation. XFOIL and gfortran remained absent from PATH.
+- Established the approved real data source using MIT's small Windows XFOIL 6.99 distribution, acquired under the Phase 3 authorization into ignored `tools/xfoil/`. No system toolchain or package installation was needed; no NeuralFoil or other label-source fallback was used.
+- Recorded observed archive SHA-256 `e13e8fe5cc38d8ac2626e9d3b17643bdcfaa63791619f042afdaa7cd103bcb08` and executable SHA-256 `c17342f84ae260c2b11a74cd0e2fb8189a5f8954c6bb7a8467a0f27055c7faea`. The runner rejects an unpinned executable. The GPL binary/archive/source zip are local tools and are not redistributed in Git.
+- Verified a real viscous solver probe, actual panel/transition menus, and a Phase 2 coordinate-file import before launching the pilot. Corrected the extra blank line required when leaving the changed PPAR menu; command errors explicitly reject a point. The archive's root directory marker was skipped rather than extracted as an absolute path.
+- Implemented `python/aeroforge/xfoil.py` for explicit one-point commands, bounded hidden-console processes, raw log preservation, polar parsing and quality classification. Implemented `python/aeroforge/pilot.py` and `scripts/run_pilot.py` for a reproducible bounded pilot, all-attempt records, eligible Parquet/CSV labels and a quality report. Added a pinned, non-destructive local acquisition helper.
+- Froze `configs/pilot-v1.json`: 20 distinct canonical finite-edge geometries; Re 100,000 and 500,000; alpha -4, 0, 2, 4, 6, 8 and 12 degrees; viscous Mach 0; e^n/Ncrit 9; transition limits x/c=1 on both surfaces; 150 iterations; 160 panel nodes with explicit bunching/density/refinement settings; fresh process per point; 20-second timeout.
+- Generated `data/pilot-v1/` with original input geometries, actual paneled solver coordinates, exact commands, compressed stdout/stderr, original polars, all 280 attempt records, 227 eligible labels and complete hash/provenance metadata. Missing/failed values were not filled or interpolated.
+- Added `.gitattributes` to preserve solver evidence byte-for-byte, avoiding Git line-ending conversion that would invalidate raw artifact hashes. Added pandas 2.3.3 and pyarrow 22.0.0 data requirements matching the already installed environment.
+- Added parser, malformed/nonfinite result, final nonconvergence, recovered internal warning, duplicate, metadata, command, timeout, launch failure, hash guard, no-overwrite and actual-pilot traceability tests. CI now installs the pinned data requirements and audits committed real evidence without requiring a solver download.
+- Added `docs/DATA.md` and a pilot artifact README, and updated README/architecture documentation. The master specification remains unchanged. No model training, large dataset expansion, frontend changes, public deployment or remote push was performed.
+
+### Phase 3 pilot results
+
+| Check | Actual result |
+| --- | --- |
+| Real operating points attempted | 280 across 20 geometries |
+| Solver-converged | 270 (96.43%) |
+| Eligible labels | 227 (81.07%) |
+| Suspect and excluded | 43 |
+| Rejected/nonconverged | 10 |
+| Geometry coverage | All 20 have eligible labels |
+| Eligible by Re | 111/140 at 100,000; 116/140 at 500,000 |
+| Repeated fresh-process solves | Three matched all saved polar coefficients at printed precision |
+| Timeout/launch/nonzero-exit failures | Zero |
+| Total pilot/repeat/output time | 99.82 seconds; median solver process 0.213 seconds |
+| Final `python -m pytest -q` | 83 passed, zero skipped, 4.79 seconds |
+
+The preset acceptance gates were defined before running: >=70% eligible attempts, all 20 geometries represented, three matching repeats and no process failures. All pass, as recorded in `quality-report.json`.
+
+The real-data audit reparses every original polar, verifies every per-attempt artifact hash and the main-table/report hashes, compares recorded coefficients with the raw solver results, confirms canonical IDs/units/config metadata, and checks eligible CSV/Parquet labels match exactly. It also reparses repeat evidence. The first parser test run occurred during pilot execution and skipped the not-yet-existing report; after generation the audit became mandatory and the final suite has no skips.
+
+### Phase 3 quality restrictions and technical decisions
+
+- Each operating point runs independently rather than using a warm-start sweep; this makes failure attribution unambiguous and is part of the recorded solver configuration. It may converge less readily than a continuation sweep.
+- All 40 attempts at 12 degrees are excluded: 37 converged but carry unvalidated stall-risk flags, and three failed. Six additional lower-angle points are conservatively excluded for transition locations slightly above one (1.0001–1.0003); their original values remain preserved and are not clamped.
+- Internal MRCHDU marching warnings can recover; they are retained separately. Final VISCAL failure, missing/duplicate polar rows, malformed/nonfinite coefficients, setting mismatches, command errors and process failures never enter the eligible table.
+- The eligible angle samples span -4 through 8 degrees, but this sparse pilot does not establish a continuous geometry/Re/alpha applicability domain. Re 1,000,000 and full candidate geometry coverage remain untested. Low-Re negative-angle and thin/cambered failure regions require further investigation before broad expansion.
+- The repeat check covers NACA 0008 at Re 100,000 and angles -4, 0 and 2. It is a narrow printed-precision reproducibility check, not cross-platform, panel-sensitivity or independent physical validation. XFOIL agreement must not be described as experimental accuracy or high-fidelity CFD agreement.
+- The dataset stores CL/CD as eligible targets. CM, pressure drag and transition values are retained only for provenance/diagnostics, not extra prediction targets.
+- No geometry-disjoint training/validation/test split or trained surrogate exists yet. Phase 4 must determine adequate sample coverage and held-out geometry evaluation before any prediction claim.
+- `docs/DATA.md` proposes initial Phase 4 engineering error budgets (CL MAE <=0.05, CD MAE <=0.0015) for discussion on the eventual supported domain. They are neither achieved metrics nor approved physical uncertainty bounds; confirm/refine with domain evidence before model selection and final-test evaluation.
+- No Phase 3 acceptance blocker remains. The existing browser UI was unchanged, so its Phase 2 production regression results are retained historically; no fresh frontend visual verification is claimed here.
+
+## Phase 2 completed tasks and results (historical)
 
 - Re-read the full specification and progress tracker; inspected the clean Phase 1 checkout and existing tests/CI. Continued on the existing `codex/phase-1-onnx` branch without changing remote history.
 - Implemented Python `python/aeroforge/geometry.py` and browser-compatible TypeScript `web/lib/geometry/naca4.ts`: standard piecewise mean line, analytic slope, finite-edge thickness polynomial, true normal surface offsets, cosine stations and ordered contour generation.
@@ -243,16 +288,16 @@ Do not launch large simulation batches before a pilot of roughly 20 distinct geo
 
 ## Pending tasks and approvals
 
-- Phases 1 and 2 were explicitly authorized and completed. Await a new instruction before Phase 3.
+- Phases 1–3 were explicitly authorized and completed. Await a new instruction before Phase 4.
 - Retain Cloudflare Pages static export, npm lockfile, self-hosted WASM and the verified one-thread CPU/browser baseline; public deployment remains unperformed.
-- XFOIL acquisition is a later separate decision, not authorization to change the label source. Recommend investigating the official Windows binary first in Phase 3.
+- The official Windows XFOIL 6.99 build is now established locally and pinned. A different solver binary or any label-source change requires explicit provenance/compatibility review; NeuralFoil substitution is not authorized.
 - Confirm an isolated supported Python interpreter/toolchain route when ML setup is needed; no system installation has been performed.
 - Public GitHub/Cloudflare configuration, paid changes, substantial downloads, destructive changes, and overwriting user content retain the explicit approval gates in the specification.
 - README, architecture, physics and deployment documents now exist. Future ML documentation and MIT license review belong to their corresponding phases. No fabricated benchmarks, screenshots, URLs, or accuracy claims.
 
 ## Next phase
 
-Phase 3: simulation data pipeline, only after explicit instruction. Begin by reading both planning files and rechecking XFOIL availability. Establish an explicitly approved real label source, bounded solver invocation, reproducible configuration, convergence/failure records and a pilot quality report. Do not generate large batches or begin ML training before the pilot/data-source gate passes. Any binary acquisition, system toolchain change or NeuralFoil fallback retains the approval gates in `docs/SPEC.md`.
+Phase 4: dataset expansion as justified by the passed pilot, geometry-disjoint splitting, training-only preprocessing, baselines and MLP evaluation, validation-based model selection, versioned export and numerical ONNX agreement. Begin only on explicit instruction and read both planning documents first. Agree error/selection criteria before looking at the final test set, determine actual supported-domain coverage, and retain all solver-quality exclusions. No Phase 4 work has started.
 
 ## Commit history
 
@@ -260,7 +305,9 @@ Phase 0 had no commit: the directory was not initialized and restricted Git prob
 
 Phase 1 commit: `9de96eb98a343d7b165769239a4600198e04cb5c` (`add static browser onnx feasibility spike`) on `codex/phase-1-onnx`. This initial commit includes the preserved Phase 0 planning files and the completed, tested Phase 1 implementation.
 
-Phase 2 commit: `implement naca geometry generator`, continuing on the same branch. Resolve the final commit hash with `git log -1 --format=%H`; a commit cannot include its own final hash. No remote push is included.
+Phase 2 commit: `c66ad2a924233a6ce257a43b5206bc3fb8c1c0c8` (`implement naca geometry generator`), continuing on the same branch.
+
+Phase 3 commit: `add xfoil simulation pipeline`, continuing on the same branch. Resolve the final commit hash with `git log -1 --format=%H`; a commit cannot include its own final hash. No remote push is included.
 
 ## Phase 0 session closeout (historical)
 

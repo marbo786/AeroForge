@@ -1,6 +1,12 @@
-# AeroForge architecture: Phases 1 and 2
+# AeroForge architecture: Phases 1–3
 
-Implemented scope: static inference feasibility and analytic NACA geometry libraries. The approved product architecture remains in `SPEC.md`; solver integration, learned aerodynamic models and the Design Studio are not included yet.
+Implemented scope: static inference feasibility, analytic NACA geometry libraries and a real XFOIL pilot pipeline. The approved product architecture remains in `SPEC.md`; learned aerodynamic models and the Design Studio are not included yet.
+
+## Offline solver pipeline
+
+`python/aeroforge/xfoil.py` produces explicit single-point command streams, runs bounded processes and parses/qualifies actual solver polars. `python/aeroforge/pilot.py` applies a versioned, bounded plan to canonical Phase 2 geometries, saving per-attempt evidence, eligible label tables and a quality report. `scripts/run_pilot.py` is the source-checkout entry point.
+
+The exact solver is a hash-pinned local Windows XFOIL 6.99 binary. It is excluded from Git and never ships to the frontend. `configs/pilot-v1.json` and `data/pilot-v1/` establish reproducible configuration and traceable real labels; raw failure metadata remains separate from eligible CL/CD labels. Parquet artifacts use pinned pandas/pyarrow. CI audits originals, hashes and label consistency without needing the executable. See `DATA.md` for acceptance checks and scientific limits.
 
 ## Geometry library boundary
 

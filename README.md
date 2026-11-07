@@ -2,9 +2,17 @@
 
 Design. Simulate. Optimize.
 
-AeroForge is a phased aerodynamic design studio project. **Phases 1 and 2 are implemented:** a static Next.js browser ONNX feasibility application and tested Python/TypeScript NACA four-digit geometry libraries. The current UI remains the infrastructure test; it does not predict airfoil performance and contains no trained aerodynamic weights.
+AeroForge is a phased aerodynamic design studio project. **Phases 1–3 are implemented:** static browser ONNX feasibility, tested NACA geometry libraries, and a real XFOIL pilot data pipeline. The current UI remains the infrastructure test; it does not predict airfoil performance and contains no trained aerodynamic weights.
 
 Read [the full specification](docs/SPEC.md) and [the progress tracker](PROGRESS.md) before development. Each subsequent phase requires approval.
+
+## Real solver pilot
+
+The [committed pilot](data/pilot-v1/README.md) contains 280 attempted XFOIL 6.99 viscous cases across 20 geometries, two Reynolds numbers and seven angles. It produced 227 eligible CL/CD labels; all nonconverged and suspect results remain traceable and excluded. Logs, polars, panel geometries, input streams, configuration and hashes are retained. Three repeat runs matched at saved polar precision.
+
+Read [data-generation documentation](docs/DATA.md) for solver acquisition, exact configuration, acceptance results and limitations. The sparse pilot establishes the pipeline; it is not an experimental validation or a trained-model accuracy claim. No NeuralFoil fallback was used.
+
+The full Python audit suite also requires the pinned `requirements-data.txt` dependencies. CI verifies committed raw evidence without executing or downloading XFOIL. To reproduce the pilot on an approved Windows setup, run `python scripts/run_pilot.py --output data/pilot-reproduction` with the pinned local solver available.
 
 ## Geometry engine
 
@@ -61,4 +69,4 @@ The fixture is reproducibly generated with `onnx-proto`, ONNX IR 8 and opset 13.
 
 There is no inference backend, database, account system, paid service, or third-party core-runtime request. The static verification server is a local development tool, not a production dependency. Deployment to a public host has not been performed.
 
-Next phases cover a real solver pilot and quality-controlled dataset; trained/evaluated models; the responsive Design Studio; real charts, comparison and URL sharing; and public-release verification. XFOIL availability remains unresolved. Dataset provenance, evaluation results, scientific accuracy, and aerodynamic performance screenshots will be documented when those phases are completed.
+Next phases cover expanded quality-controlled data as needed for trained/evaluated models; the responsive Design Studio; real charts, comparison and URL sharing; and public-release verification. XFOIL 6.99 now works in the verified local Windows setup. Model evaluation results, scientific validation, and aerodynamic performance screenshots will be documented when those phases are completed.
