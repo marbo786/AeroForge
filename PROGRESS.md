@@ -4,6 +4,10 @@ Last updated: 2026-11-07 (Asia/Karachi).
 
 ## Current phase and session rule
 
+Latest steering: the user explicitly requested a paper/ink/vermilion presentation redesign, direct manipulation, a scrubber, responsive sheet, exports and real chart presentation. This supersedes the dark visual direction and authorizes the specified UI expansion. The tested Phase 5 baseline is committed as `4ea242f`; redesign is in progress. ML/inference/preprocessing/validation and existing controller state behavior are frozen.
+
+Redesign step 1: added a shared CSS-variable/Tailwind token system and Module, Readout, Slider, Chip, StatusPill, Callout, Scrubber and native-dialog Drawer components, with Motion 14.10.1, Tailwind/PostCSS 4.3.5 and exact locked lint dependencies. Downloaded self-hosted Barlow Semi Condensed Bold plus OFL license. Lint, TypeScript, 23 Node tests and static build passed before this step's commit. No inference code changed.
+
 Phase 5 is complete on 2026-11-07 (Asia/Karachi), following explicit authorization. The responsive Design Studio uses accurate SVG geometry and real local ONNX inference with validation, telemetry, loading/error/retry and applicability states. Desktop/mobile screenshots were captured, inspected and refined. Phase 6 has not started and requires a new instruction. The accepted Phase 4 model and all original evidence remain unchanged.
 
 Every coding session must begin by reading `docs/SPEC.md` and this file. The complete user specification is preserved byte-for-byte in `docs/SPEC.md`; this tracker supplements it and does not weaken its requirements. Work on one approved phase, validate it, update this tracker, commit it when possible, summarize, and stop. Never begin the next phase silently.

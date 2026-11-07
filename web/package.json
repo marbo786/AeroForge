@@ -3,30 +3,39 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": { "node": "24.11.0", "npm": "11.6.1" },
+  "engines": {
+    "node": "24.11.0",
+    "npm": "11.6.1"
+  },
   "packageManager": "npm@11.6.1",
   "scripts": {
     "assets": "node scripts/prepare-assets.mjs",
     "dev": "npm run assets && next dev --webpack",
     "build": "npm run assets && next build --webpack",
     "typecheck": "next typegen && tsc --noEmit",
+    "lint": "eslint app lib tests scripts *.ts *.mjs",
     "test": "node --experimental-strip-types --test tests/assets.test.mjs tests/geometry.test.ts tests/inference.test.ts",
     "serve": "node scripts/serve-static.mjs",
     "smoke": "playwright test",
-    "verify": "npm run assets && npm run typecheck && npm test && npm run build && npm run smoke"
+    "verify": "npm run assets && npm run lint && npm run typecheck && npm test && npm run build && npm run smoke"
   },
   "dependencies": {
+    "motion": "14.10.1",
     "next": "16.4.5",
+    "onnxruntime-web": "1.31.1",
     "react": "19.3.1",
-    "react-dom": "19.3.1",
-    "onnxruntime-web": "1.31.1"
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
     "@playwright/test": "1.65.0",
+    "@tailwindcss/postcss": "4.3.5",
     "@types/node": "24.10.1",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
+    "eslint": "10.14.0",
     "onnx-proto": "8.0.1",
-    "typescript": "5.9.3"
+    "tailwindcss": "4.3.5",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.1"
   }
 }
