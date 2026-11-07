@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { mkdir } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 import { generateGeometry } from "../../lib/geometry/naca4";
 
 async function openControls(page: Page) {
@@ -22,10 +22,11 @@ test("studio uses real model outputs and accurate geometry without external requ
   await expect(page.getByTestId("foil-path")).toHaveAttribute("d", expectedPath);
   await expect(page.locator(".foil-rotation")).toHaveAttribute("transform", "rotate(4 260 240)");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await mkdir("../docs/phase-5", { recursive: true });
-  await page.screenshot({ path: `../docs/phase-5/${info.project.name}.png`, fullPage: true });
+  await mkdir("../docs/ui-redesign/final", { recursive: true });
+  await page.screenshot({ path: `../docs/ui-redesign/final/${info.project.name}.png`, fullPage: true });
+  await page.getByRole("button", { name: "More", exact: true }).click();
+  await page.getByRole("button", { name: "4418", exact: true }).click();
   await openControls(page);
-  await page.getByLabel("Airfoil preset").selectOption("4418");
   await expect(page.getByLabel("Thickness", { exact: true })).toHaveValue("18");
   await expect(page.getByRole("status")).toHaveText("Prediction ready");
   await expect(page.getByTestId("cl")).not.toHaveText(original);
@@ -41,7 +42,10 @@ test("studio uses real model outputs and accurate geometry without external requ
   expect(Math.abs(Number(await page.getByTestId("cd").innerText()) - golden.expected.selected[0][1])).toBeLessThan(.000006);
   await page.getByRole("button", { name: "Reset", exact: true }).click();
   await expect(page.getByTestId("foil-path")).toHaveAttribute("d", expectedPath);
-  await page.getByLabel("Airfoil preset").selectOption("0012");
+  const hide=page.getByRole("button",{name:"Hide parameters",exact:true});
+  if(await hide.isVisible())await hide.click();
+  await page.getByRole("button", { name: "0012", exact: true }).click();
+  await openControls(page);
   await expect(page.getByLabel("Camber position", { exact: true })).toBeDisabled();
   await expect(page.getByLabel("Camber position", { exact: true })).toHaveValue("0");
   await expect(page.getByRole("status")).toHaveText("Prediction ready");
@@ -70,7 +74,7 @@ test("parameters validate, withhold out-of-domain predictions and recover throug
   // Rapid changes must settle on the latest input.
   for (const a of [2, 6, 0]) await page.getByLabel("Angle of attack", { exact: true }).fill(String(a));
   await expect(page.getByRole("status")).toHaveText("Prediction ready");
-  await expect(page.getByRole("img")).toHaveAccessibleName(/at 0 degrees/);
+  await expect(page.locator(".airfoil-svg")).toHaveAccessibleName(/at 0 degrees/);
   await page.emulateMedia({ reducedMotion: "reduce" });
   expect(await page.locator(".foil-rotation").evaluate((e) => getComputedStyle(e).transitionDuration)).toBe("0s");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -102,4 +106,95 @@ test("missing WASM shows a recoverable instruction and no coefficients", async (
   await expect(page.getByRole("status")).toHaveText("Model unavailable");
   await expect(page.getByTestId("cl")).toHaveText("—");
   await expect(page.getByRole("alert").filter({ hasText: "reload this page" })).toBeVisible();
+});
+
+test("direct manipulation changes geometry and real predictions; scrubber and drawers work", async ({ page }) => {
+  await page.goto("/studio/");
+  await expect(page.getByRole("status")).toHaveText("Prediction ready");
+  const before=await page.getByTestId("cl").innerText();
+  const handle=page.locator(".geometry-handle.camber .handle-dot");
+  const box=await handle.boundingBox();
+  expect(box).not.toBeNull();
+  await page.mouse.move(box!.x+box!.width/2,box!.y+box!.height/2);
+  await page.mouse.down();await page.mouse.move(box!.x+box!.width/2,box!.y+box!.height/2-12,{steps:12});await page.mouse.up();
+  await expect(page.getByRole("status")).toHaveText("Prediction ready");
+  await expect(page.getByTestId("cl")).not.toHaveText(before);
+  await page.locator(".geometry-handle.camber").focus();await page.keyboard.press("Shift+ArrowUp");
+  await page.getByRole("slider",{name:"Alpha sweep",exact:true}).fill("6");
+  await expect(page.locator(".airfoil-svg")).toHaveAccessibleName("Airfoil at 6 degrees");
+  await expect(page.getByRole("status")).toHaveText("Prediction ready");
+  await page.getByRole("button",{name:"Charts +",exact:true}).click();
+  await expect(page.getByRole("dialog",{name:"Charts",exact:true})).toBeVisible();
+  await expect(page.getByRole("img",{name:"Drag polar",exact:true})).toBeVisible();
+  await page.keyboard.press("Escape");await expect(page.getByRole("dialog",{name:"Charts",exact:true})).not.toBeVisible();
+  await openControls(page);
+  await page.getByRole("button",{name:"Details / evidence",exact:true}).click();
+  await expect(page.getByRole("dialog",{name:"Details",exact:true})).toBeVisible();
+  await expect(page.getByRole("dialog",{name:"Details",exact:true})).toContainText("finite panel");
+  await page.getByRole("button",{name:"Close Details",exact:true}).click();
+  await expect(page.getByRole("dialog",{name:"Details",exact:true})).not.toBeVisible();
+});
+
+test("sheet snaps, display toggles, reduced motion and real exports remain usable", async ({ page },info) => {
+  await page.goto("/studio/");await expect(page.getByRole("status")).toHaveText("Prediction ready");
+  await openControls(page);
+  if(info.project.name==="mobile"){
+    await page.getByRole("button",{name:"full",exact:true}).click();
+    await expect(page.locator(".control-column")).toHaveClass(/sheet-full/);
+  }
+  await page.getByRole("button",{name:"Grid",exact:true}).click();
+  await expect(page.locator(".airfoil-svg rect[fill='url(#paper-grid)']")).toBeVisible();
+  await page.getByRole("button",{name:"Flow [conceptual]",exact:true}).click();
+  await expect(page.locator(".conceptual-flow")).toContainText("CONCEPTUAL / NOT SIMULATED");
+  if(info.project.name==="mobile")await page.getByRole("button",{name:"peek",exact:true}).click();
+  await page.emulateMedia({reducedMotion:"reduce"});
+  await expect(page.getByRole("button",{name:"Play alpha sweep",exact:true})).toBeDisabled();
+  await page.getByRole("button",{name:"Export +",exact:true}).click();
+  const downloadPromise=page.waitForEvent("download");
+  await page.getByRole("button",{name:"json",exact:true}).click();
+  const download=await downloadPromise;
+  expect(download.suggestedFilename()).toBe("naca-2412.json");
+  await page.getByRole("button",{name:"Export +",exact:true}).click();
+  const pngPromise=page.waitForEvent("download");
+  await page.getByRole("button",{name:"png",exact:true}).click();
+  expect((await pngPromise).suggestedFilename()).toBe("naca-2412.png");
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+
+test("model evidence page loads without console errors and returns to studio",async({page})=>{
+  const errors:string[]=[];page.on("pageerror",e=>errors.push(e.message));page.on("console",m=>{if(m.type()==="error")errors.push(m.text());});
+  await page.goto("/model/");
+  await expect(page.getByRole("heading",{name:"Model evidence /",exact:true})).toBeVisible();
+  await expect(page.getByText("0.01484",{exact:true})).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.getByRole("link",{name:"Return to studio",exact:true}).click();
+  await expect(page.getByRole("status")).toHaveText("Prediction ready");expect(errors).toEqual([]);
+});
+
+test("saved comparisons use real sweeps and SVG/CSV exports contain usable data",async({page})=>{
+  await page.goto("/studio/");
+  await expect(page.getByRole("status")).toHaveText("Prediction ready");
+  const saved=await page.getByTestId("cl").innerText();
+  await page.getByRole("button",{name:"Save design",exact:true}).click();
+  await page.getByRole("button",{name:"4412",exact:true}).click();
+  await expect(page.getByTestId("cl")).not.toHaveText(saved);
+  await page.getByRole("button",{name:"Charts +",exact:true}).click();
+  await expect(page.locator(".comparison-line")).toHaveCount(4);
+  const curves=await page.locator(".chart-line,.comparison-line").evaluateAll(nodes=>nodes.map(node=>node.getAttribute("d")));
+  expect(curves[0]).not.toBe(curves[1]);
+  await page.keyboard.press("Escape");
+  await page.getByRole("button",{name:"Saved",exact:true}).click();
+  await expect(page.getByTestId("cl")).toHaveText(saved);
+  await expect(page.getByRole("heading",{name:"NACA 2412",exact:true})).toBeVisible();
+  for(const format of ["svg","csv"]){
+    await page.getByRole("button",{name:"Export +",exact:true}).click();
+    const option=page.getByRole("button",{name:format,exact:true});
+    await expect(option).toBeEnabled();
+    const pending=page.waitForEvent("download");await option.click();
+    const file=await pending;
+    expect(file.suggestedFilename()).toBe(`naca-2412.${format}`);
+    const content=await readFile((await file.path())!,"utf8");
+    if(format==="svg"){expect(content).toContain("<svg");expect(content).toContain("foil-surface");}
+    else {const rows=content.trim().split("\n");expect(rows).toHaveLength(26);expect(rows[0]).toBe("alpha_deg,CL,CD,L_D");expect(rows[25].split(",")[0]).toBe("8");}
+  }
 });

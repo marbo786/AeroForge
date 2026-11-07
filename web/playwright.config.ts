@@ -12,7 +12,8 @@ export default defineConfig({
     ...(process.platform === "win32" ? { channel: "chrome" } : {}),
   },
   projects: [
-    { name: "desktop", use: { viewport: { width: 1440, height: 1000 } } },
+    { name: "desktop", use: { viewport: { width: 1440, height: 900 } } },
+    { name: "tablet", testMatch: "**/studio.spec.ts", use: { viewport: { width: 1024, height: 768 } } },
     { name: "mobile", use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
   ],
   webServer: {

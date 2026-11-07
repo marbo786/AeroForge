@@ -1,16 +1,17 @@
 "use client";
+import { useReducedPreference } from "./use-reduced-preference";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { motion, useMotionValueEvent, useReducedMotion, useSpring } from "motion/react";
+import { motion, useMotionValueEvent, useSpring } from "motion/react";
 
 export function Module({ number, title, children, className = "" }: { number: string; title: string; children: ReactNode; className?: string }) {
-  const reduced = useReducedMotion();
+  const reduced = useReducedPreference();
   return <motion.section className={`module ${className}`} initial={reduced ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .25, delay: Number(number) * .025 }} aria-label={title}>
     <h2 className="module-title micro"><span>{title}</span><span className="muted">{number}</span></h2>{children}
   </motion.section>;
 }
 
 function SpringNumber({ value, digits }: { value: number; digits: number }) {
-  const reduced = useReducedMotion();
+  const reduced = useReducedPreference();
   const spring = useSpring(value, { stiffness: 190, damping: 30, restDelta: 10 ** (-digits - 2) });
   const [display, setDisplay] = useState(value);
   useMotionValueEvent(spring, "change", setDisplay);
@@ -49,7 +50,7 @@ export function Scrubber({ alpha, playing, reduced, onChange, onPlay }: { alpha:
 export function Drawer({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: ReactNode }) {
   const ref = useRef<HTMLDialogElement>(null);
   const closeRef = useRef(onClose); closeRef.current = onClose;
-  const reduced = useReducedMotion();
+  const reduced = useReducedPreference();
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;

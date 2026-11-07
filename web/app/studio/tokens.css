@@ -12,7 +12,7 @@
 }
 .instrument {
   --paper: #ecebe7; --surface: #f7f6f2; --ink: #141414; --line: #d9d7d0;
-  --accent: #f2511f; --muted: #676660; --valid: #177b42; --amber: #8c5d0b;
+  --accent: #f2511f; --accent-control: #c73e19; --muted: #676660; --valid: #177b42; --amber: #8c5d0b;
   --radius: 3px; --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px; --space-8: 32px;
   --type-micro: 10px; --type-body: 13px; --type-readout: 44px; --type-hero: clamp(52px, 6vw, 88px);
   --motion-fast: 140ms; --motion-panel: 260ms; --ease-panel: cubic-bezier(.2,.8,.2,1);
@@ -21,6 +21,7 @@
 }
 .instrument *, .instrument *::before, .instrument *::after { box-sizing: border-box; }
 .instrument h1,.instrument h2,.instrument h3,.instrument p,.instrument dd,.instrument dl { margin: 0; }
+.instrument section { margin: 0; }
 .instrument button,.instrument input,.instrument select { font: inherit; color: inherit; }
 .instrument button { margin: 0; cursor: pointer; border-radius: var(--radius); width: auto; }
 .instrument a { color: inherit; text-decoration: none; }
@@ -49,7 +50,7 @@
 .field-error { font-size: 11px; line-height: 1.4; color: #9c3b15; margin-top: 8px !important; }
 .instrument .chip { border: 1px solid var(--line); padding: 8px 10px; min-height: 34px; background: var(--surface); font-size: 9px; font-weight: 500; letter-spacing: .06em; }
 .instrument .chip:hover { border-color: var(--ink); background: #e9e7df; }
-.instrument .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.instrument .chip.active { background: var(--accent-control); border-color: var(--accent-control); color: #fff; }
 .status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px; border: 1px solid var(--line); font-size: 8px !important; white-space: nowrap; }
 .status-pill i { width: 5px; height: 5px; background: currentColor; }
 .status-pill.valid { color: var(--valid); background: #edf3eb; }
