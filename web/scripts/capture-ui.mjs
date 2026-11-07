@@ -30,6 +30,7 @@ try {
       await page.getByRole('button',{name:'Charts +',exact:true}).click();
       await page.locator('.chart-line').first().waitFor({state:'attached'});
       await page.waitForFunction(()=>Number(getComputedStyle(document.querySelector('dialog[open] .drawer-body')).opacity)>.999);
+      await page.getByRole('button',{name:'Close Charts',exact:true}).scrollIntoViewIfNeeded();
       await page.screenshot({path:`../docs/ui-redesign/${pass}/${name}-charts.png`,fullPage:false,animations:'disabled'});
       await page.goto('http://127.0.0.1:4175/model/');
       await page.waitForFunction(()=>[...document.querySelectorAll('.module')].every(node=>Number(getComputedStyle(node).opacity)>.999));
