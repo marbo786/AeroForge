@@ -14,6 +14,7 @@ The user authorized Phase 7 release preparation on 2026-11-15. Local production 
 - Production checks passed lint, strict TypeScript, 23 Node tests, static build and file checks, 41 Playwright tests, and 104 Python tests. The accepted model and numerical preprocessing artifacts are byte-identical. The verified build is Windows Chrome and the local Pages emulator. GitHub Actions and the Cloudflare build and CDN remain to be checked on the approved release.
 - Finalized the README, hosting steps, release audit and MIT license. The export includes runtime and font notices. XFOIL stays an offline dependency under its own license. [Cloudflare release runbook](docs/DEPLOYMENT.md)
 - Publishing requires approval to push the release commit, the target Cloudflare Free project, and GitHub app authorization if choosing Git integration. Verify and record the actual HTTPS URL after publishing. Phase 7 commit message: `prepare verified cloudflare pages release`.
+- After publishing approval, GitHub Actions exposed line-ending normalization in the frozen recovery plan. Git now preserves the original CRLF bytes in checkout on all platforms, matching the existing unlock hash.
 
 ## Phase 6 completion
 

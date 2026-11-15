@@ -3,4 +3,5 @@ data/pilot-v1/** -text -whitespace
 artifacts/pilot-surrogate-v1/** -text
 data/recovery-v1/** -text -whitespace
 artifacts/recovery*/** -text
+configs/recovery-v1/plan.json -text whitespace=cr-at-eol
 artifacts/recovery-diagnosis/*.csv whitespace=cr-at-eol
