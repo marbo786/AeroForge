@@ -7,6 +7,7 @@ import type { Design } from "../../lib/inference/surrogate";
 import { Callout } from "./kit";
 
 export type Display = { grid: boolean; camber: boolean; chord: boolean; labels: boolean; flow: boolean };
+type HandleField = "m" | "p" | "t" | "alpha";
 type Handle = "camber" | "position" | "thickness" | "rotation";
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
@@ -35,7 +36,9 @@ function useGeometryMotion(design: Design) {
   return reduced ? design : visual;
 }
 
-export function Stage({ design, display, onChange, invalid }: { design: Design; display: Display; onChange: (field: string, value: string) => void; invalid: boolean }) {
+export function Stage({ design, display, onChange, invalid, saved }: {
+  design: Design; display: Display; onChange: (field: HandleField, value: string) => void; invalid: boolean; saved?: Design;
+}) {
   const visual = useGeometryMotion(design);
   const svgRef = useRef<SVGSVGElement>(null);
   const foilRef = useRef<SVGGElement>(null);
@@ -43,7 +46,7 @@ export function Stage({ design, display, onChange, invalid }: { design: Design; 
   const active = useRef<{ kind: Handle | "pan"; x: number; y: number; viewX: number; viewY: number } | null>(null);
   const pointers = useRef(new Map<number, Point>());
   const pinch = useRef<{ distance: number; scale: number } | null>(null);
-  const queued = useRef<{ field: string; value: string }[]>([]);
+  const queued = useRef<{ field: HandleField; value: string }[]>([]);
   const changeRef=useRef(onChange);changeRef.current=onChange;
   const frame = useRef(0);
   const lastCommit=useRef(0);
@@ -55,7 +58,7 @@ export function Stage({ design, display, onChange, invalid }: { design: Design; 
     svg.addEventListener("wheel",wheel,{passive:false});
     return()=>svg.removeEventListener("wheel",wheel);
   },[]);
-  function queue(field: string, value: number) {
+  function queue(field: HandleField, value: number) {
     queued.current = queued.current.filter((v) => v.field !== field).concat({ field, value: String(Number(value.toFixed(3))) });
     if (!frame.current) {
       const flush=(now:number)=>{
@@ -72,6 +75,7 @@ export function Stage({ design, display, onChange, invalid }: { design: Design; 
   const path = `M${geometry.contour.map((pt) => xy(pt).map((v) => v.toFixed(4)).join(",")).join(" L")} Z`;
   const exact = generateGeometry(design);
   const exactPath = `M${exact.contour.map((pt) => xy(pt).map((v) => v.toFixed(4)).join(",")).join(" L")} Z`;
+  const savedPath = saved ? `M${generateGeometry(saved).contour.map(point => xy(point).join(",")).join(" L")} Z` : null;
   const camberPoint = xy([visual.p || .4, visual.m]);
   const thickX = geometry.x.reduce((best,x) => sectionAt(visual,x).halfThickness > sectionAt(visual,best).halfThickness ? x : best, .3);
   const thicknessPoint = xy(sectionAt(visual, thickX).upper);
@@ -157,6 +161,10 @@ export function Stage({ design, display, onChange, invalid }: { design: Design; 
           {display.chord && <path d="M120 240H680" className="chord-line"/>}
           <path d={`M${120+560*(visual.p||.4)} 240V287.6`} className="handle-stem"/>
           {display.flow && <g className="conceptual-flow" aria-label="Conceptual airflow, not a simulation"><path d="M30 170Q280 90 760 178M30 285Q350 350 760 275"/><text x="440" y="380">CONCEPTUAL / NOT SIMULATED</text></g>}
+        </g>
+        {saved && savedPath && <path d={savedPath} transform={`rotate(${saved.alpha} 260 240)`}
+          className="saved-contour" data-testid="saved-contour" aria-label="Saved airfoil outline"/>}
+        <g transform={`rotate(${visual.alpha} 260 240)`}>
           {handles.map((handle) => <g key={handle.kind} className={`geometry-handle ${handle.kind}`} role="slider" tabIndex={handle.kind === "position" && design.m === 0 ? -1 : 0} aria-disabled={handle.kind === "position" && design.m === 0} aria-label={handle.label} aria-valuenow={handle.value} aria-valuemin={handle.min} aria-valuemax={handle.max} onPointerDown={(e) => start(e,handle.kind)} onKeyDown={(e) => keyboard(e,handle.kind)} transform={`translate(${handle.point[0]} ${handle.point[1]})`}><circle r="25" fill="transparent" className="handle-hit"/><circle r="6" className="handle-dot"/><path d="M-11 0H11M0 -11V11"/></g>)}
         </g>
         {display.labels && <g className="stage-callouts">
@@ -168,6 +176,6 @@ export function Stage({ design, display, onChange, invalid }: { design: Design; 
         </g>}
       </g>
     </svg>
-    <div className="stage-tools micro"><span>{invalid ? "Last valid geometry" : "Drag handles / shift + arrows for coarse"}</span><button className="chip micro" onClick={() => setView({x:0,y:0,scale:1})}>Reset view</button></div>
+    <div className="stage-tools micro"><span>{invalid ? "Last valid geometry" : saved ? "Current solid / saved dashed" : "Drag handles / shift + arrows for coarse"}</span><button className="chip micro" onClick={() => setView({x:0,y:0,scale:1})}>Reset view</button></div>
   </div>;
 }

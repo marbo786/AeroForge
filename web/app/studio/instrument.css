@@ -135,3 +135,81 @@
 @media(max-width:640px){
  .stage-viewport{height:32dvh;min-height:250px;max-height:340px}.hero-state{padding:10px 20px 12px}.hero-state h2{font-size:52px}.instrument .stage-meta,.instrument .stage-tools{font-size:8px!important}.stage-tools>span{max-width:21ch;line-height:1.5}.instrument .readout-column .module-title{font-size:8px}.instrument .readout-column .readout-caption{font-size:7px}.instrument .top-status>div>.micro{font-size:7px!important}.top-status .status-button{min-height:32px}.instrument .model-mini{font-size:9px!important}.instrument .hero-caption{font-size:9px!important}.instrument .status-button{min-height:44px}.instrument .display-chips .chip{font-size:9px}.instrument .preset-row .chip{font-size:9px}.sheet-toggle{padding-right:8px!important}.evidence-page .instrument-topbar{height:112px}.evidence-page .project-title>a{display:inline-flex;align-items:center;min-height:44px;font-size:9px}
 }
+.saved-contour {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+.plot text { font-size: 11px; }
+.saved-point { fill: var(--ink); stroke: var(--surface); stroke-width: 1; }
+.chart-message { padding: 12px 0; font-size: 13px; }
+.chart-inspector, .comparison-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+.chart-inspector {
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+  color: var(--ink);
+  font-size: 10px;
+}
+.chart-inspector input, .share-design input {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 8px;
+}
+.chart-inspector input { width: 5ch; margin-left: 6px; box-sizing: content-box; }
+.instrument .comparison-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 12px;
+  margin-bottom: 20px;
+}
+.comparison-panel table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 12px 0;
+  font: 12px var(--font-mono), monospace;
+  text-align: left;
+}
+.comparison-panel th, .comparison-panel td { border-bottom: 1px solid var(--line); padding: 8px 6px; }
+.comparison-panel th { font-weight: 500; }
+.share-design { display: grid; gap: 12px; font-size: 14px; line-height: 1.6; }
+.instrument .share-design p, .instrument .link-notice p { color: var(--ink); }
+.share-design input { width: 100%; min-height: 44px; font: 12px var(--font-mono), monospace; }
+.instrument .share-action { color: var(--accent-control); border-color: var(--accent-control); }
+.instrument .share-action:disabled { opacity: .5; }
+.instrument .plot { min-width: 0; }
+@media (min-width: 700px) {
+  .instrument .full-charts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+}
+.link-notice {
+  position: fixed;
+  z-index: 70;
+  inset: 96px 14px auto auto;
+  width: min(430px, calc(100% - 28px));
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+@media (max-width: 640px) {
+  .instrument .dock-actions { gap: 6px; }
+  .instrument .dock-actions > .chip,
+  .instrument .dock-actions .export-menu > .chip { min-width: 0; padding-inline: 10px; }
+  .chart-inspector input { min-height: 26px; font-size: 16px; padding-block: 8px; }
+  .comparison-panel table { font-size: 10px; }
+}

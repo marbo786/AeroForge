@@ -7,7 +7,7 @@ async function openControls(page: Page) {
   if (await toggle.isVisible()) await toggle.click();
 }
 
-test("studio uses real model outputs and accurate geometry without external requests", async ({ page, request }, info) => {
+test("studio uses real model outputs and accurate geometry without external requests", async ({ page, request }) => {
   const errors: string[] = [], external: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
@@ -22,8 +22,6 @@ test("studio uses real model outputs and accurate geometry without external requ
   await expect(page.getByTestId("foil-path")).toHaveAttribute("d", expectedPath);
   await expect(page.locator(".foil-rotation")).toHaveAttribute("transform", "rotate(4 260 240)");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await mkdir("../docs/ui-redesign/final", { recursive: true });
-  await page.screenshot({ path: `../docs/ui-redesign/final/${info.project.name}.png`, fullPage: true });
   await page.getByRole("button", { name: "More", exact: true }).click();
   await page.getByRole("button", { name: "4418", exact: true }).click();
   await openControls(page);
@@ -125,7 +123,8 @@ test("direct manipulation changes geometry and real predictions; scrubber and dr
   await expect(page.getByRole("status")).toHaveText("Prediction ready");
   await page.getByRole("button",{name:"Charts +",exact:true}).click();
   await expect(page.getByRole("dialog",{name:"Charts",exact:true})).toBeVisible();
-  await expect(page.getByRole("img",{name:"Drag polar",exact:true})).toBeVisible();
+  await expect(page.getByRole("img",{name:"Lift / angle of attack",exact:true})).toBeVisible();
+  await expect(page.getByRole("img",{name:"Drag / angle of attack",exact:true})).toBeVisible();
   await page.keyboard.press("Escape");await expect(page.getByRole("dialog",{name:"Charts",exact:true})).not.toBeVisible();
   await openControls(page);
   await page.getByRole("button",{name:"Details / evidence",exact:true}).click();
@@ -171,19 +170,46 @@ test("model evidence page loads without console errors and returns to studio",as
   await expect(page.getByRole("status")).toHaveText("Prediction ready");expect(errors).toEqual([]);
 });
 
-test("saved comparisons use real sweeps and SVG/CSV exports contain usable data",async({page})=>{
+test("saved comparisons overlay airfoils and real sweeps, restore and clear", async ({page}, info) => {
   await page.goto("/studio/");
   await expect(page.getByRole("status")).toHaveText("Prediction ready");
   const saved=await page.getByTestId("cl").innerText();
   await page.getByRole("button",{name:"Save design",exact:true}).click();
   await page.getByRole("button",{name:"4412",exact:true}).click();
+  await expect(page.getByRole("status")).toHaveText("Prediction ready");
   await expect(page.getByTestId("cl")).not.toHaveText(saved);
-  await page.getByRole("button",{name:"Charts +",exact:true}).click();
-  await expect(page.locator(".comparison-line")).toHaveCount(4);
+  const current = await page.getByTestId("cl").innerText();
+  await expect(page.getByTestId("saved-contour")).toBeVisible();
+  const capture = process.env.AEROFORGE_REVIEW;
+  const review = `../docs/phase-6/${capture}`;
+  if (capture === "initial" || capture === "final") {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await mkdir(review, { recursive: true });
+    await page.screenshot({ path: `${review}/${info.project.name}-overlay.png` });
+  }
+  await page.getByRole("button",{name:"Compare",exact:true}).click();
+  await expect(page.locator(".comparison-line")).toHaveCount(2);
   const curves=await page.locator(".chart-line,.comparison-line").evaluateAll(nodes=>nodes.map(node=>node.getAttribute("d")));
   expect(curves[0]).not.toBe(curves[1]);
+  await expect(page.getByRole("row",{name:/^CL /})).toContainText(saved);
+  const inspect = page.getByRole("spinbutton", {name:"Inspect CL angle"});
+  await expect(page.getByTestId("inspect-cl")).toContainText(`Current ${current}`);
+  await expect(page.getByTestId("inspect-cl")).toContainText(`Saved ${saved}`);
+  await inspect.fill("9");
+  await expect(page.getByTestId("inspect-cl")).toHaveText("Current — / Saved —");
+  await inspect.fill("4");
+  await page.waitForFunction(() => Number(getComputedStyle(document.querySelector("dialog[open] .drawer-body")!).opacity) > .999);
+  expect(await page.getByRole("dialog", { name: "Charts" }).evaluate(dialog => dialog.scrollWidth <= dialog.clientWidth)).toBe(true);
+  if (capture === "initial" || capture === "final") {
+    await page.getByRole("button", { name: "Close Charts", exact: true }).scrollIntoViewIfNeeded();
+    await page.screenshot({ path: `${review}/${info.project.name}-charts.png` });
+  }
+  await page.getByRole("button",{name:"Restore saved design",exact:true}).click();
+  await expect(page.getByRole("row",{name:/^Design /}).getByRole("cell").first()).toHaveText("NACA 2412");
+  await page.getByRole("button",{name:"Clear saved comparison",exact:true}).click();
+  await expect(page.locator(".comparison-line")).toHaveCount(0);
   await page.keyboard.press("Escape");
-  await page.getByRole("button",{name:"Saved",exact:true}).click();
+  await expect(page.getByTestId("saved-contour")).toHaveCount(0);
   await expect(page.getByTestId("cl")).toHaveText(saved);
   await expect(page.getByRole("heading",{name:"NACA 2412",exact:true})).toBeVisible();
   for(const format of ["svg","csv"]){
@@ -197,4 +223,51 @@ test("saved comparisons use real sweeps and SVG/CSV exports contain usable data"
     if(format==="svg"){expect(content).toContain("<svg");expect(content).toContain("foil-surface");}
     else {const rows=content.trim().split("\n");expect(rows).toHaveLength(26);expect(rows[0]).toBe("alpha_deg,CL,CD,L_D");expect(rows[25].split(",")[0]).toBe("8");}
   }
+});
+
+test("share restores exact design, handles malformed links, and keeps model bounds", async ({ page, context }, info) => {
+  const errors: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  page.on("console", message => { if (message.type() === "error") errors.push(message.text()); });
+  await page.goto("/studio/?m=0.04321&p=0.512&t=0.145&aoa=6.25&re=345678");
+  await expect(page.getByRole("status")).toHaveText("Prediction ready");
+  const original = await page.getByTestId("cl").innerText();
+  await page.getByRole("button", { name: "Share", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Share design" });
+  const link = await dialog.getByRole("textbox", { name: "Design URL" }).inputValue();
+  expect(new URL(link).searchParams.get("m")).toBe("0.04321");
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await dialog.getByRole("button", { name: "Copy link" }).click();
+  await expect(dialog.getByRole("status")).toHaveText("Link copied.");
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(link);
+  if (process.env.AEROFORGE_REVIEW === "final") {
+    const review = "../docs/phase-6/final";
+    await mkdir(review, { recursive: true });
+    await page.waitForFunction(() => Number(getComputedStyle(document.querySelector("dialog[open] .drawer-body")!).opacity) > .999);
+    await page.screenshot({ path: `${review}/${info.project.name}-share.png` });
+  }
+  await page.goto(link);
+  await expect(page.getByRole("status")).toHaveText("Prediction ready");
+  await expect(page.getByTestId("cl")).toHaveText(original);
+  await expect(page.locator(".airfoil-svg")).toHaveAccessibleName("Airfoil at 6.25 degrees");
+  await openControls(page);
+  await expect(page.getByLabel("Reynolds number", { exact: true })).toHaveValue("345678");
+
+  await page.goto("/studio/?m=0&p=.4&t=.12&aoa=9&re=250000");
+  await expect(page.getByRole("status")).toHaveText("Outside model bounds");
+  await expect(page.getByTestId("cl")).toHaveText("—");
+  await page.getByRole("button", { name: "Share", exact: true }).click();
+  expect(new URL(await dialog.getByRole("textbox", { name: "Design URL" }).inputValue()).searchParams.get("p")).toBe("0");
+  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: "Charts +", exact: true }).click();
+  await expect(page.locator(".chart-line")).toHaveCount(2);
+
+  for (const query of ["m=0.02", "m=0.02&m=0.04&p=.4&t=.12&aoa=4&re=250000", "m=0.02&p=.4&t=.12&aoa=99&re=250000"]) {
+    await page.goto(`/studio/?${query}`);
+    await expect(page.getByRole("complementary", { name: "Invalid design link" }).getByRole("alert"))
+      .toContainText("This design link is invalid.");
+    await expect(page.getByRole("heading", { name: "NACA 2412", exact: true })).toBeVisible();
+    await expect(page.getByRole("status")).toHaveText("Prediction ready");
+  }
+  expect(errors).toEqual([]);
 });

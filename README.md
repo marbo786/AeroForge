@@ -2,7 +2,7 @@
 
 Design. Simulate. Optimize.
 
-AeroForge is a phased aerodynamic design studio project. **Phases 1–5 are implemented:** static browser inference, tested NACA geometry, traceable XFOIL data, an independently evaluated surrogate and a responsive Design Studio with real lift/drag telemetry.
+AeroForge is a phased aerodynamic design studio project. Phases 1–6 cover browser inference, tested NACA geometry, traceable XFOIL data, an independently evaluated surrogate, and a responsive studio with lift and drag curves, design comparison, and share links.
 
 Read [the full specification](docs/SPEC.md) and [the progress tracker](PROGRESS.md) before development. Each subsequent phase requires approval.
 
@@ -54,7 +54,7 @@ npm run serve
 
 Open `http://127.0.0.1:4173/` or `/studio/`. The paper/ink/vermilion instrument panel follows the user's supplied visual reference. Drag the airfoil handles, select a preset or edit numeric controls; lift, drag, L/D and execution time come from the real browser model. Arrow keys adjust focused handles; Shift makes coarse steps. Wheel/pinch changes the view. The alpha scrubber supports Space to play/pause; unsupported predictions are withheld. Reduced motion disables autoplay and springs.
 
-Mobile controls open through **Edit parameters**, with peek/half/full snaps. **Charts** shows real model sweeps and an optional session-local saved-design comparison. **Export** downloads SVG, PNG, sweep CSV or design/coefficient JSON. **Details / evidence** explains the domain bounds, finite XFOIL evidence and provenance; `/model/` presents the frozen evaluation metrics. `npm run dev` is available for development but is not acceptance evidence.
+Mobile controls open through **Edit parameters**, with peek/half/full snaps. **Charts** shows batched lift and drag sweeps. Select **Save design**, then edit the airfoil to compare geometry outlines, coefficients and curves. **Share** copies a link that restores the current geometry and operating conditions. **Export** downloads SVG, PNG, sweep CSV or design/coefficient JSON. **Details / evidence** explains the input bounds and finite XFOIL evaluation. Open `/model/` for the full metrics.
 
 The separate `/spike/` route retains the original infrastructure fixture: input `0, 3, -2, 0.25` produces `1, 7, -3, 1.5`.
 
@@ -83,4 +83,4 @@ The fixture is reproducibly generated with `onnx-proto`, ONNX IR 8 and opset 13.
 
 There is no inference backend, database, account system, paid service, or third-party core-runtime request. The static verification server is a local development tool, not a production dependency. Deployment to a public host has not been performed.
 
-The separately authorized presentation redesign adds real charts and a session-local comparison. URL sharing, optimization and public-release verification remain future work requiring instruction. XFOIL 6.99 and browser model inference work in the verified setup. Experimental physical validation, calibrated uncertainty and broader supported-domain evidence are not claimed.
+Phase 6 adds batched lift and drag charts, a comparison against one saved design, and reproducible design links. Phase 7 covers public release verification. XFOIL 6.99 and browser model inference work in the verified setup. Experimental accuracy, calibrated uncertainty and broader domain coverage remain unverified.

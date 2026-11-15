@@ -1,4 +1,4 @@
-# AeroForge architecture: Phases 1–5
+# AeroForge architecture and browser studio
 
 Implemented scope: static inference feasibility, analytic geometry, real XFOIL data, a trained/evaluated ONNX surrogate and the responsive Design Studio. The approved product architecture remains in `SPEC.md`.
 
@@ -8,7 +8,9 @@ Implemented scope: static inference feasibility, analytic geometry, real XFOIL d
 
 The subsequently authorized reference-based redesign is isolated in `instrument.tsx`, `stage.tsx`, `charts.tsx` and a shared component/token kit. Local Barlow/Geist/JetBrains fonts, CSS variables exposed through Tailwind, Motion springs and native dialogs implement the paper/ink/vermilion workstation. Geometry morphing interpolates NACA parameters and regenerates the tested contour, preserving equal axes. Pointer updates coalesce on animation frames, with a 110 ms minimum commit interval allowing the unchanged 80 ms inference debounce to resolve during drags. A current callback ref prevents queued updates from reverting newer inputs.
 
-Presentation-only sweep hooks call the same frozen `predict` function for 25 angles from -4 through 8 degrees, yield between groups and discard superseded display updates. They never synthesize missing coefficients. A session-local saved design provides comparison sweeps without adding a store or persistence. Export uses actual SVG/styles, a rasterized SVG, actual sweep rows or current real coefficients. `/model/` reads frozen final-evaluation metrics. Reduced-motion preferences are subscribed live; they disable springs, morphs and autoplay. Ordinary anchors preserve static-route behavior, and `/spike/` retains its independent fixture. See `ui-redesign/README.md` for the final review; `phase-5/README.md` preserves baseline evidence. Shared URL state and optimization remain unimplemented.
+Phase 6 runs each 25-point lift and drag sweep as a single batch through the accepted browser ONNX session. The sweep spans −4° to 8° and invalid outputs leave gaps. A comparison stores one design and its operating-point coefficients for the current session. Each design's curve uses its own Reynolds number, and the stage overlays both sections at their respective angles of attack. CSV export contains the valid model rows.
+
+Share links serialize the current design as `m`, `p`, `t`, `aoa` and `re` query parameters. The studio reads them after hydration, validates geometry and operating inputs, and canonicalizes symmetric sections before starting inference. A malformed design link opens the default studio with an explanation. Editor bounds permit exploring configurations outside the model's prediction envelope. `/model/` presents the frozen final evaluation. Ordinary anchors preserve direct static navigation to the model and fixture pages.
 
 ## Accepted Phase 4 recovery
 

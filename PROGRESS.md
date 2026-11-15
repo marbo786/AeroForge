@@ -1,10 +1,26 @@
 # AeroForge progress
 
-Last updated: 2026-11-07 (Asia/Karachi).
+Last updated: 2026-11-15 (Asia/Karachi).
 
 ## Current phase and session rule
 
-Latest steering: the user's attached redesign request and subsequently supplied reference image explicitly requested a paper/ink/vermilion presentation redesign, direct manipulation, a scrubber, responsive sheet, exports and real chart presentation. This supersedes the dark visual direction and authorizes that specific UI expansion. The tested Phase 5 baseline is committed as `4ea242f`; the authorized redesign is complete. ML/inference/preprocessing/validation remain frozen. No optimizer, URL sharing, deployment or further phase work was started.
+The user authorized Phase 6 only on 2026-11-15. Phase 6 uses the paper, ink and vermilion instrument panel established by the Phase 5 redesign. Phase 7 is pending.
+
+## Phase 6 completion
+
+- The Charts drawer contains the two specified plots, lift coefficient versus angle of attack and drag coefficient versus angle of attack. Each curve comes from a single 25-row batch through the accepted ONNX graph, at half-degree intervals from −4° through 8°. The axis shows the unsupported region through 12° and the inspector reports missing values there. Invalid rows break the trace. Charts, sparklines and CSV export use the same valid sweep data.
+- Save design captures one geometry, its operating inputs and its current coefficients for the studio session. Compare shows an aligned dashed airfoil outline, current and saved CL/CD/L/D at their labeled operating points, and both curves. Each sweep uses its design's Reynolds number. Restore and clear operations are available in the drawer.
+- Share copies a reproducible `/studio/` link using geometry ratios, angle and Reynolds number. The studio restores these inputs after hydration and before prediction. Missing, duplicate, malformed and invalid parameters fall back to the default design with a dismissible explanation. Valid editor configurations can be shared outside the model envelope. Symmetric geometry serializes canonical position zero.
+- Details and `/model/` describe model architecture, source data, the independent final panel, input and sampled Reynolds bounds, and scientific limitations. The accepted model bytes, preprocessing artifacts, solver data and evaluation results retain their existing versions.
+- Visual QA used Playwright against the exported site at 1440×900, 1024×768 and 390×844. Review found the coefficient table buried below both plots, oversized desktop plots and a low-emphasis Share action. The table now opens above the plots, desktop and tablet plots share a row, and mobile plots stack with larger inspect controls. The second review caught inherited dark styling on the table and pale helper text in Share. Both now use the instrument's paper and ink tokens. Initial and refined images are under [Phase 6 screenshots](docs/phase-6/).
+
+Production verification on Windows Chrome 157.0.8103.51 passed lint, TypeScript, 23 Node tests and all 41 Playwright tests. Browser checks cover chart values against point inference, out-of-domain gaps, geometry overlay and comparison reset, clipboard round trips, symmetric canonicalization, malformed URLs, and console and overflow checks. The first Playwright pass revealed an ambiguous selector for the invalid-link alert. Scoping the assertion to the studio notice resolved it. A fresh production build after the contrast correction passed all six affected comparison and sharing tests. The refreshed screenshots were opened and inspected. Mobile verification uses browser viewport and touch emulation.
+
+Phase 6 commit: `complete charts comparison and design sharing`. No Phase 6 blocker remains.
+
+## Phase 5 redesign (historical)
+
+The user's reference image authorized the paper, ink and vermilion presentation, direct manipulation, a scrubber, responsive sheet, exports and real charts. The tested Phase 5 baseline is `4ea242f`.
 
 Redesign step 1: added a shared CSS-variable/Tailwind token system and Module, Readout, Slider, Chip, StatusPill, Callout, Scrubber and native-dialog Drawer components, with Motion 14.10.1, Tailwind/PostCSS 4.3.5 and exact locked lint dependencies. Downloaded self-hosted Barlow Semi Condensed Bold plus OFL license. Lint, TypeScript, 23 Node tests and static build passed before this step's commit. No inference code changed.
 
@@ -16,7 +32,7 @@ Visual review: captured and opened three rounds at 1440×900, 1024×768 and 390�
 
 Final redesign validation: `npm run verify` passed pinned runtime assets, lint, strict TypeScript, all 23 Node tests, the static production build and all 38 production Playwright tests (1.6 minutes). The earlier Phase 5 Python audit remains 104 passed; no Python/data/model files changed during the redesign. Local Chrome drag profiling recorded 179 frame intervals: median 16.7 ms, p95 16.8 ms, none above 25 ms. Mobile is Chrome viewport/touch emulation, not physical phone or broad-browser performance evidence. See `docs/ui-redesign/frame-profile.json` for the timing scope. Stop after commits and await instruction.
 
-Phase 5 is complete on 2026-11-07 (Asia/Karachi), following explicit authorization. The responsive Design Studio uses accurate SVG geometry and real local ONNX inference with validation, telemetry, loading/error/retry and applicability states. Desktop/mobile screenshots were captured, inspected and refined. Phase 6 has not started and requires a new instruction. The accepted Phase 4 model and all original evidence remain unchanged.
+Phase 5 completed on 2026-11-07 (Asia/Karachi). The responsive Design Studio uses accurate SVG geometry and real local ONNX inference with validation, telemetry, loading/error/retry and applicability states. Desktop and mobile screenshots were captured, inspected and refined. The accepted Phase 4 model and all original evidence remained unchanged.
 
 Every coding session must begin by reading `docs/SPEC.md` and this file. The complete user specification is preserved byte-for-byte in `docs/SPEC.md`; this tracker supplements it and does not weaken its requirements. Work on one approved phase, validate it, update this tracker, commit it when possible, summarize, and stop. Never begin the next phase silently.
 
@@ -425,7 +441,7 @@ Do not launch large simulation batches before a pilot of roughly 20 distinct geo
 
 ## Pending tasks and approvals
 
-- Phases 1–5 are complete. Await explicit instruction before Phase 6.
+- Phases 1–6 are complete. Await explicit instruction before Phase 7.
 - Retain Cloudflare Pages static export, npm lockfile, self-hosted WASM and the verified one-thread CPU/browser baseline; public deployment remains unperformed.
 - The official Windows XFOIL 6.99 build is now established locally and pinned. A different solver binary or any label-source change requires explicit provenance/compatibility review; NeuralFoil substitution is not authorized.
 - Confirm an isolated supported Python interpreter/toolchain route when ML setup is needed; no system installation has been performed.
@@ -434,7 +450,7 @@ Do not launch large simulation batches before a pilot of roughly 20 distinct geo
 
 ## Next phase
 
-Phase 6: real batched lift/drag charts, focused two-design comparison, validated reproducible URLs and further model-information/interaction polish, only on explicit instruction. Preserve finite-domain caveats, accepted model/preprocessing contracts and static same-origin architecture. Do not begin Phase 7 deployment silently.
+Phase 7 covers release verification, deployment configuration and checks, Lighthouse, documentation and a license review. Public deployment requires separate authorization.
 
 ## Commit history
 

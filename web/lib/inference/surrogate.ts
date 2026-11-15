@@ -36,16 +36,32 @@ async function loadSession() {
 }
 
 export async function predict(design: Design) {
-  const input = features(design); // Reject before any model/runtime request.
+  const { rows, durationMs } = await predictBatch([design]);
+  const row = rows[0];
+  if (!row) throw new Error("Model returned invalid coefficients.");
+  return { ...row, durationMs };
+}
+
+export async function predictBatch(designs: readonly Design[]) {
+  if (!designs.length) throw new Error("At least one design is required.");
+  const input = Float32Array.from(designs.flatMap(features));
   sessionPromise ??= loadSession().catch((error: unknown) => { sessionPromise = undefined; throw error; });
   const session = await sessionPromise;
   const ort = await runtime();
   const start = performance.now();
-  const result = await session.run({ features: new ort.Tensor("float32", Float32Array.from(input), [1, 5]) });
+  const result = await session.run({ features: new ort.Tensor("float32", input, [designs.length, 5]) });
   const durationMs = performance.now() - start;
   const output = result.coefficients;
-  const [cl, cd] = Array.from(output.data as Float32Array);
-  if (output.dims.length !== 2 || output.dims[0] !== 1 || output.dims[1] !== 2 ||
-      !Number.isFinite(cl) || !Number.isFinite(cd) || cd <= 1e-8) throw new Error("Model returned invalid coefficients.");
-  return { cl, cd, ratio: cl / cd, durationMs };
+  const data = output?.data;
+  if (!(data instanceof Float32Array) || output.dims.length !== 2 ||
+      output.dims[0] !== designs.length || output.dims[1] !== 2 || data.length !== designs.length * 2) {
+    throw new Error("Model returned invalid coefficients.");
+  }
+  const rows = designs.map((_, index) => {
+    const cl = data[index * 2];
+    const cd = data[index * 2 + 1];
+    if (!Number.isFinite(cl) || !Number.isFinite(cd) || cd <= 1e-8) return null;
+    return { cl, cd, ratio: cl / cd };
+  });
+  return { rows, durationMs };
 }

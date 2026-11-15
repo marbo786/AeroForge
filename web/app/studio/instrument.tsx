@@ -7,21 +7,71 @@ import { presetCodes } from "../../lib/geometry/naca4";
 import { Module, Readout, Slider, Chip, StatusPill, Scrubber, Drawer } from "./kit";
 import { Stage, type Display } from "./stage";
 import { ChartPanel, Sparkline, useSweep, type SweepPoint } from "./charts";
+import { sharedDesignUrl } from "./shared-design";
 import type { Draft, Field } from "./studio";
 import "./tokens.css";
 import "./instrument.css";
 
 type Result = Awaited<ReturnType<typeof predict>> & { key:string };
+type SavedDesign = { design: Design; result: Result | null };
 export type InstrumentProps = {
   draft:Draft; design:Design; preset:string; expanded:boolean; invalid:boolean; domainError:string;
   errors:Partial<Record<Field,string>>; current:Result|null; result:Result|null; status:string; failure:string;
   onChange:(field:Field,value:string)=>void; onReset:()=>void; onPreset:(code:string)=>void;
   onExpanded:(value:boolean)=>void; onRetry:()=>void;
   onRestore:(design:Design)=>void;
+  urlReady: boolean; linkError: boolean; onDismissLinkError: () => void;
 };
 export function nameOf(design:Design) {
   if([design.m*100,design.p*10,design.t*100].every(v=>Math.abs(v-Math.round(v))<1e-8))return `NACA ${Math.round(design.m*100)}${Math.round(design.p*10)}${Math.round(design.t*100).toString().padStart(2,"0")}`;
   return "Custom section";
+}
+
+function ShareDesign({ url }: { url: string }) {
+  const input = useRef<HTMLInputElement>(null);
+  const [feedback, setFeedback] = useState("");
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(url);
+      setFeedback("Link copied.");
+    } catch {
+      input.current?.focus();
+      input.current?.select();
+      setFeedback("Link selected. Use your device’s copy command.");
+    }
+  }
+  return <div className="share-design">
+    <p>Anyone with this link can open the current geometry, angle of attack and Reynolds number.</p>
+    <label className="micro" htmlFor="share-url">Design URL</label>
+    <input id="share-url" ref={input} value={url} readOnly onFocus={event => event.currentTarget.select()}/>
+    <div className="comparison-actions">
+      <button className="chip micro active" onClick={() => void copy()}>Copy link</button>
+      <span role="status">{feedback}</span>
+    </div>
+  </div>;
+}
+
+function Comparison({ design, current, saved, onRestore, onClear }: {
+  design: Design; current: Result | null; saved: SavedDesign; onRestore: () => void; onClear: () => void;
+}) {
+  const describe = (value: Design) => `${value.alpha}° / Re ${value.re.toLocaleString("en-US")}`;
+  return <section className="comparison-panel" aria-label="Operating point comparison">
+    <h3 className="micro">Operating point comparison</h3>
+    <table>
+      <thead><tr><th scope="col">Coefficient</th><th scope="col">Current</th><th scope="col">Saved</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Design</th><td>{nameOf(design)}</td><td>{nameOf(saved.design)}</td></tr>
+        <tr><th scope="row">Condition</th><td>{describe(design)}</td><td>{describe(saved.design)}</td></tr>
+        {([["CL", "cl", 4], ["CD", "cd", 5], ["L/D", "ratio", 2]] as const).map(([label, key, digits]) =>
+          <tr key={key}><th scope="row">{label}</th><td>{current?.[key].toFixed(digits) ?? "—"}</td><td>{saved.result?.[key].toFixed(digits) ?? "—"}</td></tr>
+        )}
+      </tbody>
+    </table>
+    <div className="comparison-actions">
+      <button className="chip micro" onClick={onRestore}>Restore saved design</button>
+      <button className="chip micro" onClick={onClear}>Clear saved comparison</button>
+    </div>
+  </section>;
 }
 function download(blob:Blob,name:string) {
   const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
@@ -56,26 +106,64 @@ function ExportMenu({design,current,points}:{design:Design;current:Result|null;p
 }
 
 export function ModelDetails() {
-  return <div className="model-details"><Module number="01" title="Evidence envelope"><div className="detail-grid"><span>Geometry m / p / t</span><strong>0–6 / 20–60 / 8–18 %c</strong><span>Angle of attack</span><strong>−4 to 8°</strong><span>Reynolds samples</span><strong>100k / 250k / 500k</strong></div><p>The status “In domain” means inside these input bounds only. Accuracy has been tested on a finite panel, not every combination. Intermediate Reynolds values are interpolation.</p></Module><Module number="02" title="Scientific limitations"><p>{model.domain.warning}</p><p>Low-Reynolds drag and high-camber cases are harder. No calibrated uncertainty, post-stall prediction, experimental validation or Reynolds support above 500,000 is claimed. Original coefficients are dimensionless. Geometry is analytic NACA, not a predicted flow field.</p></Module><Module number="03" title="Model provenance"><div className="detail-grid"><span>Version</span><strong>{model.version}</strong><span>Label source</span><strong>XFOIL 6.99 / viscous / Mach 0</strong><span>Final panel</span><strong>165 cases / 8 unseen geometries</strong><span>CL / CD MAE</span><strong>0.01484 / 0.000683</strong><span>Execution</span><strong>Local / one-thread WASM</strong></div><p>Latency measures model execution only, excluding initial model/runtime download. First execution can include warm-up overhead. The graph embeds all trained transforms; no server inference is used.</p></Module><div className="details-links"><a className="chip micro" href="/model/">Full model evidence</a><a className="chip micro" href="https://github.com/marbo786/AeroForge">Repository</a><a className="chip micro" href="/spike/">Open inference test</a></div></div>;
+  return <div className="model-details">
+    <Module number="01" title="Prediction bounds">
+      <div className="detail-grid">
+        <span>Camber / position / thickness</span><strong>0–6% / 20–60% / 8–18% chord</strong>
+        <span>Angle of attack</span><strong>−4° to 8°</strong>
+        <span>Reynolds number</span><strong>100,000–500,000</strong>
+        <span>Sampled Reynolds numbers</span><strong>100,000 / 250,000 / 500,000</strong>
+      </div>
+      <p>Symmetric sections use canonical camber position zero. Intermediate Reynolds numbers are interpolations. The “In domain” status checks input bounds. Evaluation covers a finite panel of conditions.</p>
+    </Module>
+    <Module number="02" title="Scientific limitations">
+      <p>Evaluation measures agreement with XFOIL. Experimental accuracy, post-stall behavior and calibrated uncertainty remain unverified. Drag errors were higher at low Reynolds numbers, and high-camber sections were harder to predict.</p>
+      <p>The model returns dimensionless lift and drag coefficients. The flow display is conceptual. The airfoil outline comes from the analytic NACA geometry.</p>
+    </Module>
+    <Module number="03" title="Model provenance">
+      <div className="detail-grid">
+        <span>Version</span><strong>{model.version}</strong>
+        <span>Architecture</span><strong>Separate lift and drag neural networks</strong>
+        <span>Label source</span><strong>XFOIL 6.99 / viscous / Mach 0</strong>
+        <span>Independent evaluation</span><strong>165 cases / 8 unseen geometries</strong>
+        <span>CL / CD mean absolute error</span><strong>0.01484 / 0.000683</strong>
+        <span>Execution</span><strong>Local ONNX / one-thread WASM</strong>
+      </div>
+      <p>The graph embeds the fitted input transforms and output inversions. The latency readout measures ONNX execution and can include first-run overhead.</p>
+    </Module>
+    <div className="details-links">
+      <a className="chip micro" href="/model/">Full model evidence</a>
+      <a className="chip micro" href="https://github.com/marbo786/AeroForge">Repository</a>
+      <a className="chip micro" href="/spike/">Open inference test</a>
+    </div>
+  </div>;
 }
 
 export default function Instrument(props:InstrumentProps) {
   const {design,draft,preset,expanded,invalid,domainError,current,result,status,failure,errors,onChange,onPreset,onReset,onExpanded,onRetry}=props;
   const [display,setDisplay]=useState<Display>({grid:false,camber:true,chord:true,labels:true,flow:false});
-  const [drawer,setDrawer]=useState<"Details"|"Charts"|null>(null);
+  const [drawer,setDrawer]=useState<"Details"|"Charts"|"Share design"|null>(null);
+  const [shareUrl, setShareUrl] = useState("");
   const [playing,setPlaying]=useState(false);
-  const [saved,setSaved]=useState<Design|null>(null);
+  const [saved,setSaved]=useState<SavedDesign|null>(null);
   const [sheet,setSheet]=useState<"peek"|"half"|"full">("peek");
   const [morePresets,setMorePresets]=useState(false);
   const reduced=!!useReducedPreference();
   const latest=useRef(props);latest.current=props;
   const sheetStart=useRef(0);
-  const sweep=useSweep(design,!!result);
-  const comparison=useSweep(saved||design,!!saved&&!!result);
+  const reynolds = model.domain.sampled_reynolds;
+  const supportsSweep = (value: Design) => value.re >= reynolds[0] && value.re <= reynolds[reynolds.length - 1];
+  const sweep = useSweep(design, props.urlReady && !invalid && !failure && supportsSweep(design) && (!!result || !!domainError));
+  const comparison = useSweep(saved?.design ?? design, !!saved && supportsSweep(saved.design));
   const inBounds=!invalid&&!domainError;
   const pending=inBounds&&!current&&!failure;
   const domainLabel=invalid?"Invalid input":domainError?"Out of domain":"In domain";
-  const statusText=invalid?"Check parameters":domainError?"Outside model bounds":current?"Prediction ready":status;
+  const statusText=invalid?"Check parameters":domainError?"Outside model bounds":current?"Prediction ready":pending&&status==="Prediction ready"?"Loading / calculating":status;
+  function openShare() {
+    setPlaying(false);
+    setShareUrl(sharedDesignUrl(window.location.origin, design));
+    setDrawer("Share design");
+  }
   useEffect(()=>{
     if(!playing||reduced)return;
     let frame=0,previous=0;
@@ -100,10 +188,58 @@ export default function Instrument(props:InstrumentProps) {
     <header className="instrument-topbar"><a href="/" className="logo-tile" aria-label="AeroForge home"><svg viewBox="0 0 32 24" width="28" height="24" aria-hidden="true"><path d="M2 18Q9 2 28 17Q16 21 2 18ZM3 18H29" fill="none" stroke="currentColor" strokeWidth="1.5"/></svg><span className="micro">AF—01</span></a><div className="project-title"><span className="micro muted">AeroForge / aerodynamic design studio</span><h1 className="display">{nameOf(design)} <span>/</span></h1><span className="micro muted">Design. Simulate. Optimize.</span></div><div className="top-status"><div><span className="micro muted">Model status</span><span className="micro">{statusText}</span></div><div><span className="micro muted">Domain status</span><button className="status-button" onClick={()=>setDrawer("Details")} title="Input bounds only; finite XFOIL evidence, not experimental validation"><StatusPill state={inBounds?"valid":"warning"}>{domainLabel}</StatusPill></button></div><div><span className="micro muted">Inference ms</span><strong data-testid="latency">{current?`${current.durationMs.toFixed(2)} ms`:"—"}</strong></div></div></header>
     <span className="sr-only" role="status">{statusText}</span><main className="instrument-workspace">
       <aside className="readout-column" aria-label="Predicted performance"><Module number="01" title="Lift CL"><Readout id="cl" value={current?.cl} previous={result?.cl} pending={pending} digits={4}><Sparkline points={sweep.points} field="cl" current={current?{alpha:design.alpha,value:current.cl}:undefined}/></Readout></Module><Module number="02" title="Drag CD"><Readout id="cd" value={current?.cd} previous={result?.cd} pending={pending} digits={5}><Sparkline points={sweep.points} field="cd" current={current?{alpha:design.alpha,value:current.cd}:undefined}/></Readout></Module><Module number="03" title="Efficiency L/D"><Readout id="ratio" value={current?.ratio} previous={result?.ratio} pending={pending} digits={2}/><div className="ratio-meter" title="L/D magnitude on a fixed 0–100 display scale"><span style={{width:`${Math.min(100,Math.abs(current?.ratio||0))}%`}}/></div><div className="meter-labels micro"><span>0</span><span>|L/D| / 100</span></div></Module></aside>
-      <div className="hero-column"><Stage design={design} display={display} invalid={invalid} onChange={(field,value)=>onChange(field as Field,value)}/><div className="hero-state"><span className="micro muted">Section geometry / {invalid?"last valid":"live study"}</span><h2 className="display">{nameOf(design)}</h2><div className="micro hero-caption">Alpha {design.alpha.toFixed(1)}° / Re {(design.re/1000).toFixed(0)}k / <button onClick={()=>setDrawer("Details")} className="domain-inline">{domainLabel}</button></div></div><div className="preset-row"><span className="micro muted">Presets</span>{(morePresets?presetCodes:["0012","2412","4412"]).map(code=><Chip key={code} active={preset===code} onClick={()=>onPreset(code)}>{code}</Chip>)}<Chip onClick={()=>setMorePresets(!morePresets)} active={morePresets}>More</Chip>{saved&&<Chip onClick={()=>props.onRestore(saved)}>Saved</Chip>}<button className="chip micro" onClick={()=>setSaved({...design})}>Save design</button></div><div className="hero-dock"><Scrubber alpha={design.alpha} reduced={reduced} playing={playing&&!reduced} onPlay={()=>setPlaying(!playing)} onChange={alpha=>{setPlaying(false);onChange("alpha",String(alpha));}}/><div className="dock-actions"><button className="chip micro" onClick={()=>setDrawer("Charts")}>Charts +</button><ExportMenu design={design} current={current} points={sweep.points}/><button className="chip micro" onClick={onReset}>Reset</button><span className="micro muted">2D / equal axis scale</span></div></div></div>
+      <div className="hero-column">
+        <Stage design={design} saved={saved?.design} display={display} invalid={invalid} onChange={onChange}/>
+        <div className="hero-state">
+          <span className="micro muted">Section geometry / {invalid ? "last valid" : "live study"}</span>
+          <h2 className="display">{nameOf(design)}</h2>
+          <div className="micro hero-caption">
+            Alpha {design.alpha.toFixed(1)}° / Re {(design.re / 1000).toFixed(0)}k /{" "}
+            <button onClick={() => setDrawer("Details")} className="domain-inline">{domainLabel}</button>
+          </div>
+        </div>
+        <div className="preset-row">
+          <span className="micro muted">Presets</span>
+          {(morePresets ? presetCodes : ["0012", "2412", "4412"]).map(code =>
+            <Chip key={code} active={preset === code} onClick={() => onPreset(code)}>{code}</Chip>
+          )}
+          <Chip onClick={() => setMorePresets(!morePresets)} active={morePresets}>More</Chip>
+          {saved
+            ? <button className="chip micro active" onClick={() => setDrawer("Charts")}>Compare</button>
+            : <button className="chip micro" disabled={!props.urlReady || invalid || pending}
+                onClick={() => setSaved({ design, result: current })}>Save design</button>}
+        </div>
+        <div className="hero-dock">
+          <Scrubber alpha={design.alpha} reduced={reduced} playing={playing && !reduced}
+            onPlay={() => setPlaying(!playing)}
+            onChange={alpha => { setPlaying(false); onChange("alpha", String(alpha)); }}/>
+          <div className="dock-actions">
+            <button className="chip micro" onClick={() => setDrawer("Charts")}>Charts +</button>
+            <ExportMenu design={design} current={current} points={sweep.points}/>
+            <button className="chip micro" onClick={onReset}>Reset</button>
+            <button className="chip micro share-action" disabled={!props.urlReady || invalid} onClick={openShare}>Share</button>
+            <span className="micro muted">2D / equal axis scale</span>
+          </div>
+        </div>
+      </div>
       <aside className={`control-column sheet-${sheet} ${expanded?"is-expanded":""}`} aria-label="Design parameters"><div className="sheet-grab" onPointerDown={event=>{sheetStart.current=event.clientY;event.currentTarget.setPointerCapture(event.pointerId);}} onPointerUp={event=>{const delta=event.clientY-sheetStart.current;if(Math.abs(delta)>25){const next=delta<0?(sheet==="peek"?"half":"full"):(sheet==="full"?"half":"peek");setSheet(next);onExpanded(next!=="peek");}}}><span/></div><button className="sheet-toggle micro" aria-expanded={expanded} aria-controls="parameter-controls" onClick={toggleSheet}>{expanded?"Hide parameters":"Edit parameters"}<span aria-hidden="true">{expanded?"−":"+"}</span></button><div className="sheet-snaps">{["peek","half","full"].map(snap=><button key={snap} className={`micro ${sheet===snap?"selected":""}`} onClick={()=>{setSheet(snap as typeof sheet);onExpanded(snap!=="peek");}}>{snap}</button>)}</div><div id="parameter-controls" className="parameter-controls"><Module number="04" title="Geometry">{fields.slice(0,3).map(control)}</Module><Module number="05" title="Flow conditions">{fields.slice(3).map(control)}</Module><Module number="06" title="Display"><div className="display-chips">{([ ["grid","Grid"],["camber","Camber line"],["chord","Chord"],["labels","Labels"],["flow","Flow [conceptual]"] ] as const).map(([key,label])=><Chip key={key} active={display[key]} onClick={()=>setDisplay({...display,[key]:!display[key]})}>{label}</Chip>)}</div></Module><Module number="07" title="Model"><button className="status-button" onClick={()=>setDrawer("Details")}><StatusPill state={inBounds?"valid":"warning"}>{domainLabel}</StatusPill></button><div className="model-mini micro"><span>{model.version}</span><span>{current?`${current.durationMs.toFixed(2)} ms`:"—"}</span></div><button className="chip micro details-button" onClick={()=>setDrawer("Details")}>Details / evidence</button><span className="sr-only" data-testid="applicability">{domainError||"Finite evidence domain. XFOIL agreement on sampled cases. Continuous-domain and experimental accuracy are not established."}{!model.domain.sampled_reynolds.includes(design.re)&&" Reynolds interpolation between sampled levels."}</span></Module></div></aside>
     </main>
     {failure&&inBounds&&<div className="runtime-error" role="alert"><span>{failure}</span><button className="chip micro" onClick={onRetry}>Retry model</button></div>}
-    <Drawer open={drawer==="Details"} onClose={()=>setDrawer(null)} title="Details"><ModelDetails/></Drawer><Drawer open={drawer==="Charts"} onClose={()=>setDrawer(null)} title="Charts"><ChartPanel points={sweep.points} comparison={comparison.points} loading={sweep.loading} error={sweep.error}/>{saved&&<button className="chip micro" onClick={()=>setSaved(null)}>Clear saved comparison</button>}</Drawer>
+    <Drawer open={drawer === "Details"} onClose={() => setDrawer(null)} title="Details">
+      {domainError && !invalid && <p className="chart-message">{domainError}</p>}
+      <ModelDetails/>
+    </Drawer>
+    <Drawer open={drawer === "Charts"} onClose={() => setDrawer(null)} title="Charts">
+      {saved && <Comparison design={design} current={current} saved={saved}
+        onRestore={() => props.onRestore(saved.design)} onClear={() => setSaved(null)}/>}
+      <ChartPanel sweep={failure ? { ...sweep, error: failure } : sweep} comparison={comparison} comparing={!!saved}/>
+    </Drawer>
+    <Drawer open={drawer === "Share design"} onClose={() => setDrawer(null)} title="Share design">
+      <ShareDesign url={shareUrl}/>
+    </Drawer>
+    {props.linkError && <aside className="link-notice" aria-label="Invalid design link">
+      <p role="alert">This design link is invalid. The studio opened with the default design.</p>
+      <button className="chip micro" onClick={props.onDismissLinkError}>Dismiss</button>
+    </aside>}
   </div>;
 }
