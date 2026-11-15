@@ -17,7 +17,7 @@ xfoil.exe SHA-256: c17342f84ae260c2b11a74cd0e2fb8189a5f8954c6bb7a8467a0f27055c7f
 
 These pins identify the exact HTTPS-acquired distribution used; they are not an upstream digital signature. The local acquisition helper checks both hashes, bounds archive size and extraction paths, skips the archive's root-directory marker and refuses an existing tools folder. Never silently replace a changed binary under the same provenance record.
 
-XFOIL is GPL-licensed. The executable, upstream archive and included source zip stay in ignored `tools/xfoil/`; this repository does not redistribute that third-party software. Any future redistribution needs its own license/source review. AeroForge's future application license must not mislabel XFOIL as MIT-licensed.
+XFOIL is GPL-licensed. The executable, upstream archive and included source zip stay in ignored `tools/xfoil/`. The AeroForge MIT license covers the project's own code and documentation. Any future XFOIL redistribution requires its own license and source review.
 
 ## Reproduce
 

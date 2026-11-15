@@ -10,6 +10,8 @@ The subsequently authorized reference-based redesign is isolated in `instrument.
 
 Phase 6 runs each 25-point lift and drag sweep as a single batch through the accepted browser ONNX session. The sweep spans −4° to 8° and invalid outputs leave gaps. A comparison stores one design and its operating-point coefficients for the current session. Each design's curve uses its own Reynolds number, and the stage overlays both sections at their respective angles of attack. CSV export contains the valid model rows.
 
+Phase 7 uses the ONNX Runtime proxy worker for the studio to move WASM initialization and inference off the browser main thread. The studio still validates inputs and verifies the model hash before creating the session. It uses one WASM thread and same-origin assets. The latency readout times the session call and includes worker communication. The separate affine fixture keeps its original direct runtime path and worker experiment.
+
 Share links serialize the current design as `m`, `p`, `t`, `aoa` and `re` query parameters. The studio reads them after hydration, validates geometry and operating inputs, and canonicalizes symmetric sections before starting inference. A malformed design link opens the default studio with an explanation. Editor bounds permit exploring configurations outside the model's prediction envelope. `/model/` presents the frozen final evaluation. Ordinary anchors preserve direct static navigation to the model and fixture pages.
 
 ## Accepted Phase 4 recovery
@@ -66,7 +68,7 @@ The graph computes `y = 2*x + 1`, with float32 tensor names `x` and `y`, shape `
 
 `web/lib/fixture.ts` sets `numThreads=1`, `proxy=false` and explicit same-origin versioned `wasmPaths` before session creation. WASM SIMD on modern Chrome is the verified CPU baseline. There is no WebGPU requirement, `SharedArrayBuffer` requirement or inference backend. The session is reused across runs; failed session creation clears the promise so a model-load retry can recover. A failed WASM initialization may require page reload.
 
-The baseline deliberately avoids proxy workers. An independent same-origin module-worker experiment executes the real ONNX fixture in the production smoke suite, with one thread and without cross-origin isolation. It uses a generated worker script and the same runtime assets; the page itself stays on the simple main-thread path. The built-in proxy-worker option and multithreaded WASM are separate mechanisms and remain unverified. Do not enable them for the main UI without production evidence. This phase does not claim broad cross-browser support or final-model latency.
+The affine fixture runs on the main thread. Its separate same-origin module-worker experiment uses a generated script with the same runtime assets. Both fixture paths run one WASM thread without cross-origin isolation. The Design Studio uses the built-in proxy worker described above.
 
 The runtime entry is copied from the pinned package and loaded using native dynamic ESM import with `webpackIgnore`; TypeScript still checks its API using the package types. This avoids webpack emitting an unused duplicate WASM file and keeps every core asset same-origin. Version changes must update both the package pin and the client runtime version.
 

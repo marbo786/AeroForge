@@ -117,7 +117,9 @@ test("direct manipulation changes geometry and real predictions; scrubber and dr
   await page.mouse.down();await page.mouse.move(box!.x+box!.width/2,box!.y+box!.height/2-12,{steps:12});await page.mouse.up();
   await expect(page.getByRole("status")).toHaveText("Prediction ready");
   await expect(page.getByTestId("cl")).not.toHaveText(before);
-  await page.locator(".geometry-handle.camber").focus();await page.keyboard.press("Shift+ArrowUp");
+  const airfoil = page.getByRole("group", { name: /Airfoil at/ });
+  await airfoil.getByRole("slider", { name: "Drag maximum camber" }).focus();
+  await page.keyboard.press("Shift+ArrowUp");
   await page.getByRole("slider",{name:"Alpha sweep",exact:true}).fill("6");
   await expect(page.locator(".airfoil-svg")).toHaveAccessibleName("Airfoil at 6 degrees");
   await expect(page.getByRole("status")).toHaveText("Prediction ready");

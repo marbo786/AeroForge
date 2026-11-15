@@ -1,86 +1,38 @@
 # AeroForge
 
-Design. Simulate. Optimize.
+AeroForge is an interactive airfoil design studio. Edit a NACA four-digit section, predict lift and drag in the browser, and compare the result against a saved design. It runs as a static site with a local ONNX model.
 
-AeroForge is a phased aerodynamic design studio project. Phases 1–6 cover browser inference, tested NACA geometry, traceable XFOIL data, an independently evaluated surrogate, and a responsive studio with lift and drag curves, design comparison, and share links.
+![AeroForge showing lift and drag sweeps for two NACA airfoils](docs/phase-6/final/desktop-charts.png)
 
-Read [the full specification](docs/SPEC.md) and [the progress tracker](PROGRESS.md) before development. Each subsequent phase requires approval.
+[Mobile studio](docs/phase-6/final/mobile-overlay.png) · [Architecture](docs/ARCHITECTURE.md) · [Release audit](docs/RELEASE.md)
 
-Phase 4 recovery **passed**: the validation-selected independent lift/drag MLP achieved fresh final-test CL/CD MAEs of **0.01484 / 0.000683**, meeting unchanged 0.05 / 0.0015 targets. The eight final geometries were simulated only after selection/export freeze. The 49,781-byte model powers the studio through browser WASM with numerical agreement below 1e-5. See [the full experiment and limitations report](docs/ML.md); the original failed pilot metrics and artifacts are preserved there.
+## Run locally
 
-The ML audit tests require `requirements-ml.txt` in addition to the data/test requirements. The local run uses `.venv-ml\Scripts\python.exe -m pytest -q`; it reuses the working CPU PyTorch installation and keeps export packages project-local. See [the latest instrument UI review](docs/ui-redesign/README.md), [Phase 5 baseline validation](docs/phase-5/README.md) and the progress tracker for current checks.
-
-The selected model takes five float32 features `[m, canonical_p, t, alpha_deg, log10(Re)]` and returns `[CL, CD]`, with feature construction/scaling/inversion embedded. Its evidence covers a finite non-stall panel at Re 100,000 / 250,000 / 500,000. It does not establish experimental accuracy, post-stall validity, continuous-domain certainty or Re 1,000,000 support. The [recovery data](data/recovery-v1/README.md) retain all failures and the consumed original test remains diagnostic-only.
-
-## Real solver pilot
-
-The [committed pilot](data/pilot-v1/README.md) contains 280 attempted XFOIL 6.99 viscous cases across 20 geometries, two Reynolds numbers and seven angles. It produced 227 eligible CL/CD labels; all nonconverged and suspect results remain traceable and excluded. Logs, polars, panel geometries, input streams, configuration and hashes are retained. Three repeat runs matched at saved polar precision.
-
-Read [data-generation documentation](docs/DATA.md) for solver acquisition, exact configuration, acceptance results and limitations. The sparse pilot establishes the pipeline; it is not an experimental validation or a trained-model accuracy claim. No NeuralFoil fallback was used.
-
-The full Python audit suite also requires the pinned `requirements-data.txt` dependencies. CI verifies committed raw evidence without executing or downloading XFOIL. To reproduce the pilot on an approved Windows setup, run `python scripts/run_pilot.py --output data/pilot-reproduction` with the pinned local solver available.
-
-## Geometry engine
-
-The Python and browser-compatible TypeScript libraries implement camber, slope, normal thickness offsets, cosine sampling and ordered contours. They share bounds, coefficients and ten presets. Symmetric airfoils canonicalize `p=0`; lossless geometry IDs agree across languages. No UI integration or solver is included in Phase 2.
-
-See [the physics contract](docs/PHYSICS.md) for equations, units, finite trailing-edge convention, APIs and limitations. From the repository root, with pytest 9.0.2 installed in your Python environment:
-
-```sh
-python -m pytest -q
-```
-
-For a new test environment, use a virtual environment and install `requirements-test.txt`. Geometry itself has no Python runtime dependencies. The Python suite also requires Node 24.11.0 to execute its cross-language parity check.
-
-Phase 2 validation passed: 62 Python tests (including complete Python/TypeScript geometry parity across 28 cases), 21 Node tests (19 geometry and 2 asset tests), TypeScript, a production static build and all 10 browser smoke tests. Analytic station fixtures use an independent 60-digit Decimal oracle; they are not solver or experimental aerodynamic data.
-
-## Run the Design Studio
-
-Use Node.js 24.11.0 and npm 11.6.1:
+Use Node.js 24.11.0 and npm 11.6.1.
 
 ```sh
 cd web
 npm ci
-npm run verify
-```
-
-On Windows, Playwright uses installed Chrome without a browser download. On Linux, install its matching Chromium before smoke tests (`npx playwright install --with-deps chromium`). The latter may install system dependencies and requires appropriate authorization locally; CI runs in an isolated runner.
-
-`npm run verify` prepares assets, runs lint and strict TypeScript checks, tests the model and runtime artifacts, builds a static production export, and runs browser smoke tests against that export. No Next.js development or production server is used by the smoke tests. For manual inspection:
-
-```sh
+npm run build
 npm run serve
 ```
 
-Open `http://127.0.0.1:4173/` or `/studio/`. The paper/ink/vermilion instrument panel follows the user's supplied visual reference. Drag the airfoil handles, select a preset or edit numeric controls; lift, drag, L/D and execution time come from the real browser model. Arrow keys adjust focused handles; Shift makes coarse steps. Wheel/pinch changes the view. The alpha scrubber supports Space to play/pause; unsupported predictions are withheld. Reduced motion disables autoplay and springs.
+Open [the local studio](http://127.0.0.1:4173/). Drag a geometry handle or use the parameter controls. Focus a handle and press an arrow key to adjust it, or hold Shift for coarse steps. Use **Charts** to inspect lift and drag across angle of attack. **Save design** captures one comparison candidate, and **Share** copies a URL that restores the current geometry and operating conditions. Mobile controls open through **Edit parameters**. **Details / evidence** opens the model limits and links to the final evaluation.
 
-Mobile controls open through **Edit parameters**, with peek/half/full snaps. **Charts** shows batched lift and drag sweeps. Select **Save design**, then edit the airfoil to compare geometry outlines, coefficients and curves. **Share** copies a link that restores the current geometry and operating conditions. **Export** downloads SVG, PNG, sweep CSV or design/coefficient JSON. **Details / evidence** explains the input bounds and finite XFOIL evaluation. Open `/model/` for the full metrics.
+Run `npm run verify` from `web` for lint, TypeScript, Node tests, static export checks and end-to-end tests against production files. Playwright uses installed Chrome on Windows and its matching Chromium on Linux. The separate `/spike/` route is an inference test fixture.
 
-The separate `/spike/` route retains the original infrastructure fixture: input `0, 3, -2, 0.25` produces `1, 7, -3, 1.5`.
+## Model and evidence
 
-![Instrument Design Studio](docs/ui-redesign/final-review/desktop.png)
+The model uses two independently fitted neural networks for lift and drag. Training used eligible viscous XFOIL 6.99 runs. The recovery dataset contains 1,046 eligible cases across 52 geometries, including 165 final-test cases from eight unseen geometries. The final test yielded mean absolute errors of **0.01484 for CL** and **0.000683 for CD**. The 49,781-byte ONNX graph embeds the fitted transforms and accepts `[m, canonical_p, t, alpha_deg, log10(Re)]`.
 
-[Mobile Design Studio](docs/ui-redesign/final-review/mobile.png)
+Predictions are available from **−4° to 8°** and **Re 100,000 to 500,000** within the geometry envelope. The evidence comes from a finite solver panel. Intermediate Reynolds values are interpolations, and low-Re drag and high-camber cases are harder to predict. Experimental accuracy, post-stall behavior and calibrated uncertainty remain unverified.
 
-## What is being tested
+See [model training, evaluation and reproduction](docs/ML.md), [XFOIL data generation](docs/DATA.md), [the recovery dataset](data/recovery-v1/README.md), and [the geometry and units contract](docs/PHYSICS.md). To rerun the Python evidence audit, install the pinned requirements documented there, then run `python -m pytest -q` from the repository root. Existing evidence can be audited without running XFOIL.
 
-- Next.js static export, including direct access to the nested `/spike/` route.
-- Actual float32 ONNX `Mul` and `Add` execution (`y = 2x + 1`), with dynamic batches.
-- Lazy ONNX Runtime Web CPU/WASM loading from the same origin as the page.
-- Correct same-build WASM/module companion assets, one-thread execution without cross-origin isolation, and versioned caching.
-- Invalid input, missing model, missing WASM, model-load retry, repeated inference and warm reload behavior.
-- Desktop (1440px), tablet (1024px) and mobile (390px) studio tests and screenshots, including direct manipulation, charts, exports, sheets and evidence navigation.
+To reproduce training, create a fresh recovery plan with `scripts/plan_recovery.py`, generate the development labels with the documented `scripts/run_pilot.py` configurations, then run `scripts/tune_recovery.py`. Follow the freeze, simulation and evaluation steps in the [recovery protocol](docs/ML.md) with new output paths and an independent final reservation.
 
-Phase 1 validation passed: strict TypeScript, 2 asset tests, and 10 production browser smoke tests on Windows Chrome 156.0.8078.81. The same-origin dedicated module-worker experiment also passes. Recorded network evidence is in [docs/phase-1](docs/phase-1/); CI and public hosting have not been run remotely.
+## Hosting and license
 
-![Phase 1 desktop inference test](docs/phase-1/desktop.png)
+The production export is prepared for Cloudflare Pages Free. Public publishing awaits account and release approval. Follow the [deployment and public verification guide](docs/DEPLOYMENT.md) and [progress record](PROGRESS.md).
 
-[Mobile screenshot](docs/phase-1/mobile.png)
-
-The fixture is reproducibly generated with `onnx-proto`, ONNX IR 8 and opset 13. Its manifest includes its hash and purpose. Generated model/runtime assets are ignored by Git and regenerated on each build. See [deployment instructions](docs/DEPLOYMENT.md) and [Phase 1 architecture](docs/ARCHITECTURE.md).
-
-## Boundaries and roadmap
-
-There is no inference backend, database, account system, paid service, or third-party core-runtime request. The static verification server is a local development tool, not a production dependency. Deployment to a public host has not been performed.
-
-Phase 6 adds batched lift and drag charts, a comparison against one saved design, and reproducible design links. Phase 7 covers public release verification. XFOIL 6.99 and browser model inference work in the verified setup. Experimental accuracy, calibrated uncertainty and broader domain coverage remain unverified.
+Original application code and documentation use the [MIT License](LICENSE). The browser export includes third-party notices for the runtime, framework, animation packages and fonts. XFOIL uses its upstream license and runs offline. The binary is excluded from this distribution.

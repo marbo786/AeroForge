@@ -4,7 +4,16 @@ Last updated: 2026-11-15 (Asia/Karachi).
 
 ## Current phase and session rule
 
-The user authorized Phase 6 only on 2026-11-15. Phase 6 uses the paper, ink and vermilion instrument panel established by the Phase 5 redesign. Phase 7 is pending.
+The user authorized Phase 7 release preparation on 2026-11-15. Local production verification is complete. The remaining release step is authorized publication and verification of the real HTTPS URL.
+
+## Phase 7 release preparation
+
+- Verified Cloudflare Pages Free settings against official documentation. The static export uses the checked-in response headers, and a new build check validates required files, model integrity, file budgets, and the absence of Functions entry points. The CI workflow uploads the verified export for review or Direct Upload.
+- Local Wrangler 4.162.0 parsed all three header rules. The browser smoke ran four routes, including a shared design that restored its inputs, and passed same-origin ONNX inference, response MIME types, versioned cache headers, model SHA-256, missing-asset 404, and no console or page errors. The final export is 88 files, 19,475,623 raw bytes. Its largest file is 14,848,852 bytes, within the 25 MiB limit.
+- Moved ONNX initialization and inference onto its browser proxy worker. Fixed heading and logo contrast, accessible logo names, and the airfoil group semantics so its slider handles are exposed. Lighthouse 13.6.0 measured desktop 100/100/100/100 and simulated mobile 95/100/100/100 for performance, accessibility, best practices, and SEO. Mobile blocking time dropped from approximately 4,300 ms to 256 ms. Axe 4.14.0 reported zero violations across the eight tested states. Captured and inspected both desktop and mobile screenshots. [Release audit](docs/RELEASE.md)
+- Production checks passed lint, strict TypeScript, 23 Node tests, static build and file checks, 41 Playwright tests, and 104 Python tests. The accepted model and numerical preprocessing artifacts are byte-identical. The verified build is Windows Chrome and the local Pages emulator. GitHub Actions and the Cloudflare build and CDN remain to be checked on the approved release.
+- Finalized the README, hosting steps, release audit and MIT license. The export includes runtime and font notices. XFOIL stays an offline dependency under its own license. [Cloudflare release runbook](docs/DEPLOYMENT.md)
+- Publishing requires approval to push the release commit, the target Cloudflare Free project, and GitHub app authorization if choosing Git integration. Verify and record the actual HTTPS URL after publishing. Phase 7 commit message: `prepare verified cloudflare pages release`.
 
 ## Phase 6 completion
 
@@ -441,16 +450,16 @@ Do not launch large simulation batches before a pilot of roughly 20 distinct geo
 
 ## Pending tasks and approvals
 
-- Phases 1–6 are complete. Await explicit instruction before Phase 7.
-- Retain Cloudflare Pages static export, npm lockfile, self-hosted WASM and the verified one-thread CPU/browser baseline; public deployment remains unperformed.
+- Phases 1–6 and Phase 7 local release preparation are complete. Public publication and HTTPS verification await authorization.
+- Retain the Cloudflare Pages static export, npm lockfile, self-hosted WASM and the verified one-thread CPU/browser runtime.
 - The official Windows XFOIL 6.99 build is now established locally and pinned. A different solver binary or any label-source change requires explicit provenance/compatibility review; NeuralFoil substitution is not authorized.
 - Confirm an isolated supported Python interpreter/toolchain route when ML setup is needed; no system installation has been performed.
 - Public GitHub/Cloudflare configuration, paid changes, substantial downloads, destructive changes, and overwriting user content retain the explicit approval gates in the specification.
-- README, architecture, physics and deployment documents now exist. Future ML documentation and MIT license review belong to their corresponding phases. No fabricated benchmarks, screenshots, URLs, or accuracy claims.
+- The README, architecture, physics, model and deployment documentation are available. The repository includes an MIT license and separate third-party browser notices.
 
 ## Next phase
 
-Phase 7 covers release verification, deployment configuration and checks, Lighthouse, documentation and a license review. Public deployment requires separate authorization.
+Use the [release runbook](docs/DEPLOYMENT.md) to publish the approved commit on Cloudflare Pages Free, then run the public HTTPS smoke check and record the tested URL.
 
 ## Commit history
 

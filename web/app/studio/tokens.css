@@ -12,7 +12,7 @@
 }
 .instrument {
   --paper: #ecebe7; --surface: #f7f6f2; --ink: #141414; --line: #d9d7d0;
-  --accent: #f2511f; --accent-control: #c73e19; --muted: #676660; --valid: #177b42; --amber: #8c5d0b;
+  --accent: #f2511f; --accent-display: #e84a1d; --accent-control: #c73e19; --muted: #676660; --valid: #177b42; --amber: #8c5d0b;
   --radius: 3px; --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px; --space-8: 32px;
   --type-micro: 10px; --type-body: 13px; --type-readout: 44px; --type-hero: clamp(52px, 6vw, 88px);
   --motion-fast: 140ms; --motion-panel: 260ms; --ease-panel: cubic-bezier(.2,.8,.2,1);

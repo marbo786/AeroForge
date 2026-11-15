@@ -1,5 +1,5 @@
 .instrument-topbar { display:flex;align-items:stretch;gap:0;height:88px;padding:0;border-bottom:1px solid var(--line);background:var(--surface); }
-.logo-tile { background:var(--accent);color:#fff!important;display:flex;align-items:center;justify-content:center;gap:14px;width:176px;flex:0 0 176px; }
+.logo-tile { background:var(--accent);color:var(--ink)!important;display:flex;align-items:center;justify-content:center;gap:14px;width:176px;flex:0 0 176px; }
 .logo-tile .micro {font-size:12px;font-weight:600;}
 .project-title {padding:10px 24px;flex:1;min-width:0;}
 .project-title>.micro {font-size:8px;}
@@ -60,7 +60,7 @@
 .stage-tools .chip {background:transparent;min-height:28px;padding:5px 8px;font-size:8px;}
 .hero-state {padding:20px 8px 14px;}
 .hero-state>.micro {font-size:8px;}
-.hero-state h2 {font-size:var(--type-hero);letter-spacing:-1.5px;color:var(--accent);margin:8px 0!important;}
+.hero-state h2 {font-size:var(--type-hero);letter-spacing:-1.5px;color:var(--accent-display);margin:8px 0!important;}
 .hero-caption {font-size:9px!important;color:var(--muted);}
 .instrument .domain-inline {font:inherit;letter-spacing:inherit;text-transform:uppercase;color:var(--muted);background:none;border:0;padding:0;text-decoration:underline;text-underline-offset:3px;}
 .domain-inline:hover {color:var(--ink);}

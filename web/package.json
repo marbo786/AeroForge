@@ -17,7 +17,9 @@
     "test": "node --experimental-strip-types --test tests/assets.test.mjs tests/geometry.test.ts tests/inference.test.ts",
     "serve": "node scripts/serve-static.mjs",
     "smoke": "playwright test",
-    "verify": "npm run assets && npm run lint && npm run typecheck && npm test && npm run build && npm run smoke"
+    "check:pages": "node scripts/check-pages.mjs",
+    "smoke:pages": "node scripts/smoke-pages.mjs",
+    "verify": "npm run assets && npm run lint && npm run typecheck && npm test && npm run build && npm run check:pages && npm run smoke"
   },
   "dependencies": {
     "motion": "14.10.1",

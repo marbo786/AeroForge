@@ -1,64 +1,61 @@
-# Phase 1 deployment feasibility
+# Deploy AeroForge on Cloudflare Pages
 
-The application is a **static Next.js export**. This document describes a prepared Cloudflare Pages deployment, not an already deployed public site.
+AeroForge builds to static files. The browser runs the ONNX model locally, so the host only serves HTML, CSS, JavaScript, model files and WebAssembly. The release export can be checked locally with Wrangler. Public publishing and verification require the approved Cloudflare project and its actual HTTPS URL.
 
-## Reproduce locally
+## Build and verify locally
 
-Prerequisites: Node.js 24.11.0, npm 11.6.1; Chrome installed on Windows or the matching Playwright Chromium on Linux.
+Use Node.js 24.11.0 and npm 11.6.1. Playwright uses installed Chrome on Windows. On Linux, install its matching Chromium with `npx playwright install --with-deps chromium` on a machine where dependency installation is authorized.
 
 ```sh
 cd web
 npm ci
 npm run verify
-npm run serve
 ```
 
-Build assets are in `web/out`. The local server binds to `127.0.0.1:4173`, serves only that directory with JavaScript/WASM MIME types, gzip negotiation, ETags and versioned asset caching, and performs no model execution. It is not `next start`, a development server, or a production hosting requirement. Playwright starts/stops this server automatically. The smoke test records warm-cache body/transfer sizes; actual CDN compression and caching must be checked after deployment.
+The build writes `web/out`. The export check verifies required routes and assets, the accepted ONNX hash, the absence of Pages runtime entry points, and the Free-plan file budgets. Playwright runs against the exported files. GitHub Actions produces a downloadable `cloudflare-pages-static-export` artifact after verification.
 
-## Cloudflare Pages Free settings
+To verify Cloudflare Pages routing and headers locally, start Wrangler in one terminal:
 
-After the repository is pushed and GitHub/Cloudflare access is authorized:
+```sh
+cd web
+npx --yes wrangler@4.162.0 pages dev out --ip 127.0.0.1 --port 4177 --compatibility-date 2026-11-13
+```
+
+From a second terminal, run:
+
+```sh
+cd web
+npm run smoke:pages -- http://127.0.0.1:4177/
+```
+
+The same smoke command accepts the real HTTPS URL after publishing. It opens the studio, a shared design, the evidence page and the inference fixture. It checks prediction and mobile layout, same-origin runtime requests, MIME types, the downloaded model hash, versioned caching, and a 404 for missing WASM.
+
+## Free project settings
+
+Once the repository owner approves the release commit and Cloudflare account, push the approved commits to the release branch. In **Workers & Pages → Create → Pages → Import an existing Git repository**, authorize the Cloudflare GitHub app for `marbo786/AeroForge` and select the repository.
 
 | Setting | Value |
 | --- | --- |
-| Git repository | `marbo786/AeroForge` |
-| Project root directory | `web` |
+| Cloudflare plan | Free |
+| Production branch | `main`, after the owner approves the release |
+| Root directory | `web` |
 | Framework preset | Next.js (Static HTML Export) |
-| Production branch | The approved release branch, normally `main` |
-| Build command | `npm run build` |
-| Output directory | `out` (relative to `web`) |
-| Node version | `24.11.0` via `.node-version`; confirm build logs |
-| Package installation | npm with committed `package-lock.json`; use `npm ci` where configurable |
-| Environment secrets | None required |
-| Functions / SSR adapter | None |
+| Build command | `npm ci --include=dev && npm run build && npm run check:pages` |
+| Build output directory | `out`, relative to `web` |
+| Build variables | `NODE_VERSION=24.11.0`, `SKIP_DEPENDENCY_INSTALL=1` |
+| Runtime bindings and secrets | None |
 
-The initial local work branch is `codex/phase-1-onnx`; do not select it as the release branch by accident. No domain purchase is needed; the supplied `pages.dev` address is sufficient. Do not enable paid services, Workers inference, R2 or an SSR adapter.
+The build needs the complete repository checkout because it reads the shared geometry and accepted model assets from sibling directories. Check the Node and npm versions in the build log. Use the supplied `pages.dev` hostname. Preview builds are optional and count toward the Free build quota. The export uses ordinary static directory routes and includes a top-level 404 page and a Pages `_headers` file. Keep immutable model and runtime paths versioned when their bytes change. [Static Next.js setup](https://developers.cloudflare.com/pages/framework-guides/nextjs/deploy-a-static-nextjs-site/) · [Build image and variables](https://developers.cloudflare.com/pages/configuration/build-image/) · [Headers](https://developers.cloudflare.com/pages/configuration/headers/)
 
-The export includes `public/_headers`, with long-lived caching for versioned runtime/model paths and basic static security headers. Next.js configuration headers do not run on a plain static host. Keep model paths immutable across releases and publish all related assets together. The baseline requires neither COOP/COEP nor cross-origin isolation.
+Free Pages currently allows 500 builds per month, one concurrent build, up to 20 minutes per build, 20,000 files per site, and 25 MiB per asset. Requests that serve static assets without invoking Functions are free and unlimited. [Free plan limits](https://developers.cloudflare.com/pages/platform/limits/) · [Static asset pricing](https://developers.cloudflare.com/pages/functions/pricing/)
 
-The two spike routes use ordinary document navigation, avoiding a discovered Next.js client-prefetch path mismatch in this release. Do not introduce a catch-all HTML fallback for model, module, WASM or RSC requests. No strict Content Security Policy is supplied or claimed tested; adding one requires a new production smoke pass for Next.js bootstrap scripts, WASM compilation and module workers.
+For a manually managed project, choose **Direct Upload** instead and upload the verified export directory. A Direct Upload project cannot later switch to Git integration. [Direct Upload documentation](https://developers.cloudflare.com/pages/get-started/direct-upload/)
 
-## Production verification checklist
+## Confirm publication
 
-After a public deployment is authorized and completes:
+1. Confirm the deployment lists the approved commit and produced the expected HTTPS URL.
+2. Run `npm run smoke:pages -- https://<actual-project>.pages.dev/` from `web` and record the result.
+3. Verify the first and repeat visits in a browser. Check model and WASM requests, console errors, cache behavior and shared URL restoration. Confirm the account shows a Free Pages project with static requests and no bindings.
+4. Record the tested HTTPS URL and release commit in the README and progress tracker. If a release needs reverting, use Pages deployment rollback and repeat the smoke check against the production URL.
 
-1. Open `/` and load `/spike/` directly over HTTPS; confirm both return exported HTML.
-2. Run `0, 3, -2, 0.25`; verify output `1, 7, -3, 1.5`.
-3. Check the `.onnx`, `.mjs` and `.wasm` requests succeed from the same site. WASM must return `application/wasm`, the module JavaScript, and no HTML fallback.
-4. Confirm runtime/module/WASM versions match, reload and confirm expected caching, inspect console errors, and test mobile width.
-5. Verify no Functions or external inference requests and no billable service bindings.
-
-The local smoke suite proves the production export under the included static server. A Cloudflare CDN deployment, its actual response headers and account configuration must be verified independently before claiming public deployment success.
-
-## Constraints and official sources
-
-Reviewed on 2026-11-07:
-
-- [Next.js static export](https://nextjs.org/docs/app/guides/static-exports): `output: 'export'` emits `out`; server-only features are unavailable.
-- [Cloudflare Pages static Next.js deployment](https://developers.cloudflare.com/pages/framework-guides/nextjs/deploy-a-static-nextjs-site/): static export preset and output settings.
-- [Pages Free limits](https://developers.cloudflare.com/pages/platform/limits/): 500 builds/month, one build at once, 20-minute timeout, 20,000 files and 25 MiB maximum per file. Build-time checks verify the copied WASM companions fit the per-file limit.
-- [Static asset pricing](https://developers.cloudflare.com/pages/functions/pricing/): static requests are free and unlimited when Functions are not invoked. Recheck terms before release.
-- [ONNX Runtime Web deployment](https://onnxruntime.ai/docs/tutorials/web/deploy.html): ship the model, appropriate WASM binary and same-build module assets with explicit paths.
-- [Runtime flags and workers](https://onnxruntime.ai/docs/tutorials/web/env-flags-and-session-options.html): one-thread execution avoids multithreading isolation requirements; worker options need independent validation.
-
-This phase does not promise future host pricing, all-browser compatibility, final aerodynamic model size/accuracy, or Lighthouse scores. See `PROGRESS.md` for actual local results and unresolved constraints.
+No account, repository integration or publishing authorization was supplied for Phase 7. The local Wrangler run does not measure Cloudflare CDN behavior or verify an account configuration. See [the release audit](RELEASE.md) for the measured local results.

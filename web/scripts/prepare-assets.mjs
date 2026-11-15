@@ -8,8 +8,25 @@ const root = new URL('../', import.meta.url);
 const version = JSON.parse(await readFile(new URL('node_modules/onnxruntime-web/package.json', root))).version;
 const runtimeDir = new URL(`public/runtime/${version}/`, root);
 const modelDir = new URL('public/models/fixture-v1/', root);
+const noticesDir = new URL('public/licenses/', root);
 await mkdir(runtimeDir, { recursive: true });
 await mkdir(modelDir, { recursive: true });
+await mkdir(noticesDir, { recursive: true });
+for (const [source, target] of [
+  ['../LICENSE', 'AeroForge-MIT.txt'],
+  ['app/fonts/Barlow-OFL.txt', 'Barlow-OFL.txt'],
+  ['app/fonts/OFL.txt', 'JetBrains-Mono-OFL.txt'],
+  ['app/fonts/Geist-OFL.txt', 'Geist-OFL.txt'],
+  ['licenses/ONNX-Runtime-LICENSE.txt', 'ONNX-Runtime-LICENSE.txt'],
+  ['licenses/ONNX-Runtime-ThirdPartyNotices.txt', 'ONNX-Runtime-ThirdPartyNotices.txt'],
+  ['node_modules/next/license.md', 'Next-LICENSE.txt'],
+  ['node_modules/react/LICENSE', 'React-LICENSE.txt'],
+  ['node_modules/react-dom/LICENSE', 'React-DOM-LICENSE.txt'],
+  ['node_modules/motion/LICENSE.md', 'Motion-LICENSE.txt'],
+  ['node_modules/framer-motion/LICENSE.md', 'Framer-Motion-LICENSE.txt'],
+  ['node_modules/motion-dom/LICENSE.md', 'Motion-DOM-LICENSE.txt'],
+  ['node_modules/motion-utils/LICENSE.md', 'Motion-Utils-LICENSE.txt'],
+]) await copyFile(new URL(source, root), new URL(target, noticesDir));
 // Copy only the CPU WASM runtime and its same-build module companion.
 for (const name of ['ort-wasm-simd-threaded.wasm', 'ort-wasm-simd-threaded.mjs', 'ort.wasm.min.mjs']) {
   await copyFile(new URL(`node_modules/onnxruntime-web/dist/${name}`, root), new URL(name, runtimeDir));

@@ -24,7 +24,7 @@ export function features(design: Design): number[] {
 async function loadSession() {
   const ort = await runtime();
   ort.env.wasm.numThreads = 1;
-  ort.env.wasm.proxy = false;
+  ort.env.wasm.proxy = true;
   ort.env.wasm.wasmPaths = `${location.origin}${runtimePath}`;
   const response = await fetch(`/models/${model.version}/${model.model_file}`);
   if (!response.ok) throw new Error("Model download failed.");

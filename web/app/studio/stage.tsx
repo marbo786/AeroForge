@@ -145,7 +145,7 @@ export function Stage({ design, display, onChange, invalid, saved }: {
   ];
   return <div className="stage-viewport">
     <div className="stage-ruler" aria-hidden="true"/><div className="stage-meta micro"><span>Section study / finite trailing edge</span><span>Chord c = 1.000</span></div>
-    <svg ref={svgRef} className="airfoil-svg" viewBox="0 55 800 350" role="img" aria-labelledby="foil-title" aria-describedby="foil-description" onPointerMove={move} onPointerUp={end} onPointerCancel={end}
+    <svg ref={svgRef} className="airfoil-svg" viewBox="0 55 800 350" role="group" aria-labelledby="foil-title" aria-describedby="foil-description" onPointerMove={move} onPointerUp={end} onPointerCancel={end}
       onPointerDown={(e) => { pointers.current.set(e.pointerId,[e.clientX,e.clientY]); if(pointers.current.size===2) { const [a,b]=[...pointers.current.values()]; pinch.current={distance:Math.hypot(a[0]-b[0],a[1]-b[1]),scale:view.scale}; } start(e,"pan"); }}>
       <title id="foil-title">{`Airfoil at ${design.alpha} degrees`}</title><desc id="foil-description">{`Accurate NACA upper and lower surfaces with equal horizontal and vertical scale. Positive angle rotates the leading edge upward. ${invalid ? "Showing last valid geometry." : "Drag the handles to edit geometry or incidence."}`}</desc>
       <defs><pattern id="paper-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#d9d7d0" strokeWidth=".6"/></pattern><pattern id="surface-hatch" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M0 7L7 0" stroke="#c5c2b9" strokeWidth=".5"/></pattern></defs>
