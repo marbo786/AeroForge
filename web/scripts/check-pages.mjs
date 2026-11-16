@@ -24,10 +24,16 @@ const lock = JSON.parse(await readFile(new URL('../package-lock.json', import.me
 const runtime = `runtime/${lock.packages['node_modules/onnxruntime-web'].version}`;
 const model = `models/${manifest.version}/${manifest.model_file}`;
 for (const name of [
-  'index.html', 'studio/index.html', 'model/index.html', 'spike/index.html', '404.html', '_headers',
+  'index.html', 'studio/index.html', 'model/index.html', 'spike/index.html', 'inspection/index.html', '404.html', '_headers',
   model, `${runtime}/ort.wasm.min.mjs`, `${runtime}/ort-wasm-simd-threaded.mjs`,
   `${runtime}/ort-wasm-simd-threaded.wasm`, 'licenses/AeroForge-MIT.txt', 'licenses/ONNX-Runtime-LICENSE.txt',
+  'licenses/Three-LICENSE.txt', 'licenses/React-Three-Fiber-LICENSE.txt',
 ]) assert(files.some(file => file.name === name && file.bytes > 0), `Missing Pages asset: ${name}`);
+for (const [name, kib] of [['car.glb', 900], ['poster.webp', 160]]) {
+  const path = `vehicle/af02-v1/${name}`;
+  const file = files.find(entry => entry.name === path);
+  assert(file && file.bytes > 0 && file.bytes <= kib * 1024, `Missing or over-budget inspection asset: ${path}`);
+}
 const exportedHash = createHash('sha256').update(await readFile(join(root, model))).digest('hex');
 assert.equal(exportedHash, manifest.model_sha256, 'Exported model hash differs from the accepted model');
 const totalBytes = files.reduce((sum, file) => sum + file.bytes, 0);

@@ -7,6 +7,8 @@ import { gzipSync } from 'node:zlib';
 const root = resolve(fileURLToPath(new URL('../out/', import.meta.url)));
 const port = Number(process.env.PORT ?? 4173);
 const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.wasm': 'application/wasm', '.onnx': 'application/octet-stream', '.json': 'application/json', '.txt': 'text/plain', '.ico': 'image/x-icon', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
+mime['.glb'] = 'model/gltf-binary';
+mime['.webp'] = 'image/webp';
 // Local verification server only. It serves files, never performs inference.
 createServer(async (req, res) => {
   try {
@@ -18,7 +20,7 @@ createServer(async (req, res) => {
     const gzip = /\bgzip\b/.test(req.headers['accept-encoding'] ?? '') && original.length > 1024;
     const bytes = gzip ? gzipSync(original) : original;
     const etag = `"${bytes.length}-${(await stat(file)).mtimeMs}-${gzip ? 'gzip' : 'raw'}"`;
-    const cache = /\/(runtime|models)\//.test(pathname) ? 'public, max-age=31536000, immutable' : 'no-cache';
+    const cache = /^\/(runtime|models|vehicle\/af02-v1)\//.test(pathname) ? 'public, max-age=31536000, immutable' : 'no-cache';
     const headers = { 'Content-Type': mime[extname(file)] ?? 'application/octet-stream', 'Cache-Control': cache, ETag: etag,
       'Content-Length': bytes.length, Vary: 'Accept-Encoding', ...(gzip ? { 'Content-Encoding': 'gzip' } : {}) };
     if (req.headers['if-none-match'] === etag) { res.writeHead(304, headers).end(); return; }

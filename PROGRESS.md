@@ -4,7 +4,15 @@ Last updated: 2026-11-16 (Asia/Karachi).
 
 ## Current phase and session rule
 
-Phase V2.0 planning is complete. Approval is pending for V2.1, the isolated 3D preview. The public v1 baseline is `e8e0ea0`, with the light theme, simplified header and slower alpha sweep. Its public Pages smoke test and mobile playback check passed. [Public v1](https://aeroforge-9tf.pages.dev/)
+Phase V2.1 is complete on `codex/aeroforge-v2`. The standalone `/inspection/` preview is ready for review. Approval is pending for V2.2, the workspace layout. The public v1 baseline is `e8e0ea0`. [Public v1](https://aeroforge-9tf.pages.dev/)
+
+## Phase V2.1 vehicle inspection
+
+- Built the original AF–02 GLB and retained its procedural source, license provenance and named front-wing inspection anchor. The isolated route uses React Three Fiber 9.8.2 with Three.js 0.187.0, a perspective overview, three orthographic presets, orbit and zoom. It detects WebGL2 before loading the scene and links to the working v1 2D editor from every graphics state.
+- Reviewed all four camera views in Playwright at 1440 × 900, then checked 1920 × 1080, 768 × 1024 and 390 × 844, including the phone poster and 3D opt-in. The second visual pass expanded the bay, fit the whole car and softened shallow-angle grid aliasing. [Screenshots and asset provenance](docs/v2-1/README.md)
+- Desktop rendered 35,606 triangles in 34 calls. The GLB is 828,248 bytes and the deferred graphics chunks total 269,832 gzip bytes. Phone opt-in currently uses the desktop GLB. Mobile optimization and physical device performance are scheduled for V2.5.
+- Verified the static export, numeric model hash, 23 Node tests and 49 browser tests. Five cross-project cases were intentionally skipped because desktop and mobile inspection tests have distinct targets. Coverage includes load and retry, no-WebGL, graphics context loss, orbit and zoom, four camera presets, and real 2D inference after fallback. Stabilized the existing tablet model-retry test by waiting for the mocked corrupt response.
+- Stop here for V2.2 approval. The preview is local to the v2 branch.
 
 ## Phase V2.0 architecture and visual planning
 

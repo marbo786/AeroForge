@@ -89,8 +89,13 @@ test("loading state withholds telemetry; failed model and corrupt model can be r
   await expect(page.getByRole("status")).toHaveText("Model unavailable");
   await expect(page.getByRole("alert").filter({ hasText: "could not run" })).toBeVisible();
   await page.unroute("**/selected.onnx");
-  await page.route("**/selected.onnx", (route) => route.fulfill({ status: 200, body: "corrupt model" }));
-  await page.getByRole("button", { name: "Retry model" }).click();
+  await page.route("**/selected.onnx", (route) => route.fulfill({
+    status: 200, body: "corrupt model", headers: {"x-test-model":"corrupt"},
+  }));
+  await Promise.all([
+    page.waitForResponse(response => response.url().endsWith("/selected.onnx") && response.headers()["x-test-model"] === "corrupt"),
+    page.getByRole("button", { name: "Retry model" }).click(),
+  ]);
   await expect(page.getByRole("status")).toHaveText("Model unavailable");
   await expect(page.getByTestId("cd")).toHaveText("—");
   await page.unroute("**/selected.onnx");

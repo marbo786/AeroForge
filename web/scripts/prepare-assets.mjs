@@ -22,6 +22,8 @@ for (const [source, target] of [
   ['node_modules/next/license.md', 'Next-LICENSE.txt'],
   ['node_modules/react/LICENSE', 'React-LICENSE.txt'],
   ['node_modules/react-dom/LICENSE', 'React-DOM-LICENSE.txt'],
+  ['node_modules/three/LICENSE', 'Three-LICENSE.txt'],
+  ['licenses/React-Three-Fiber-LICENSE.txt', 'React-Three-Fiber-LICENSE.txt'],
   ['node_modules/motion/LICENSE.md', 'Motion-LICENSE.txt'],
   ['node_modules/framer-motion/LICENSE.md', 'Framer-Motion-LICENSE.txt'],
   ['node_modules/motion-dom/LICENSE.md', 'Motion-DOM-LICENSE.txt'],
