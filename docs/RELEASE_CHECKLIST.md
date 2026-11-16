@@ -1,24 +1,25 @@
-# AeroForge v1 launch checklist
+# AeroForge v2 release checklist
 
-Audit date: 2026-11-16. The existing Cloudflare Pages build has been exercised over public HTTPS. The dark studio is the launch candidate tested against its local production export. The candidate can ship as a portfolio demo after its deployment passes the public smoke check.
+The v2 Studio is live on Cloudflare Pages. GitHub `main` contains PR #1 at merge `075bf74`, whose tree matches the V2.5 implementation at `5a36255`. The public HTTPS checks on 2026-11-16 verified the v2 behavior and matching assets. V2.6 remains pending for deployment metadata, a separately identified preview and the rollback check. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Merged PR](https://github.com/marbo786/AeroForge/pull/1) · [Deployment guide](DEPLOYMENT.md)
 
 | Area | Status | Evidence |
 | --- | --- | --- |
-| Functional journeys | Passed | Playwright covered opening the studio, NACA presets, geometry handles and direct entry, alpha and Reynolds changes, coherent predictions and sweeps, comparison save and restore, downloads, shared-link clipboard and restoration, malformed URLs, and mobile controls. |
-| Failure handling and domain | Passed | Browser tests covered missing and corrupt model files, missing WASM, retry, invalid drafts and settings outside the prediction envelope. Telemetry and curves withhold unavailable values. |
-| ML verification | Passed | Python checked the geometry and preprocessing contract, trained source and exported ONNX agreement, artifact hashes, and the frozen evaluation. Real browser WASM agreed with the reference over 881 vectors within 1.49 × 10⁻⁷, returned positive drag for those vectors, and repeated identical results within a session. |
-| Visual QA | Passed | Studio and chart captures at 1440 × 900, 1920 × 1080, 768 × 1024 and 390 × 844. The four candidate captures had no horizontal overflow, browser errors or third-party requests. [Before and after](ui-launch/README.md) |
-| Accessibility | Passed | Axe 4.14.0 found zero violations in eight checks across the studio, Charts, Share and Model Evidence on desktop and emulated mobile after the contrast fix. Playwright exercised keyboard geometry changes. [Axe results](ui-launch/accessibility.json) |
-| Static production export | Passed | Next.js exported all routes and required assets. The Pages guard accepted 88 files totaling 19,476,490 bytes. The largest file is the 14,848,852-byte WASM binary, below the 25 MiB per-file limit. Wrangler 4.162.0 parsed all three header rules, saw no Functions, and passed the four-route smoke on the final export. [Emulated Pages smoke](ui-launch/pages-emulator.json) |
-| Performance | Passed | Lighthouse scored 100 for all four categories in desktop and simulated mobile lab runs. Drag p95 was 16.8 ms in a local Chrome sample. First inference still depends on the cold WASM transfer. [Lighthouse results](ui-launch/lighthouse.json) |
-| Security and privacy checks | Passed | The export guard rejects .env files and Pages runtime entry points. A separate scan found no sensitive filenames or common private key and token markers in the export. The browser verifies the model checksum before initialization. The production dependency audit reported zero known advisories. |
-| Existing public deployment | Passed | The [public release](https://aeroforge-9tf.pages.dev/) returned all four routes over HTTPS. The smoke ran real same-origin inference, matched the published manifest and both checksums, checked MIME and immutable cache headers, confirmed missing WASM returns 404, and saw no browser errors. [Smoke result](ui-launch/pages-live.json) |
-| Documentation | Passed | README, architecture, runbook, visual evidence and the engineering case study include measured results, operating bounds, reproduction steps and future validation work. [Case study](CASE_STUDY.md) |
-| Candidate rollout | Not verified | Private Cloudflare account settings and the candidate deployment are pending verification. Compare the live deployment's commit and project settings against the runbook when publishing. [Deployment guide](DEPLOYMENT.md) |
-| Other browser engines, physical phones and screen readers | Not verified | Browser verification used Chrome with desktop, tablet and phone profiles. The automated checks and keyboard journey do not cover all assistive technology. |
-| Experimental accuracy | Not verified | The frozen final panel measures agreement with XFOIL within a finite set. Post-stall behavior, wind tunnel accuracy and calibrated uncertainty have no validation in v1. |
+| Production regression | Passed | Lint, strict TypeScript, 23 Node tests and 59 Playwright tests passed. Ten profile-specific browser cases were skipped. The separate Python evidence audit passed 104 tests. |
+| Public HTTPS smoke | Passed | Chrome 157.0.8103.51 checked the Studio homepage, an Airfoil share link, Model Evidence and the inference fixture. Same-origin WASM inference returned numerical results. The model and preprocessing hashes matched the accepted manifest, MIME and cache headers passed, a missing WASM URL returned 404, and the smoke recorded zero browser errors. |
+| Public vehicle and Analysis | Passed | At 1440 × 900, the AF–02 scene loaded, **Inspect front wing** opened the representative section, and Analysis displayed real lift and drag curves. Default lift was 0.6972 before and after switching views. Both GLBs and the poster matched the files in merged `main` byte for byte by SHA-256. |
+| Static production export | Passed locally | The V2.5 export guard accepted 107 files totaling 21,745,600 bytes. The largest file was the 14,848,852-byte WASM runtime. Both car assets met their size budgets. |
+| Visual and accessibility audit | Passed locally | Before and after captures cover four viewport sizes and loading and fallback states. Axe 4.14.0 found zero violations in 12 tested states. The keyboard, touch-emulation and reduced-motion checks cover the camera, wing and geometry controls. [V2.5 audit](v2-5/README.md) |
+| Performance | Desktop target open | Lighthouse 13.6.0 performance was 92 on mobile and 86 on desktop against a goal of 90. Accessibility, best practices and SEO scored 100 in both profiles. Local integrated-GPU desktop orbit p95 was 17.5 ms, with 2.24 s to the interactive 3D frame under the 10 Mbps / 100 ms profile. [Lighthouse results](v2-5/lighthouse.json) · [Performance data](v2-5/performance.json) |
+| V2.6 deployment verification | Pending | Confirm the exact Cloudflare deployment commit and project settings in the dashboard, run the complete route, cache, 3D and fallback checks on a named preview and the exact production deployment, and record the approved Pages rollback target. The preceding Git source baseline is `e8e0ea0`. |
+| Wider coverage | Open | Phone touch was emulated in Chrome. Physical phone frame timing, other browser engines and screen reader combinations remain unverified. |
 
-`npm run verify` passed lint, strict TypeScript, 23 Node tests, a fresh production export and all 41 Playwright tests. The Python evidence audit passed 104 tests. The accepted model files and solver data matched the repository versions.
+## Public vehicle asset evidence
+
+| Asset | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `/vehicle/af02-v1/car.glb` | 828,248 | `98730eb9b526bb7b0be824c75ff9e5e76255d32da8e7ef73ab92e9150f2b8f7f` |
+| `/vehicle/af02-mobile-v1/car.glb` | 399,464 | `efed22e87f81934dc0f8ed0683b7e4c293143568a39d421290e3fd26fdb0839d` |
+| `/vehicle/af02-v1/poster.webp` | 34,884 | `68b5c3b745b3cd6a5049a45203fc44bcf22c10de77d620e64a5c5382751ad8e3` |
 
 ## Accepted numerical results
 
@@ -27,37 +28,6 @@ Audit date: 2026-11-16. The existing Cloudflare Pages build has been exercised o
 | CL | 0.01484 | 0.02553 | 0.99733 |
 | CD | 0.000683 | 0.001165 | 0.98260 |
 
-These are the frozen results for 165 eligible XFOIL cases from eight unseen geometries. The browser takes raw fractional camber, canonical camber position and thickness, angle in degrees, and log₁₀ of Reynolds number in that order. The accepted 49,781-byte graph embeds trained scaling and target inversion. [Frozen evaluation](../artifacts/recovery-v1-complete/final-evaluation.json) · [ML methodology](ML.md)
+The frozen results cover 165 eligible XFOIL cases from eight unseen geometries. Predictions describe an isolated 2D section. Experimental accuracy, post-stall behavior and calibrated uncertainty remain unverified. [Frozen evaluation](../artifacts/recovery-v1-complete/final-evaluation.json) · [ML methodology](ML.md)
 
-## Browser performance
-
-Lighthouse 13.6.0 audited the final local production export. These are lab scores. The mobile profile uses simulated throttling.
-
-| Profile | Performance | Accessibility | Best practices | SEO | LCP | Blocking time | Layout shift |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Desktop | 100 | 100 | 100 | 100 | 258 ms | 0 ms | 0.0194 |
-| Mobile | 100 | 100 | 100 | 100 | 919 ms | 79 ms | 0.0083 |
-
-The default studio loads 634,239 decoded bytes of framework and application JavaScript, versus 634,134 bytes before the refinement. No third-party requests were observed, and warm reload is covered by the Playwright runtime tests. Four fresh Chrome contexts over loopback reached prediction ready in 1.08–1.69 seconds. The graph request took 4–6 ms and the WASM request took 316–444 ms. The largest cold transfer was 3.84 MB of compressed WASM. The loader reuses one session and sends runtime work to a browser worker. [Cold-load captures](ui-launch/after/measurements.json)
-
-Direct one-thread browser WASM initialized in 548–738 ms including asset fetch and session creation. Warm p95 ran at 0.3–0.4 ms for one row and 0.2–0.4 ms for 17 rows. The studio's first timed prediction, which includes worker communication, read 32.0–46.3 ms in the four captures. [Desktop parity and timing](ui-launch/model-parity-desktop.json) · [Mobile parity and timing](ui-launch/model-parity-mobile.json)
-
-At 1440 × 900, 179 drag frame intervals measured 16.7 ms median and 16.8 ms p95, with one above 25 ms. React recorded 268 root commits during the drag sample. The chart path reached the DOM 179 ms after clicking Charts following a drag. Page JavaScript heap after forced collection was 5.48 MB before and 6.05 MB after 12 chart cycles. This short exercise excludes worker memory and cannot establish long-session memory stability. [Interaction profile](ui-launch/interaction-profile.json)
-
-## Confirmed issues resolved
-
-- Animated telemetry could show intermediate values between model results. The instruments now display rounded model values directly and label any previous result shown during an update.
-- Lift and drag inspection positions could disagree or open at an unrelated angle. Both charts use one cursor initialized at the nearest model sample. Sweeps retain the shaded unavailable region and breaks for missing data.
-- Rapid keyboard inputs could be coalesced by the pointer throttle. Keyboard steps now apply individually. The space shortcut also leaves focusable geometry handles and links alone.
-- The shorter tablet and phone layouts keep important controls and the model values higher on screen. Flow-only edits reuse the sampled geometry. Exports use the displayed stage background and preserve the equal axes.
-- The dark model evidence panels briefly failed contrast during entrance animation. The panels now render at full contrast immediately, and pending numbers use a readable muted foreground.
-
-## Remaining issues
-
-| Severity | Item |
-| --- | --- |
-| Release gate | Publish the candidate and run the four-route smoke test on its actual public URL. Confirm the commit in Cloudflare, then open one shared design link and check browser inference. |
-| Medium | The first visit downloads the WASM runtime. Treat the local load timings as lab measurements and expect slower readiness on constrained connections. |
-| Medium | Low-Re drag and high-camber sections carry higher model errors. Keep the current validation envelope and disclose the solver-based limits for engineering use. |
-| Low | Physical mobile devices, Firefox, Safari and screen reader combinations still need manual coverage. |
-| Low | The legacy studio stylesheet remains as an unreferenced source file. It is excluded from the production bundle. |
+The earlier 41-test and all-100 Lighthouse results belong to the [v1 launch audit](ui-launch/README.md).

@@ -1,8 +1,8 @@
 # AeroForge v2 Design Studio
 
-**2026-11-16 · V2.5 implementation complete · Awaiting approval for V2.6**
+**2026-11-16 · V2.5 merged and publicly smoke tested · V2.6 verification pending**
 
-The Design Studio opens in a dark inspection bay built around an original, unbranded Formula-style racing car. Selecting the front wing turns the bay into a close-up section study. The user can work with the same design in Studio, Airfoil and Analysis without losing edits or a saved comparison. The current public v1 release is the baseline, commit `e8e0ea0`.
+The Design Studio opens in a dark inspection bay built around an original, unbranded Formula-style racing car. Selecting the front wing turns the bay into a close-up section study. The user can work with the same design in Studio, Airfoil and Analysis without losing edits or a saved comparison. The v1 benchmark baseline is commit `e8e0ea0`. The v2 Studio on Pages matches the tested behavior and vehicle assets of the merge at `075bf74`. [Release evidence](RELEASE_CHECKLIST.md)
 
 ## Scientific scope
 
@@ -23,7 +23,7 @@ Leave optional car airflow off for the initial release. If visual testing in V2.
 | `charts.tsx` runs a 25-row batch from −4° to 8° at each design's Reynolds number, shares the inspection cursor and leaves missing rows as gaps. | Reuse the two plots, sampled bounds and inspector in the analysis dock and full Analysis mode. Run batches only when a visible consumer or export needs them. Keep one current and one saved sweep keyed by geometry and Re. |
 | `kit.tsx`, `use-reduced-preference.ts`, `shared-design.ts`, `/model/` and `/spike/`. | Reuse the native inputs, dialogs, accessible status and motion preferences. Preserve model evidence, inference fixture and existing share-link semantics. |
 
-The deployed v1 studio opens with the light theme, a compact header, and a paced sweep. The proposed charcoal treatment belongs to the new workspace after approval. Legacy share URLs at `/studio/?m=…&p=…&t=…&aoa=…&re=…` still restore the same design and take the Studio default. Add a separate, optional `view=airfoil` or `view=analysis` for direct entry and a **Share current view** action. Unknown view values select the default. A malformed design still loads defaults with its existing notice. Retain `/`, `/studio/`, `/model/` and `/spike/` as real static routes.
+The v1 baseline used the light theme, a compact header, and a paced sweep. The current v2 workspace uses the charcoal treatment. Legacy share URLs at `/studio/?m=…&p=…&t=…&aoa=…&re=…` still restore the same design and take the Studio default. The optional `view=airfoil` or `view=analysis` opens that view directly. Unknown view values select the default. A malformed design still loads defaults with its existing notice. `/`, `/studio/`, `/model/` and `/spike/` remain static routes.
 
 ## Workspace composition
 

@@ -1,18 +1,20 @@
 # AeroForge architecture and browser studio
 
-Implemented scope: static inference feasibility, analytic geometry, real XFOIL data, a trained/evaluated ONNX surrogate and the responsive Design Studio. The approved product architecture remains in `SPEC.md`.
+The v2 Studio and its AF–02 inspection bay are live on Cloudflare Pages. GitHub `main` includes the implementation through PR #1 at `075bf74`. Public browser and asset checks passed on 2026-11-16. V2.6 still needs deployment metadata and the separate preview and rollback checks. [Release evidence](RELEASE_CHECKLIST.md) · [Product specifications](SPEC.md) · [V2 architecture and budgets](V2_SPEC.md)
 
-## Phase 5 browser studio
+## Browser workspace
 
 `web/app/studio/studio.tsx` supplies both `/` and `/studio/`. Validated numeric drafts feed the shared geometry engine and a proportionally scaled SVG. `web/lib/inference/surrogate.ts` owns domain checks, the accepted manifest, SHA-256 verification, cached session loading and coefficient validation. It sends the raw five-feature contract to the graph, which embeds every trained transformation. Async cancellation prevents superseded requests from displaying stale coefficients. Invalid/out-of-envelope inputs withhold telemetry while preserving a labeled last valid drawing. Domain status opens the model's finite XFOIL limitations and provenance drawer.
 
+Studio, Airfoil and Analysis share the same design, predictions and session comparison. Studio loads the illustrative car through a client-only React Three Fiber module. Selecting the front wing focuses the camera and opens a representative NACA section. The geometry editor and ONNX telemetry describe the isolated 2D section. Phones start with a poster and opt into the compact GLB. Airfoil and Analysis deep links skip vehicle loads, and the controls remain usable when WebGL fails. The renderer uses demand frames and releases its canvas when leaving Studio, preserving the camera pose for return.
+
 The workstation is isolated in `instrument.tsx`, `stage.tsx`, `charts.tsx` and a shared component/token kit. Local Barlow/Geist/JetBrains fonts, CSS variables exposed through Tailwind, Motion springs and native dialogs support the slate and cyan launch presentation. Geometry morphing interpolates NACA parameters and regenerates the contour with equal axes. Contour and camber paths are memoized by geometry so flow-only edits do not resample them. Pointer updates coalesce on animation frames, with a 110 ms minimum commit interval allowing the unchanged 80 ms inference debounce to resolve during drags. Keyboard steps apply individually. Telemetry displays the rounded model result without animating through intermediate numbers.
 
-Phase 6 runs each 25-point lift and drag sweep as a single batch through the accepted browser ONNX session. The sweep spans −4° to 8° and invalid outputs leave gaps. A shared cursor starts at the closest half-degree to the current angle and reports both coefficients from that sample. A comparison stores one design and its operating-point coefficients for the current session. Each design's curve uses its own Reynolds number, and the stage overlays both sections at their respective angles of attack. CSV export contains the valid model rows.
+Each 25-point lift and drag sweep runs as a single batch through the accepted browser ONNX session. The sweep spans −4° to 8° and invalid outputs leave gaps. A shared cursor follows the current angle until the user inspects another sample and retains that selection across the studio dock, Airfoil and Analysis. A comparison stores one design and its operating-point coefficients for the current session. Each design's curve uses its own Reynolds number, and the stage overlays both sections at their respective angles of attack. CSV export contains the valid model rows.
 
 Phase 7 uses the ONNX Runtime proxy worker for the studio to move WASM initialization and inference off the browser main thread. The studio still validates inputs and verifies the model hash before creating the session. It uses one WASM thread and same-origin assets. The latency readout times the session call and includes worker communication. The separate affine fixture keeps its original direct runtime path and worker experiment.
 
-Share links serialize the current design as `m`, `p`, `t`, `aoa` and `re` query parameters. The studio reads them after hydration, validates geometry and operating inputs, and canonicalizes symmetric sections before starting inference. A malformed design link opens the default studio with an explanation. Editor bounds permit exploring configurations outside the model's prediction envelope. `/model/` presents the frozen final evaluation. Ordinary anchors preserve direct static navigation to the model and fixture pages.
+Share links serialize the current design as `m`, `p`, `t`, `aoa` and `re` query parameters. `view=airfoil` or `view=analysis` preserves the active engineering view. Links without `view` open Studio. The app reads the parameters after hydration, validates geometry and operating inputs, and canonicalizes symmetric sections before starting inference. A malformed design link opens with default parameters and an explanation. Editor bounds permit exploring configurations outside the model's prediction envelope. `/model/` presents the frozen final evaluation. Ordinary anchors preserve direct static navigation to the model and fixture pages.
 
 ## Accepted Phase 4 recovery
 
@@ -26,7 +28,7 @@ Phase 4 initially exposed trained-model execution only through the browser test 
 
 The working-tree experiment in `python/aeroforge/ml.py` trains Ridge, Random Forest and PyTorch MLP candidates from the validated pilot, using a predeclared geometry split and training-only preprocessing. The validation-selected MLP exports with embedded scaling/log-drag inversion and runs in the production WASM verification harness. Research artifacts and hashes are under `artifacts/pilot-surrogate-v1/`.
 
-Held-out predictive error missed the configured targets. This work is not committed or promoted as an approved aerodynamic model; the visible feasibility UI remains unchanged. `docs/ML.md` records the frozen protocol, measured failures and the need for fresh test evidence before further tuning. The Design Studio is still out of scope.
+Held-out predictive error missed the original targets. The candidate remained a research result. The later Phase 4 recovery supplied the model used by the public browser studio. [Original protocol and recovery evidence](ML.md)
 
 ## Offline solver pipeline
 
@@ -40,7 +42,7 @@ The exact solver is a hash-pinned local Windows XFOIL 6.99 binary. It is exclude
 
 Normalization precedes geometry generation and ID construction. Symmetric `p=0` is shared by both paths. IDs encode normalized float64 parameters losslessly and exclude sampling resolution and operating conditions. Complete coordinate and ID parity are tested through a Node bridge from pytest; independent Decimal station references prevent parity from being the sole correctness oracle.
 
-The Python library currently runs from the source checkout and has no runtime dependencies. Test setup uses pinned pytest. Native Node TypeScript stripping executes the TypeScript geometry tests without another test-runner dependency. No geometry UI was added; the Phase 1 production smoke suite remains a separate regression check. See `PHYSICS.md` for the full contract.
+The Python geometry library runs from the source checkout. Test setup uses pinned pytest. Native Node TypeScript stripping executes the TypeScript geometry tests without another test-runner dependency. The browser geometry engine powers the Airfoil editor and the section diagrams. [Geometry contract](PHYSICS.md)
 
 ## Static inference feasibility
 
@@ -84,4 +86,4 @@ The spike uses ordinary anchors between exported documents. During investigation
 
 ## Verification boundaries
 
-Node tests inspect the protobuf graph, hash, asset equality and per-file size. Playwright then independently executes it in a real browser against served production output and observes actual network responses and numerical results. Error-path tests deliberately intercept assets. GitHub CI is configured but a local pass does not establish that a hosted CI run or public deployment succeeded.
+The production verification suite runs lint, strict TypeScript, 23 Node tests and 59 applicable Playwright tests. The separate Python evidence audit runs 104 tests. Browser tests exercise real same-origin ONNX, direct links, chart gaps, camera return and the graphics fallback. V2.5 Lighthouse lab performance was 92 mobile and 86 desktop, with 100 for accessibility, best practices and SEO in both profiles. These measurements are local. The separately tested public release and pending deployment checks are recorded in the release checklist. [V2.5 audit](v2-5/README.md) · [Release checklist](RELEASE_CHECKLIST.md)

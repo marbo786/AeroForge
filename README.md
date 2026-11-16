@@ -1,12 +1,12 @@
 # AeroForge
 
-AeroForge is an interactive airfoil design studio. Edit a NACA four-digit section, predict lift and drag in the browser, and compare the result against a saved design. It runs as a static site with a local ONNX model.
+AeroForge pairs an interactive 3D inspection bay for the illustrative AF–02 car with a NACA four-digit airfoil editor and browser-based ONNX predictions for an isolated 2D section.
 
-[Open the live studio](https://aeroforge-9tf.pages.dev/) · [Engineering case study and architecture diagram](docs/CASE_STUDY.md) · [Launch checklist](docs/RELEASE_CHECKLIST.md)
+[Open the live studio](https://aeroforge-9tf.pages.dev/) · [Architecture](docs/ARCHITECTURE.md) · [Release checklist](docs/RELEASE_CHECKLIST.md)
 
-![AeroForge launch candidate showing NACA 2412 with live lift, drag, and efficiency](docs/ui-launch/after/1440x900.png)
+![AeroForge Studio showing the AF–02 car and the live NACA 2412 section results](docs/v2-5/after/1440-studio.png)
 
-[Before and after at four screen sizes](docs/ui-launch/README.md) · [Mobile charts](docs/ui-launch/after/390x844-charts.png)
+[Visual review at four screen sizes](docs/v2-5/README.md) · [Mobile Analysis](docs/v2-5/after/390-analysis.png)
 
 ## Run locally
 
@@ -19,9 +19,9 @@ npm run build
 npm run serve
 ```
 
-Open [the local studio](http://127.0.0.1:4173/). Drag a geometry handle or use the parameter controls. Focus a handle and press an arrow key to adjust it, or hold Shift for coarse steps. Use **Charts** to inspect lift and drag across angle of attack. **Save design** captures one comparison candidate, and **Share** copies a URL that restores the current geometry and operating conditions. Mobile controls open through **Edit parameters**. **Details / evidence** opens the model limits and links to the final evaluation.
+Open Studio to orbit the car and select **Inspect front wing**. Use Airfoil to edit the representative NACA section with sliders or geometry handles, and use Analysis to inspect lift and drag curves and compare a saved design. **Share** copies a URL that restores the current view and design. Phones start with a still preview and offer **Enable 3D** and **Edit parameters**. **Details / evidence** opens the model limits and links to the final evaluation. [Local Studio](http://127.0.0.1:4173/)
 
-Run `npm run verify` from `web` for lint, TypeScript, Node tests, static export checks and end-to-end tests against production files. Playwright uses installed Chrome on Windows and its matching Chromium on Linux. The separate `/spike/` route is an inference test fixture.
+Run `npm run verify` from `web` for lint, strict TypeScript, the static export checks, 23 Node tests and 59 Playwright tests. The separate Python evidence suite has 104 tests. V2.5 Lighthouse lab performance was 92 on mobile and 86 on desktop, with 100 for accessibility, best practices and SEO in both profiles. Playwright uses installed Chrome on Windows and its matching Chromium on Linux. The separate `/spike/` route is an inference test fixture. [V2.5 measurements](docs/v2-5/README.md)
 
 ## Model and evidence
 
@@ -40,7 +40,7 @@ To reproduce training, create a fresh recovery plan with `scripts/plan_recovery.
 
 ## Hosting and license
 
-The existing v1 release is live on [Cloudflare Pages](https://aeroforge-9tf.pages.dev/). The dark studio pictured above is the separately tested launch candidate. To deploy it, use `web` as the Pages build root, run `npm run build`, and publish `out`. See the [deployment and verification guide](docs/DEPLOYMENT.md) for pinned tool versions, cache headers, and the public smoke check. No inference API or paid infrastructure is required for the static design.
+The v2 Studio is live on Cloudflare Pages. On 2026-11-16 the public smoke test passed and the served vehicle assets matched GitHub `main` at merge `075bf74` (PR #1). V2.6 remains pending for deployment metadata and the separate preview and rollback checks. The static export runs browser inference without an inference API. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Deployment guide](docs/DEPLOYMENT.md)
 
 The [engineering case study](docs/CASE_STUDY.md#limits-and-roadmap) describes future validation work. See the [progress record](PROGRESS.md) for completed milestones.
 

@@ -4,7 +4,13 @@ Last updated: 2026-11-16 (Asia/Karachi).
 
 ## Current phase and session rule
 
-Phase V2.5 implementation is complete on `codex/aeroforge-v2`. Approval is pending for V2.6, production verification. The public v1 baseline is `e8e0ea0`. [Public v1](https://aeroforge-9tf.pages.dev/)
+GitHub `main` contains the V2.5 implementation through PR #1 at merge `075bf74`. The v2 Studio is live and passed the public HTTPS smoke test on 2026-11-16. The previous v1 source baseline is `e8e0ea0`. V2.6 remains pending for deployment metadata and separate preview and rollback checks. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release evidence](docs/RELEASE_CHECKLIST.md)
+
+## Cleanup Phase A documentation consistency
+
+- Compared the live AF–02 workflow, the desktop and compact GLBs, and the poster with the merged v2 tree. Verified same-origin browser inference and the public model and preprocessing hashes. Synchronized the README, release checklist, deployment guide, architecture and version status with that evidence.
+- Re-ran lint, strict TypeScript, the static export guard, 23 Node tests and 59 Playwright tests with ten profile-specific skips. The Python audit passed 104 tests in `.venv-ml`.
+- Source and scientific artifacts remain at the v2 release versions. Phase B awaits approval.
 
 ## Phase V2.5 visual polish and performance
 
@@ -20,21 +26,21 @@ Phase V2.5 implementation is complete on `codex/aeroforge-v2`. Approval is pendi
 - The current and saved designs each use their own Reynolds number. One saved comparison supplies the overlay, dashed curves and operating-point table across views. Analysis supports CSV and JSON downloads. Airfoil retains SVG, PNG, CSV and JSON. Legacy and view-specific links restore the same validated design.
 - Curve batches start when charts or CSV need them and reuse the matching result when reopened. A controlled browser test delivered superseded point and sweep results while newer requests were pending and verified that neither appeared as current. It also verified a missing-row gap and batch recovery. The Pages guard verifies the accepted model and preprocessing hashes.
 - Inspected desktop and phone captures and refined the chart input width and preview spacing. [Screenshots and verification](docs/v2-4/README.md)
-- `npm run verify` passed lint, TypeScript, 23 Node tests, the static export, the Pages asset guard and 59 production Playwright tests with ten profile-specific skips. Verified matching CL, CD and L/D across all modes and Analysis data exports with WebGL disabled. The V2.4 commit remains local to the v2 branch.
+- `npm run verify` passed lint, TypeScript, 23 Node tests, the static export, the Pages asset guard and 59 production Playwright tests with ten profile-specific skips. Verified matching CL, CD and L/D across all modes and Analysis data exports with WebGL disabled.
 
 ## Phase V2.3 front-wing inspection
 
 - Select a visible front-wing surface or use **Inspect front wing**. The camera focuses on the GLB inspection anchor, highlights the wing, and opens a representative NACA section. The regular camera move takes 440 ms and snaps under reduced motion. Drag and pinch retain their camera behavior. **Return to car** restores the previous overview pose and zoom.
 - The section shares the existing inputs, exact NACA contour and isolated-section ONNX results with Airfoil. The user can open the full editor and return to the active inspection. The HTML workflow also works with graphics disabled and before phones opt into 3D. The vehicle assembly uses its authored geometry while the SVG shows the editable section.
 - Captured and inspected the desktop close-up and both phone states, then softened the highlight, enlarged the SVG section and made the non-3D status a compact row. [Screenshots and verification](docs/v2-3/README.md)
-- The local production export passed lint, TypeScript, 23 Node tests, the Pages asset guard, and 58 Playwright tests with eight profile-specific skips. The zoomed overview and selected pose were reproduced pixel for pixel on return, and the production model hash matched the accepted artifact. The V2.3 commit remains local to the v2 branch.
+- The local production export passed lint, TypeScript, 23 Node tests, the Pages asset guard, and 58 Playwright tests with eight profile-specific skips. The zoomed overview and selected pose were reproduced pixel for pixel on return, and the production model hash matched the accepted artifact.
 
 ## Phase V2.2 Studio workspace
 
 - The root and `/studio/` open in Studio with the original AF–02 car, parameter controls, section telemetry and a collapsed analysis dock. Airfoil mode opens the accurate NACA editor and Analysis opens the ONNX-backed lift and drag charts and saved-design comparison. All three use the same design inputs and comparison. On phones, parameter controls open in a bottom sheet and the car starts with a still image and a 3D opt-in.
 - Sharing preserves the selected view and all five design inputs. Legacy links restore their design and open Studio. Direct Airfoil and Analysis links defer all vehicle assets. Switching away from Studio releases the canvas and switching back restores the live camera pose.
 - Reviewed the final four viewport sizes, the Airfoil and Analysis views, and the phone controls sheet in Playwright Chrome. The visual refinement brought the collapsed dock within both desktop viewports and removed unavailable camera controls from the phone still-image view. [Screenshots and verification](docs/v2-2/README.md)
-- The local production export passed lint, TypeScript, 23 Node tests, the Pages asset guard, and 55 Playwright tests with five profile-specific skips. The production model hash is unchanged. The V2.2 commit remains local to the v2 branch.
+- The local production export passed lint, TypeScript, 23 Node tests, the Pages asset guard, and 55 Playwright tests with five profile-specific skips. The production model hash matched the accepted artifact.
 
 ## Phase V2.1 vehicle inspection
 
@@ -42,7 +48,7 @@ Phase V2.5 implementation is complete on `codex/aeroforge-v2`. Approval is pendi
 - Reviewed all four camera views in Playwright at 1440 × 900, then checked 1920 × 1080, 768 × 1024 and 390 × 844, including the phone poster and 3D opt-in. The second visual pass expanded the bay, fit the whole car and softened shallow-angle grid aliasing. [Screenshots and asset provenance](docs/v2-1/README.md)
 - Desktop rendered 35,606 triangles in 34 calls. The GLB is 828,248 bytes and the deferred graphics chunks total 269,832 gzip bytes. Phone opt-in currently uses the desktop GLB. Mobile optimization and physical device performance are scheduled for V2.5.
 - Verified the static export, numeric model hash, 23 Node tests and 49 browser tests. Five cross-project cases were intentionally skipped because desktop and mobile inspection tests have distinct targets. Coverage includes load and retry, no-WebGL, graphics context loss, orbit and zoom, four camera presets, and real 2D inference after fallback. Stabilized the existing tablet model-retry test by waiting for the mocked corrupt response.
-- Stop here for V2.2 approval. The preview is local to the v2 branch.
+- The standalone preview was first verified locally during V2.1 and later merged with the v2 workspace.
 
 ## Phase V2.0 architecture and visual planning
 
@@ -58,7 +64,7 @@ Phase V2.5 implementation is complete on `codex/aeroforge-v2`. Approval is pendi
 - Removed interpolated telemetry, synchronized lift and drag inspection, fixed coalesced keyboard steps, reused geometry on flow edits, and aligned SVG and PNG exports with the displayed viewport. Removing the evidence panel fade restored contrast at first paint.
 - Passed lint, TypeScript, 23 Node tests, a fresh Pages-compatible export, 41 Playwright tests and 104 Python tests. Axe found zero violations across eight desktop and mobile states. Browser predictions repeated identically across 881 vectors with reference error at most 1.49 × 10⁻⁷. Frozen final-panel MAE is 0.01484 for CL and 0.000683 for CD.
 - Lighthouse scored 100 for performance, accessibility, best practices and SEO in both local desktop and simulated mobile runs. The modeled mobile blocking time was 79 ms. Four cold local runs became prediction-ready in 1.08–1.69 seconds. [Lighthouse results](docs/ui-launch/lighthouse.json)
-- Verified routing and assets in the local Pages emulator and in the existing public release. The public check matched the model checksum, preprocessing checksum and manifest, with zero browser errors. The private project dashboard and live rollout of this candidate remain open.
+- At the time of the v1 audit, routing and assets passed in the local Pages emulator and the public v1 release. The check matched the model checksum, preprocessing checksum and manifest, with zero browser errors. The current v2 public check is recorded above.
 - Updated the README, deployment guide, engineering case study and release checklist with benchmarks, architecture, limitations and the remaining rollout steps. [Release checklist](docs/RELEASE_CHECKLIST.md) · [Case study](docs/CASE_STUDY.md)
 
 ## Phase 7 release preparation

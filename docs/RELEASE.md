@@ -1,4 +1,6 @@
-# Release verification
+# V1 release verification (historical)
+
+These measurements describe the original Phase 7 export. [Current v2 release evidence](RELEASE_CHECKLIST.md)
 
 The release target is the static Next.js export in `web/out`. Cloudflare Pages will serve the frontend and versioned assets. The browser verifies the accepted ONNX model hash, then runs CPU inference through a single WASM thread in an ONNX Runtime proxy worker.
 
