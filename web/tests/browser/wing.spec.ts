@@ -5,6 +5,8 @@ const bay = (page:Page) => page.locator(".inspection-bay");
 const inspection = (page:Page) => page.getByRole("region",{name:"Front wing",exact:true});
 const wingButton = (page:Page) => page.getByRole("button",{name:"Inspect front wing",exact:true});
 const returnButton = (page:Page) => page.getByRole("button",{name:"Return to car",exact:true});
+const pitchLabel = (page:Page) => page.getByText("Wing pitch is illustrative, not a simulation.",{exact:true});
+const alpha = (page:Page) => page.getByRole("slider",{name:"Angle of attack slider",exact:true});
 
 test.use({launchOptions:{args:["--enable-unsafe-swiftshader"]}});
 
@@ -62,6 +64,14 @@ test("click and keyboard focus the same wing and Return restores the prior camer
   await page.mouse.move(dragStart.x+68,dragStart.y-44,{steps:6});
   await page.mouse.up();
   await expect(inspection(page)).toHaveCount(0);
+
+  await wingButton(page).click();
+  await expect(pitchLabel(page)).toBeVisible();
+  const beforePitch=await frame(page);
+  await page.emulateMedia({reducedMotion:"no-preference"});
+  await alpha(page).fill("-4");
+  await expect(inspection(page).locator("figcaption")).toContainText("-4°");
+  await expect.poll(async()=>!(await frame(page)).equals(beforePitch)).toBe(true);
 });
 
 test("touch pinch orbits without selection and a single tap selects the wing", async ({page},info)=>{
@@ -84,11 +94,21 @@ test("touch pinch orbits without selection and a single tap selects the wing", a
   const point=await frontWingPoint(page,true);
   await page.touchscreen.tap(point.x,point.y);
   await expect(inspection(page)).toBeVisible();
+  await expect(pitchLabel(page)).toBeVisible();
+  const beforePitch=await frame(page);
   await page.getByRole("button",{name:"Edit parameters"}).tap();
   const controls=page.getByRole("dialog",{name:"Design parameters"});
   await controls.getByLabel("Airfoil preset").selectOption("4418");
+  await alpha(page).fill("8");
   await page.keyboard.press("Escape");
   await expect(inspection(page).locator("figcaption")).toContainText("NACA 4418");
+  const clamped=await frame(page);
+  expect(clamped.equals(beforePitch)).toBe(false);
+  await page.getByRole("button",{name:"Edit parameters"}).tap();
+  await alpha(page).fill("12");
+  await page.keyboard.press("Escape");
+  await expect(inspection(page).locator("figcaption")).toContainText("12°");
+  expect((await frame(page)).equals(clamped)).toBe(true);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
 
@@ -101,6 +121,7 @@ test("without WebGL the section shares exact geometry and live edits with Airfoi
     page.on("request",request=>{if(request.url().endsWith(".glb")) vehicleLoads.push(request.url());});
     await page.goto(new URL("/studio/",baseURL).href);
     await expect(bay(page)).toHaveAttribute("data-render-status","unsupported");
+    await expect(pitchLabel(page)).toBeVisible();
     await expect(page.getByTestId("cl")).toHaveText("0.6972");
     await wingButton(page).press("Space");
     const outline=inspection(page).locator("polygon");

@@ -388,11 +388,14 @@ export default function Instrument(props:InstrumentProps) {
           <div className="v2-view-heading">
             <div><p className="micro">{view==="studio" ? "Vehicle studio" : view==="airfoil" ? "Representative NACA section" : "Isolated 2D section analysis"}</p>
               <h1 ref={viewHeading} tabIndex={-1}>{view==="studio" ? "AF–02" : nameOf(design)}</h1></div>
-            {view==="studio" && <p className="v2-car-label">Illustrative car</p>}
+            {view==="studio" && <div className="v2-car-caption">
+              <p>Illustrative car</p>
+              <p>Wing pitch is illustrative, not a simulation.</p>
+            </div>}
             <button className="chip micro v2-edit" aria-haspopup="dialog"
               onClick={()=>openDrawer("Design parameters")}>Edit parameters</button>
           </div>
-          <VehicleViewport active={view==="studio"} initialized={props.urlReady} onAirfoil={()=>changeMode("airfoil")}
+          <VehicleViewport active={view==="studio"} initialized={props.urlReady} onAirfoil={()=>changeMode("airfoil")} alpha={design.alpha}
             wing={{selected:wingSelected,onInspect:inspectWing,onReturn:()=>setWingSelected(false)}}/>
           {view==="studio" && wingSelected && <section className="v2-wing-study" aria-labelledby={wingTitle}>
             <div className="v2-wing-copy">

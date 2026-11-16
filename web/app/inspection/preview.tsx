@@ -18,8 +18,8 @@ type Status = "poster" | "loading" | "ready" | "unsupported" | "failed" | "lost"
 
 type WingInspection = { selected: boolean; onInspect: () => void; onReturn: () => void };
 
-export function VehicleViewport({active = true, initialized = true, onAirfoil, wing}: {
-  active?: boolean; initialized?: boolean; onAirfoil?: () => void; wing?: WingInspection;
+export function VehicleViewport({active = true, initialized = true, onAirfoil, wing, alpha = 0}: {
+  active?: boolean; initialized?: boolean; onAirfoil?: () => void; wing?: WingInspection; alpha?: number;
 }) {
   const [status, setStatus] = useState<Status>("poster");
   const [progress, setProgress] = useState<number | null>(null);
@@ -84,7 +84,7 @@ export function VehicleViewport({active = true, initialized = true, onAirfoil, w
         {initialized && status !== "ready" && !wing?.selected && <Image className="inspection-poster" src={vehiclePath+"poster.webp"}
           width={1440} height={720} alt="AF–02 from the front three-quarter angle" loading="eager" fetchPriority="high" unoptimized/>}
         {renderScene && <GraphicsBoundary onFailure={() => setStatus("failed")}>
-          <Scene command={command} pose={pose} wingPose={wingPose} wingSelected={!!wing?.selected} compact={compact} cameraHelp={cameraHelp}
+          <Scene command={command} pose={pose} wingPose={wingPose} wingSelected={!!wing?.selected} compact={compact} cameraHelp={cameraHelp} alpha={alpha}
             onInspect={wing ? inspect : undefined} onProgress={setProgress}
             onFailure={kind=>setStatus(kind)}
             onReady={value=>{setStats(value);setStatus("ready");}}/>

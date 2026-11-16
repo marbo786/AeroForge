@@ -4,7 +4,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import {
   Color, Material, Mesh, Object3D, OrthographicCamera, PerspectiveCamera,
-  PMREMGenerator, Quaternion, Vector3, Vector2, MathUtils, MeshStandardMaterial, Raycaster, Box3,
+  PMREMGenerator, Quaternion, Vector3, Vector2, MathUtils, MeshStandardMaterial, Raycaster, Box3, Group,
 } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
@@ -17,6 +17,7 @@ type SceneProps = {
   pose:RefObject<CameraPose|null>;
   wingPose:RefObject<CameraPose|null>;
   wingSelected:boolean;
+  alpha:number;
   compact:boolean;
   cameraHelp:string;
   onInspect?:()=>void;
@@ -361,6 +362,26 @@ async function loadVehicle(folder:string, signal:AbortSignal, progress:SceneProp
   return new GLTFLoader().parseAsync(await new Blob(chunks).arrayBuffer(),folder);
 }
 
+function WingPitch({pivot,alpha}: {pivot:Object3D; alpha:number}) {
+  const invalidate=useThree(state=>state.invalidate);
+  const reduced=useReducedPreference();
+  const initialized=useRef(false);
+  // The car faces +Z, so a negative X rotation raises its leading edge.
+  const pitch=MathUtils.degToRad(-MathUtils.clamp(alpha,-7,7));
+  useLayoutEffect(()=>{
+    if (!initialized.current || reduced) pivot.rotation.x=pitch;
+    initialized.current=true;
+    invalidate();
+  },[pivot,pitch,reduced,invalidate]);
+  useFrame((_,delta)=>{
+    if (pivot.rotation.x===pitch) return;
+    const next=MathUtils.damp(pivot.rotation.x,pitch,18,Math.min(delta,.05));
+    pivot.rotation.x=Math.abs(next-pitch)<.0001 ? pitch : next;
+    if (pivot.rotation.x!==pitch) invalidate();
+  });
+  return null;
+}
+
 function WingInteraction({model, selected, onInspect}: {model:Object3D; selected:boolean; onInspect?:()=>void}) {
   const {gl,invalidate,get}=useThree();
   const inspect=useRef(onInspect);
@@ -369,8 +390,9 @@ function WingInteraction({model, selected, onInspect}: {model:Object3D; selected
 
   useLayoutEffect(()=>{
     if (!enabled) return;
-    const wing=model.getObjectByName("Front_wing");
-    if (!wing) return;
+    const assembly=model.getObjectByName("Front_wing");
+    if (!assembly) return;
+    const wing=assembly;
     if (selected) {
       const originals=new Map<Mesh,MeshStandardMaterial>();
       wing.traverse(part=>{
@@ -393,7 +415,7 @@ function WingInteraction({model, selected, onInspect}: {model:Object3D; selected
     }
 
     const canvas=gl.domElement;
-    const pickVolume=new Box3().setFromObject(wing);
+    const pickVolume=new Box3();
     const raycaster=new Raycaster();
     const point=new Vector2();
     const pointers=new Set<number>();
@@ -402,6 +424,8 @@ function WingInteraction({model, selected, onInspect}: {model:Object3D; selected
       const box=canvas.getBoundingClientRect();
       point.set(2*(event.clientX-box.left)/box.width-1,1-2*(event.clientY-box.top)/box.height);
       raycaster.setFromCamera(point,get().camera);
+      wing.updateWorldMatrix(true,false);
+      pickVolume.setFromObject(wing);
       if (!raycaster.ray.intersectsBox(pickVolume)) return false;
       const front=raycaster.intersectObject(model,true)[0];
       for(let part:Object3D|null=front?.object??null;part;part=part.parent) if(part===wing) return true;
@@ -441,13 +465,13 @@ function WingInteraction({model, selected, onInspect}: {model:Object3D; selected
   return null;
 }
 
-type VehicleProps = Pick<SceneProps,"onProgress"|"onFailure"|"onReady"|"wingSelected"|"onInspect"|"compact"> & {
+type VehicleProps = Pick<SceneProps,"onProgress"|"onFailure"|"onReady"|"wingSelected"|"onInspect"|"compact"|"alpha"> & {
   onAnchor:(anchor:Vector3|null)=>void;
 };
 
-function Vehicle({onProgress,onFailure,onReady,onAnchor,wingSelected,onInspect,compact}:VehicleProps) {
+function Vehicle({onProgress,onFailure,onReady,onAnchor,wingSelected,onInspect,compact,alpha}:VehicleProps) {
   const {gl,invalidate}=useThree();
-  const [model,setModel]=useState<Object3D>();
+  const [loaded,setLoaded]=useState<{model:Object3D;pivot:Group|null}>();
   const callbacks=useRef({onProgress,onFailure,onReady,onAnchor});
   callbacks.current={onProgress,onFailure,onReady,onAnchor};
   const ready=useRef(false);
@@ -464,8 +488,18 @@ function Vehicle({onProgress,onFailure,onReady,onAnchor,wingSelected,onInspect,c
       if(controller.signal.aborted){disposeVehicle(scene);return;}
       vehicle=scene;
       const anchor=scene.getObjectByName("Front_wing_inspection_anchor");
-      callbacks.current.onAnchor(anchor?.getWorldPosition(new Vector3()) ?? null);
-      setModel(scene);
+      const anchorPosition=anchor?.getWorldPosition(new Vector3()) ?? null;
+      const wing=scene.getObjectByName("Front_wing");
+      let pivot:Group|null=null;
+      if (wing?.parent && anchorPosition) {
+        const parent=wing.parent;
+        pivot=new Group();
+        pivot.position.copy(parent.worldToLocal(anchorPosition.clone()));
+        parent.add(pivot);
+        pivot.attach(wing);
+      }
+      callbacks.current.onAnchor(anchorPosition);
+      setLoaded({model:scene,pivot});
       invalidate();
     }).catch(()=>{
       if(!controller.signal.aborted) callbacks.current.onFailure("failed");
@@ -478,7 +512,7 @@ function Vehicle({onProgress,onFailure,onReady,onAnchor,wingSelected,onInspect,c
   },[gl,invalidate,compact]);
 
   useFrame(()=>{
-    if(!model||ready.current) return;
+    if(!loaded||ready.current) return;
     ready.current=true;
     // Read render counters after Fiber has submitted the first model frame.
     queueMicrotask(()=>{
@@ -486,9 +520,10 @@ function Vehicle({onProgress,onFailure,onReady,onAnchor,wingSelected,onInspect,c
       callbacks.current.onReady({calls,triangles});
     });
   });
-  return model ? <>
-    <primitive object={model} dispose={null}/>
-    <WingInteraction model={model} selected={wingSelected} onInspect={onInspect}/>
+  return loaded ? <>
+    <primitive object={loaded.model} dispose={null}/>
+    {loaded.pivot && <WingPitch pivot={loaded.pivot} alpha={alpha}/>}
+    <WingInteraction model={loaded.model} selected={wingSelected} onInspect={onInspect}/>
   </> : null;
 }
 
