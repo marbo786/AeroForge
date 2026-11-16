@@ -12,6 +12,11 @@ globalThis.FileReader ??= class {
 };
 
 const scene = new T.Scene();
+const mobile = process.argv.includes('--mobile');
+const segments = count => mobile ? Math.round(count * .62) : count;
+const sphere = (width, height) => new T.SphereGeometry(1, segments(width), segments(height));
+const torus = (radius, tube, radial, tubular) =>
+  new T.TorusGeometry(radius, tube, segments(radial), segments(tubular));
 const paint = (name, color, metalness, roughness) =>
   new T.MeshStandardMaterial({ name, color, metalness, roughness });
 const titanium = paint('Titanium satin', 0x75848a, .66, .28);
@@ -36,12 +41,13 @@ function add(assembly, material, geometry, x = 0, y = 0, z = 0) {
 
 // Each ring is [z, center x, center y, half width, half height]. Interpolating
 // rings gives softened shoulders while preserving the narrow nose and tail.
-function loft(rings, slices = 32, power = .75) {
+function loft(rings, resolution = 32, power = .75) {
+  const slices = segments(resolution);
   const positions = [], indices = [];
   const points = rings.map(([z, , , w, h]) => new T.Vector3(z, w, h));
   const profile = new T.CatmullRomCurve3(points, false, 'centripetal');
   const centers = new T.CatmullRomCurve3(rings.map(([z,x,y]) => new T.Vector3(z,x,y)));
-  const steps = Math.max(8, (rings.length - 1) * 4);
+  const steps = Math.max(8, (rings.length - 1) * (mobile ? 2 : 4));
   for (let row = 0; row <= steps; row++) {
     const { x:z, y:w, z:h } = profile.getPoint(row / steps);
     const { y:x, z:y } = centers.getPoint(row / steps);
@@ -68,20 +74,20 @@ function loft(rings, slices = 32, power = .75) {
 function plate(assembly, material, points, depth) {
   const shape = new T.Shape(points.map(([x,y]) => new T.Vector2(x,y)));
   add(assembly, material, new T.ExtrudeGeometry(shape, {
-    depth, bevelEnabled:true, bevelSegments:2, steps:1, bevelSize:.015, bevelThickness:.012,
+    depth, bevelEnabled:true, bevelSegments:mobile ? 1 : 2, steps:1, bevelSize:.015, bevelThickness:.012,
   }));
 }
 function arm(assembly, material, start, end, radius, flatten = 1) {
   const a = new T.Vector3(...start), b = new T.Vector3(...end);
   const delta = b.clone().sub(a), center = a.clone().add(b).multiplyScalar(.5);
-  const geometry = new T.CylinderGeometry(radius, radius, delta.length(), 8);
+  const geometry = new T.CylinderGeometry(radius, radius, delta.length(), segments(8));
   geometry.scale(1,1,flatten);
   geometry.applyQuaternion(new T.Quaternion().setFromUnitVectors(new T.Vector3(0,1,0), delta.normalize()));
   add(assembly, material, geometry, center.x, center.y, center.z);
 }
 function tube(assembly, material, points, radius) {
   const path = new T.CatmullRomCurve3(points.map(point => new T.Vector3(...point)));
-  add(assembly, material, new T.TubeGeometry(path, 28, radius, 8));
+  add(assembly, material, new T.TubeGeometry(path, segments(28), radius, segments(8)));
 }
 function blade(assembly, material, span, y, z, chord, thickness, sweep = .14) {
   const rings = [-1,-.92,-.58,0,.58,.92,1].map((s) =>
@@ -104,7 +110,7 @@ add('Engine cover', teal, loft([
   [-2.65,0,.84,.07,.05],[-2.04,0,.94,.14,.11],[-1.55,0,1.06,.16,.17],
   [-1.05,0,1.23,.16,.24],[-.72,0,1.27,.19,.25],[-.53,0,1.23,.16,.18],
 ]));
-add('Engine cover', carbon, new T.SphereGeometry(1,24,12).scale(.135,.085,.04),0,1.37,-.48);
+add('Engine cover', carbon, sphere(24,12).scale(.135,.085,.04),0,1.37,-.48);
 
 for (const side of [-1,1]) {
   add('Sidepods', teal, loft([
@@ -112,7 +118,7 @@ for (const side of [-1,1]) {
     [-1.13,side*.60,.62,.30,.19],[-.56,side*.59,.66,.33,.21],
     [-.02,side*.57,.69,.31,.19],[.30,side*.52,.72,.24,.13],
   ], 28, .56));
-  add('Sidepods', carbon, new T.SphereGeometry(1,24,12).scale(.225,.103,.07),side*.54,.737,.314);
+  add('Sidepods', carbon, sphere(24,12).scale(.225,.103,.07),side*.54,.737,.314);
   tube('Livery', stripe, [[side*.45,.84,.32],[side*.69,.879,-.10],[side*.79,.825,-.53],
     [side*.70,.774,-.98],[side*.52,.702,-1.53],[side*.39,.64,-1.93]], .014);
   tube('Livery', stripe, [[side*.18,.512,2.37],[side*.20,.578,1.77],[side*.23,.656,1.20],
@@ -124,14 +130,14 @@ for (const side of [-1,1]) {
 }
 
 // Cockpit opening, inset seat and three-point halo.
-add('Cockpit', carbon, new T.SphereGeometry(1,32,16).scale(.285,.075,.46),0,.919,-.11);
-add('Cockpit', titanium, new T.SphereGeometry(1,24,12).scale(.17,.12,.15),0,.945,-.28);
-add('Cockpit', carbon, new T.TorusGeometry(.115,.018,8,24).rotateX(.24),0,.999,.20);
+add('Cockpit', carbon, sphere(32,16).scale(.285,.075,.46),0,.919,-.11);
+add('Cockpit', titanium, sphere(24,12).scale(.17,.12,.15),0,.945,-.28);
+add('Cockpit', carbon, torus(.115,.018,8,24).rotateX(.24),0,.999,.20);
 for (const side of [-1,1]) {
   tube('Halo', carbon, [[side*.16,.98,-.62],[side*.275,1.125,-.35],
     [side*.25,1.185,-.06],[side*.156,1.195,.255],[0,1.17,.39]], .036);
   arm('Mirrors', carbon, [side*.29,.88,.36],[side*.49,1.02,.41], .026);
-  add('Mirrors', silver, new T.SphereGeometry(1,16,10).scale(.11,.045,.052),side*.52,1.02,.41);
+  add('Mirrors', silver, sphere(16,10).scale(.11,.045,.052),side*.52,1.02,.41);
 }
 arm('Halo', carbon, [0,.94,.26],[0,1.16,.405],.037);
 
@@ -163,14 +169,14 @@ function tire(assembly, x, y, z, radius, width) {
     [1,-.19],[1,.19],[.994,.31],[.965,.42],[.89,.50],
     [.76,.50],[.64,.48],[.64,-.48],
   ].map(([r,w]) => new T.Vector2(r*radius,w*width));
-  add(assembly, rubber, new T.LatheGeometry(profile, 52).rotateZ(-Math.PI/2), x,y,z);
+  add(assembly, rubber, new T.LatheGeometry(profile, segments(52)).rotateZ(-Math.PI/2), x,y,z);
   const side = Math.sign(x), face = x + side * width*.492;
-  const cylinder = (r,d) => new T.CylinderGeometry(r,r,d,42).rotateZ(Math.PI/2);
+  const cylinder = (r,d) => new T.CylinderGeometry(r,r,d,segments(42)).rotateZ(Math.PI/2);
   add(assembly, carbon, cylinder(radius*.69,width*.92),x,y,z);
-  add(assembly, titanium, new T.TorusGeometry(radius*.58,.014,8,42).rotateY(Math.PI/2),face,y,z);
+  add(assembly, titanium, torus(radius*.58,.014,8,42).rotateY(Math.PI/2),face,y,z);
   add(assembly, titanium, cylinder(radius*.17,.045),face,y,z);
   add(assembly, hardware, cylinder(radius*.084,.058),face+side*.012,y,z);
-  add(assembly, hardware, new T.TorusGeometry(radius*.819,.008,6,42).rotateY(Math.PI/2),face,y,z);
+  add(assembly, hardware, torus(radius*.819,.008,6,42).rotateY(Math.PI/2),face,y,z);
   for(let n=0;n<8;n++){
     const theta=n*Math.PI/4, ay=Math.sin(theta)*radius, az=Math.cos(theta)*radius;
     arm(assembly, titanium,[face,y+ay*.10,z+az*.10],[face-side*.016,y+ay*.55,z+az*.55],.019,.65);
@@ -186,7 +192,7 @@ for(const side of [-1,1]){
     arm('Suspension', titanium,[side*.27,.69,z-.08],[knuckle,r+.04,z],.016);
   }
 }
-add('Tail', hardware, new T.TorusGeometry(.060,.015,8,20),0,.74,-2.713);
+add('Tail', hardware, torus(.060,.015,8,20),0,.74,-2.713);
 add('Tail', carbon, new T.BoxGeometry(.33,.105,.08),0,.30,-2.67);
 for(const x of [-.30,-.18,.18,.30]){
   arm('Tail diffuser', carbon,[x,.17,-2.27],[x,.25,-2.73],.021,1.2);
@@ -210,7 +216,7 @@ anchor.name = 'Front wing inspection anchor';
 anchor.position.set(0,.28,2.43);
 scene.add(anchor);
 scene.userData = { design:'AeroForge AF-02', scope:'Original illustrative Formula-style inspection asset' };
-const folder = new URL('../public/vehicle/af02-v1/', import.meta.url);
+const folder = new URL(`../public/vehicle/${mobile ? 'af02-mobile-v1' : 'af02-v1'}/`, import.meta.url);
 await mkdir(folder,{recursive:true});
 const glb = await new GLTFExporter().parseAsync(scene,{binary:true});
 await writeFile(new URL('car.glb',folder),Buffer.from(glb));

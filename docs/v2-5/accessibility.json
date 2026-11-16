@@ -1,0 +1,74 @@
+[
+  {
+    "width": 1440,
+    "state": "Studio",
+    "version": "4.14.0",
+    "violations": []
+  },
+  {
+    "width": 1440,
+    "state": "Front wing",
+    "version": "4.14.0",
+    "violations": []
+  },
+  {
+    "width": 1440,
+    "state": "Airfoil",
+    "version": "4.14.0",
+    "violations": []
+  },
+  {
+    "width": 1440,
+    "state": "Analysis",
+    "version": "4.14.0",
+    "violations": []
+  },
+  {
+    "width": 1440,
+    "state": "Share dialog",
+    "version": "4.14.0",
+    "violations": []
+  },
+  {
+    "width": 390,
+    "state": "Studio",
+    "version": "4.14.0",
+    "violations": []
+  },
+  {
+    "width": 390,
+    "state": "Studio 3D opt-in",
+    "version": "4.14.0",
+    "violations": []
+  },
+  {
+    "width": 390,
+    "state": "Front wing",
+    "version": "4.14.0",
+    "violations": []
+  },
+  {
+    "width": 390,
+    "state": "Airfoil",
+    "version": "4.14.0",
+    "violations": []
+  },
+  {
+    "width": 390,
+    "state": "Parameter sheet",
+    "version": "4.14.0",
+    "violations": []
+  },
+  {
+    "width": 390,
+    "state": "Analysis",
+    "version": "4.14.0",
+    "violations": []
+  },
+  {
+    "width": 390,
+    "state": "Share dialog",
+    "version": "4.14.0",
+    "violations": []
+  }
+]

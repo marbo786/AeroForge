@@ -45,6 +45,13 @@ test("loads the local mesh, presents four rendered views, and allows zoom and or
   await page.getByRole("button",{name:"Zoom in"}).click();
   const zoomed=await frame();
   expect(zoomed.equals(frames[3])).toBe(false);
+  const keyboardCamera=page.getByRole("group",{name:"AF–02 camera"});
+  await keyboardCamera.focus();
+  await expect(keyboardCamera).toBeFocused();
+  await keyboardCamera.press("ArrowLeft");
+  await page.getByRole("button",{name:"Zoom in"}).focus();
+  const orbited=await frame();
+  expect(orbited.equals(zoomed)).toBe(false);
   const box=await canvas.boundingBox();
   expect(box).not.toBeNull();
   const x=box!.x+box!.width/2, y=box!.y+box!.height/2;
@@ -52,7 +59,7 @@ test("loads the local mesh, presents four rendered views, and allows zoom and or
   await page.mouse.down();
   await page.mouse.move(x+100,y+50,{steps:8});
   await page.mouse.up();
-  expect((await frame()).equals(zoomed)).toBe(false);
+  expect((await frame()).equals(orbited)).toBe(false);
   expect(errors).toEqual([]);
 });
 
@@ -78,7 +85,7 @@ test("shows the poster and retains the 2D route after a lost graphics context", 
   await expect(status(page)).toHaveAttribute("data-render-status","lost");
   await expect(page.getByRole("img",{name:/AF–02 from/})).toBeVisible();
   await page.getByRole("link",{name:"Continue in 2D"}).click();
-  await expect(page.getByRole("status")).toHaveText("Prediction ready");
+  await expect(page.getByRole("status",{name:"Prediction status"})).toHaveText("Prediction ready");
 });
 
 test("works without WebGL and never requests the car asset", async ({baseURL},info) => {
@@ -93,7 +100,7 @@ test("works without WebGL and never requests the car asset", async ({baseURL},in
     await page.goto(new URL(path,baseURL).href);
     await expect(status(page)).toHaveAttribute("data-render-status","unsupported");
     await page.getByRole("link",{name:"Continue in 2D"}).click();
-    await expect(page.getByRole("status")).toHaveText("Prediction ready");
+    await expect(page.getByRole("status",{name:"Prediction status"})).toHaveText("Prediction ready");
     await expect(page.getByTestId("cl")).toHaveText("0.6972");
     expect(loads).toEqual([]);
   } finally {await browser.close();}
@@ -109,5 +116,8 @@ test("keeps 3D opt-in on mobile", async ({page},info) => {
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.getByRole("button",{name:"Enable 3D"}).click();
   await expect(status(page)).toHaveAttribute("data-render-status","ready");
-  expect(requests).toHaveLength(1);
+  await expect(status(page)).toHaveAttribute("data-render-tier","compact");
+  expect(requests.map(url=>new URL(url).pathname)).toEqual(["/vehicle/af02-mobile-v1/car.glb"]);
+  expect(Number(await status(page).getAttribute("data-triangles"))).toBeLessThanOrEqual(35_000);
+  expect(Number(await status(page).getAttribute("data-draw-calls"))).toBeLessThanOrEqual(45);
 });

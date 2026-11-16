@@ -58,6 +58,7 @@
 }
 .v2-view-heading .micro { color: var(--accent); margin-bottom: 3px; }
 .v2-view-heading h1 { font: 625 clamp(25px, 3vw, 39px)/1.05 var(--font-geist), sans-serif; letter-spacing: -.055em; }
+.v2-view-heading .v2-edit { display: none; }
 .v2-car-label { color: var(--muted); font-size: 12px; white-space: nowrap; }
 .v2-workspace .inspection-bay { height: max(480px, calc(100svh - 243px)); border-color: var(--line); }
 .v2-workspace .vehicle-viewport { min-width: 0; --edge: var(--line); }
@@ -98,6 +99,7 @@
   background: var(--surface); border: 1px solid var(--line); min-width: 0;
   padding: 14px 12px; align-self: start;
 }
+.v2-center > .v2-telemetry { align-self: stretch; }
 .v2-panel-heading { display: grid; gap: 4px; padding-bottom: 11px; border-bottom: 1px solid var(--line); }
 .v2-panel-heading h2 { font: 600 13px/1.35 var(--font-geist), sans-serif; }
 .v2-panel-heading .micro { color: var(--muted); font-size: 9px; }
@@ -155,9 +157,12 @@
 
 @media (max-width: 1120px) {
   .v2-layout { grid-template-columns: minmax(0, 1fr); }
+  .v2-layout > .v2-controls { display: none; }
+  .v2-view-heading .v2-edit { display: inline-flex; }
   .v2-view-heading { flex-wrap: wrap; }
   .v2-car-label { margin-left: auto !important; }
-  .v2-workspace .inspection-bay { height: clamp(320px, 59svh, 690px); }
+  .v2-workspace .inspection-bay { height: clamp(320px, 53svh, 610px); }
+  .v2-workspace [data-wing-selected] .inspection-bay { height: clamp(310px, 47svh, 530px); }
   .v2-metrics { grid-template-columns: repeat(3,minmax(0,1fr)); }
   .v2-metric { padding: 8px 9px; }
   .v2-metric + .v2-metric { border-left: 1px solid var(--line); }
@@ -193,9 +198,10 @@
   .v2-workspace [data-wing-selected] .inspection-bay { height: clamp(245px, 32svh, 340px); }
   .v2-wing-study { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .v2-wing-study .v2-section-preview svg { max-height: 96px; }
-  .v2-analysis-summary { flex-direction: column; }
+  .v2-analysis-summary { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; }
+  .v2-analysis-actions { align-items: start; flex-direction: column; }
   .v2-analysis-summary .v2-section-preview svg { max-height: 104px; }
-  .v2-analysis .export-options { inset-inline: 0 auto; }
+  .v2-analysis .export-options { inset-inline: auto 0; }
   .v2-workspace .chart-follow { margin-left: 0; }
   .v2-metric-label { min-height: 34px; font-size: 10px; line-height: 1.25; }
   .v2-metric-label abbr { font-size: 9px; }
@@ -204,5 +210,6 @@
   .v2-model .details-button { justify-self: end; width: auto !important; }
   .v2-workspace .stage-viewport { height: clamp(245px, 37svh, 335px); }
   .v2-workspace .v2-parameter-group select { min-height: 44px; }
+  .v2-workspace .v2-dock .chip, .v2-workspace .v2-presets .chip { min-height: 44px; min-width: 44px; }
   .v2-dock .v2-collapse { margin-left: 0; }
 }

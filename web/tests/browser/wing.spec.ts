@@ -52,7 +52,7 @@ test("click and keyboard focus the same wing and Return restores the prior camer
   await expect(canvas(page)).toHaveCount(0);
   await page.getByRole("button",{name:"Studio",exact:true}).click();
   await expect(bay(page)).toHaveAttribute("data-render-status","ready");
-  expect((await frame(page)).equals(keyboardView)).toBe(true);
+  await expect.poll(async()=>(await frame(page)).equals(keyboardView)).toBe(true);
 
   await returnButton(page).click();
   const dragStart=await frontWingPoint(page);

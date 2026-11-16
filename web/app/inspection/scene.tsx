@@ -10,13 +10,15 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { useReducedPreference } from "../studio/use-reduced-preference";
-import { vehiclePath, type CameraCommand, type CameraPose, type RenderStats, type View } from "./camera";
+import { compactVehiclePath, vehiclePath, type CameraCommand, type CameraPose, type RenderStats, type View } from "./camera";
 
 type SceneProps = {
   command:CameraCommand;
   pose:RefObject<CameraPose|null>;
   wingPose:RefObject<CameraPose|null>;
   wingSelected:boolean;
+  compact:boolean;
+  cameraHelp:string;
   onInspect?:()=>void;
   onProgress:(value:number|null)=>void;
   onFailure:(kind:"failed"|"lost")=>void;
@@ -24,7 +26,7 @@ type SceneProps = {
 };
 
 const target = new Vector3(0,.54,0);
-const wingDirection = new Vector3(.68,.42,1).normalize();
+const wingDirection = new Vector3(.53,.43,1).normalize();
 const initial = [6,3.1,7.4] as const;
 const views: Record<View, { direction:[number,number,number]; height:number; width:number }> = {
   "Three-quarter": {direction:[.94,.43,1],height:3.28,width:5.85},
@@ -47,7 +49,7 @@ function fitPerspective(direction:Vector3, slope:number, aspect:number) {
   }));
 }
 
-function Rig({command, pose, wingPose, wingSelected, anchor}: Pick<SceneProps,"command"|"pose"|"wingPose"|"wingSelected"> & {anchor:Vector3|null}) {
+function Rig({command, pose, wingPose, wingSelected, anchor, cameraHelp}: Pick<SceneProps,"command"|"pose"|"wingPose"|"wingSelected"|"cameraHelp"> & {anchor:Vector3|null}) {
   const { camera, gl, set, get, invalidate, size } = useThree();
   const [perspective] = useState(() => camera as PerspectiveCamera);
   const [orthographic] = useState(() => Object.assign(
@@ -73,16 +75,38 @@ function Rig({command, pose, wingPose, wingSelected, anchor}: Pick<SceneProps,"c
     orbit.maxPolarAngle = Math.PI*.495;
     const stop = () => { move.current = null; };
     const redraw = () => invalidate();
+    const canvas=gl.domElement;
+    canvas.tabIndex=0;
+    canvas.setAttribute("role","group");
+    canvas.setAttribute("aria-label","AF–02 camera");
+    canvas.setAttribute("aria-describedby",cameraHelp);
+    const orbitStep=(event:KeyboardEvent)=>{
+      const step=Math.PI/18;
+      switch(event.key){
+        case "ArrowLeft": stop(); orbit.rotateLeft(step); break;
+        case "ArrowRight": stop(); orbit.rotateLeft(-step); break;
+        case "ArrowUp": stop(); orbit.rotateUp(-step); break;
+        case "ArrowDown": stop(); orbit.rotateUp(step); break;
+        default: return;
+      }
+      event.preventDefault();
+      invalidate();
+    };
+    canvas.addEventListener("keydown",orbitStep);
     orbit.addEventListener("change", redraw);
     orbit.addEventListener("start", stop);
     controls.current = orbit;
     return () => {
       orbit.removeEventListener("change",redraw);
       orbit.removeEventListener("start",stop);
+      canvas.removeEventListener("keydown",orbitStep);
       orbit.dispose();
       controls.current = null;
     };
-  }, [gl,perspective,invalidate]);
+  }, [gl,perspective,invalidate,cameraHelp]);
+  useEffect(()=>{
+    if(controls.current) controls.current.enableDamping=!reduced;
+  },[reduced]);
 
   const lastCommand = useRef<CameraCommand>(null);
   useEffect(() => {
@@ -135,7 +159,7 @@ function Rig({command, pose, wingPose, wingSelected, anchor}: Pick<SceneProps,"c
       returnCommand.current = wingSelected ? null : command;
       const saved = wingSelected ? null : pose.current;
       const nextTarget = wingSelected && anchor ? anchor : saved ? new Vector3(...saved.target) : target;
-      const distance = Math.max(1.34, 3.05 / aspect) / (2 * slope);
+      const distance = Math.max(1.5, 3.22 / aspect) / (2 * slope);
       const nextPosition = saved ? new Vector3(...saved.position) : nextTarget.clone().addScaledVector(wingDirection,distance);
       const fromTarget = orbit.target.clone();
       const previous = orbit.object;
@@ -185,7 +209,8 @@ function Rig({command, pose, wingPose, wingSelected, anchor}: Pick<SceneProps,"c
     }
     const height = spec ? Math.max(spec.height,spec.width/aspect) : 0;
     const direction = spec ? new Vector3(...spec.direction).normalize() : from.clone().normalize();
-    const distance = view==="Three-quarter" ? fitPerspective(direction,slope,aspect) : spec ? height/(2*slope) :
+    const overviewFit = aspect >= 1.2 ? .90 : 1;
+    const distance = view==="Three-quarter" ? fitPerspective(direction,slope,aspect)*overviewFit : spec ? height/(2*slope) :
       MathUtils.clamp(from.length()*("zoom" in command && command.zoom===1 ? 1/1.2 : 1.2),3.2,24);
     const fromDirection = from.clone().normalize();
     const rotation = new Quaternion().setFromUnitVectors(fromDirection,direction);
@@ -229,7 +254,8 @@ function Rig({command, pose, wingPose, wingSelected, anchor}: Pick<SceneProps,"c
     else controls.current?.update();
     const orbit = controls.current;
     const camera = orbit?.object;
-    if (camera && !move.current && (!wingSelected || anchor)) {
+    // Wait for the requested pose before a newly mounted canvas can replace it.
+    if (camera && !first.current && wasSelected.current===wingSelected && !move.current && (!wingSelected || anchor)) {
       const ortho = camera instanceof OrthographicCamera;
       const destination = wingSelected ? wingPose : pose;
       destination.current = {position:camera.position.toArray(), target:orbit.target.toArray(),
@@ -239,12 +265,12 @@ function Rig({command, pose, wingPose, wingSelected, anchor}: Pick<SceneProps,"c
   return null;
 }
 
-function Lighting() {
+function Lighting({compact}:{compact:boolean}) {
   const {gl,scene,invalidate}=useThree();
   useEffect(()=>{
     const studio=new RoomEnvironment();
     const pmrem=new PMREMGenerator(gl);
-    const lighting=pmrem.fromScene(studio,.05);
+    const lighting=pmrem.fromScene(studio,.05,.1,100,{size:compact ? 64 : 128});
     scene.environment=lighting.texture;
     scene.environmentIntensity=.68;
     studio.dispose();
@@ -254,7 +280,7 @@ function Lighting() {
       scene.environment=null;
       lighting.dispose();
     };
-  },[gl,scene,invalidate]);
+  },[gl,scene,invalidate,compact]);
   return <>
     <hemisphereLight args={["#dfefff","#30353d",1.1]}/>
     <directionalLight position={[0,7,5]} color="#ecfbff" intensity={2.30}/>
@@ -308,12 +334,12 @@ function disposeVehicle(object:Object3D) {
   materials.forEach(material=>material.dispose());
 }
 
-async function loadVehicle(signal:AbortSignal, progress:SceneProps["onProgress"]) {
-  const url=vehiclePath+"car.glb";
+async function loadVehicle(folder:string, signal:AbortSignal, progress:SceneProps["onProgress"]) {
+  const url=folder+"car.glb";
   const response=await fetch(url,{signal});
   if (!response.ok) throw new Error("Vehicle download failed");
   const reader=response.body?.getReader();
-  if (!reader) return new GLTFLoader().parseAsync(await response.arrayBuffer(),vehiclePath);
+  if (!reader) return new GLTFLoader().parseAsync(await response.arrayBuffer(),folder);
   const chunks:Uint8Array<ArrayBuffer>[]=[];
   let total=0, previous=-1;
   // GLB declares decoded file length, including when HTTP compression is in use.
@@ -328,11 +354,11 @@ async function loadVehicle(signal:AbortSignal, progress:SceneProps["onProgress"]
       if (header.getUint32(0,true)===0x46546c67) length=header.getUint32(8,true);
     }
     if (length) {
-      const percent=Math.min(99,Math.floor(total/length*100));
+      const percent=Math.min(95,Math.floor(total/length*20)*5);
       if(percent!==previous){progress(percent);previous=percent;}
     }
   }
-  return new GLTFLoader().parseAsync(await new Blob(chunks).arrayBuffer(),vehiclePath);
+  return new GLTFLoader().parseAsync(await new Blob(chunks).arrayBuffer(),folder);
 }
 
 function WingInteraction({model, selected, onInspect}: {model:Object3D; selected:boolean; onInspect?:()=>void}) {
@@ -415,11 +441,11 @@ function WingInteraction({model, selected, onInspect}: {model:Object3D; selected
   return null;
 }
 
-type VehicleProps = Pick<SceneProps,"onProgress"|"onFailure"|"onReady"|"wingSelected"|"onInspect"> & {
+type VehicleProps = Pick<SceneProps,"onProgress"|"onFailure"|"onReady"|"wingSelected"|"onInspect"|"compact"> & {
   onAnchor:(anchor:Vector3|null)=>void;
 };
 
-function Vehicle({onProgress,onFailure,onReady,onAnchor,wingSelected,onInspect}:VehicleProps) {
+function Vehicle({onProgress,onFailure,onReady,onAnchor,wingSelected,onInspect,compact}:VehicleProps) {
   const {gl,invalidate}=useThree();
   const [model,setModel]=useState<Object3D>();
   const callbacks=useRef({onProgress,onFailure,onReady,onAnchor});
@@ -434,7 +460,7 @@ function Vehicle({onProgress,onFailure,onReady,onAnchor,wingSelected,onInspect}:
       callbacks.current.onFailure("lost");
     }
     gl.domElement.addEventListener("webglcontextlost",onContextLost);
-    void loadVehicle(controller.signal,value=>callbacks.current.onProgress(value)).then(({scene})=>{
+    void loadVehicle(compact ? compactVehiclePath : vehiclePath,controller.signal,value=>callbacks.current.onProgress(value)).then(({scene})=>{
       if(controller.signal.aborted){disposeVehicle(scene);return;}
       vehicle=scene;
       const anchor=scene.getObjectByName("Front_wing_inspection_anchor");
@@ -449,7 +475,7 @@ function Vehicle({onProgress,onFailure,onReady,onAnchor,wingSelected,onInspect}:
       controller.abort();
       if(vehicle) disposeVehicle(vehicle);
     };
-  },[gl,invalidate]);
+  },[gl,invalidate,compact]);
 
   useFrame(()=>{
     if(!model||ready.current) return;
@@ -466,18 +492,17 @@ function Vehicle({onProgress,onFailure,onReady,onAnchor,wingSelected,onInspect}:
   </> : null;
 }
 
-export default function Scene({command,pose,wingPose,wingSelected,...callbacks}:SceneProps) {
-  const compact=typeof window!=="undefined"&&matchMedia("(max-width: 740px)").matches;
+export default function Scene({command,pose,wingPose,wingSelected,compact,cameraHelp,...callbacks}:SceneProps) {
   const [anchor,setAnchor]=useState<Vector3|null>(null);
-  return <div className="inspection-render" role="img" aria-label={wingSelected ? "Illustrative AF–02 front-wing close-up" : "Interactive illustrative AF–02 racing car"}>
+  return <div className="inspection-render">
     <Canvas frameloop="demand" dpr={[1,compact?1.25:1.5]}
       camera={{position:[...initial],fov:36,near:.1,far:140}}
       gl={{antialias:true,powerPreference:"low-power"}}>
       <color attach="background" args={["#151b20"]}/>
-      <Lighting/>
+      <Lighting compact={compact}/>
       <Floor/>
-      <Vehicle {...callbacks} onAnchor={setAnchor} wingSelected={wingSelected}/>
-      <Rig command={command} pose={pose} wingPose={wingPose} wingSelected={wingSelected} anchor={wingSelected ? anchor : null}/>
+      <Vehicle {...callbacks} onAnchor={setAnchor} wingSelected={wingSelected} compact={compact}/>
+      <Rig command={command} pose={pose} wingPose={wingPose} wingSelected={wingSelected} anchor={wingSelected ? anchor : null} cameraHelp={cameraHelp}/>
     </Canvas>
   </div>;
 }

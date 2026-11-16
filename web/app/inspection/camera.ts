@@ -10,3 +10,4 @@ export type CameraPose = {
 };
 export type RenderStats = {calls:number; triangles:number};
 export const vehiclePath = "/vehicle/af02-v1/";
+export const compactVehiclePath = "/vehicle/af02-mobile-v1/";

@@ -20,7 +20,7 @@ createServer(async (req, res) => {
     const gzip = /\bgzip\b/.test(req.headers['accept-encoding'] ?? '') && original.length > 1024;
     const bytes = gzip ? gzipSync(original) : original;
     const etag = `"${bytes.length}-${(await stat(file)).mtimeMs}-${gzip ? 'gzip' : 'raw'}"`;
-    const cache = /^\/(runtime|models|vehicle\/af02-v1)\//.test(pathname) ? 'public, max-age=31536000, immutable' : 'no-cache';
+    const cache = /^\/(runtime|models|vehicle\/af02-(?:mobile-)?v1)\//.test(pathname) ? 'public, max-age=31536000, immutable' : 'no-cache';
     const headers = { 'Content-Type': mime[extname(file)] ?? 'application/octet-stream', 'Cache-Control': cache, ETag: etag,
       'Content-Length': bytes.length, Vary: 'Accept-Encoding', ...(gzip ? { 'Content-Encoding': 'gzip' } : {}) };
     if (req.headers['if-none-match'] === etag) { res.writeHead(304, headers).end(); return; }

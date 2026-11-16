@@ -4,7 +4,15 @@ Last updated: 2026-11-16 (Asia/Karachi).
 
 ## Current phase and session rule
 
-Phase V2.4 is complete on `codex/aeroforge-v2`. The local production export integrates analysis across the workspace. Approval is pending for V2.5, visual polish and performance. The public v1 baseline is `e8e0ea0`. [Public v1](https://aeroforge-9tf.pages.dev/)
+Phase V2.5 implementation is complete on `codex/aeroforge-v2`. Approval is pending for V2.6, production verification. The public v1 baseline is `e8e0ea0`. [Public v1](https://aeroforge-9tf.pages.dev/)
+
+## Phase V2.5 visual polish and performance
+
+- Reviewed the four workspace views at 1920, 1440, 768 and 390 px before and after refinement, plus loading and failed-asset fallback. Enlarged the desktop car, refined wing framing, brought the tablet dock into view and moved compact Analysis telemetry above the charts. Reserved the bay and hid desktop controls at the right breakpoint before hydration to reduce layout shift.
+- The compact 3D option loads a dedicated 399,464-byte model, down from 828,248 bytes, with 14,874 rendered triangles and 34 draw calls. Reduced the reflection-map resolution while preserving the car shading. Tested Meshopt stream encoding offline and kept native glTF buffers in the shipped assets. Static guards enforce both geometry budgets and verify the accepted ONNX model and preprocessing hashes.
+- Added keyboard orbit and larger phone touch targets, and disabled orbit damping under reduced motion. Fixed a remount race that could replace the stored camera pose with its default. Four consecutive browser checks reproduced the selected pose across mode switches. Axe reported zero violations across 12 states. Phone gestures were tested with browser touch emulation. Physical phone frame timing remains open.
+- `npm run verify` passed lint, TypeScript, 23 Node tests, the static build and asset checks, and 59 Playwright tests with ten profile-specific skips. [Screenshots and verification](docs/v2-5/README.md)
+- On the integrated Radeon desktop, 3D became interactive at 2.24 s under the 10 Mbps / 100 ms profile and orbit p95 was 17.5 ms, with zero draws at rest. The 2D shell added 9.4 KiB gzip versus v1. Median warm edits stayed near 92 ms and cold edits rose 2.6%. Lighthouse scored 92 mobile and 86 desktop for performance, below the desktop goal of 90, and 100 for the other categories in both profiles.
 
 ## Phase V2.4 analysis integration
 

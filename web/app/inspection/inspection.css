@@ -44,6 +44,8 @@
 [data-render-status="ready"] .inspection-render { opacity: 1; }
 .inspection-render canvas { cursor: grab; }
 .inspection-render canvas:active { cursor: grabbing; }
+.inspection-render canvas:focus-visible { outline: 2px solid var(--accent, #71ddd9); outline-offset: -3px; }
+[data-render-status="loading"] .inspection-render { visibility: hidden; }
 .inspection-state {
   position: absolute; inset: auto 12px 12px; display: flex; align-items: center; gap: 8px;
   flex-wrap: wrap; pointer-events: none;

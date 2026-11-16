@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { Component, useEffect, useRef, useState, type ReactNode } from "react";
+import { Component, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { cameraViews, vehiclePath, type View, type CameraCommand, type CameraPose, type RenderStats } from "./camera";
 
 const Scene = dynamic(() => import("./scene"), {ssr:false});
@@ -18,11 +18,13 @@ type Status = "poster" | "loading" | "ready" | "unsupported" | "failed" | "lost"
 
 type WingInspection = { selected: boolean; onInspect: () => void; onReturn: () => void };
 
-export function VehicleViewport({active = true, onAirfoil, wing}: {
-  active?: boolean; onAirfoil?: () => void; wing?: WingInspection;
+export function VehicleViewport({active = true, initialized = true, onAirfoil, wing}: {
+  active?: boolean; initialized?: boolean; onAirfoil?: () => void; wing?: WingInspection;
 }) {
   const [status, setStatus] = useState<Status>("poster");
   const [progress, setProgress] = useState<number | null>(null);
+  const [compact, setCompact] = useState(false);
+  const cameraHelp = useId();
   const [stats, setStats] = useState<RenderStats>();
   const [view, setView] = useState<View>("Three-quarter");
   const [command, setCommand] = useState<CameraCommand>({view:"Three-quarter"});
@@ -44,19 +46,26 @@ export function VehicleViewport({active = true, onAirfoil, wing}: {
     pose.current = null;
     wingPose.current = null;
     setProgress(null);
+    setCompact(matchMedia("(max-width: 740px)").matches);
     setStatus("loading");
   }
 
   useEffect(() => {
-    if (active && status === "poster" && matchMedia("(min-width: 741px)").matches) start();
     if (!active && status === "ready") { setProgress(null); setStatus("loading"); }
-  }, [active, status]);
+    if (!initialized || !active || status!=="poster" || !matchMedia("(min-width: 741px)").matches) return;
+    if (typeof requestIdleCallback === "function") {
+      const callback=requestIdleCallback(start,{timeout:600});
+      return ()=>cancelIdleCallback(callback);
+    }
+    const timeout=window.setTimeout(start,0);
+    return ()=>window.clearTimeout(timeout);
+  }, [active, initialized, status]);
 
   if (!active) return null;
   const renderScene = active && (status === "ready" || status === "loading");
   const message = {
     poster:"3D preview is optional on compact screens.",
-    loading: progress === null ? "Preparing 3D preview…" : `Loading vehicle · ${progress}%`,
+    loading:"Loading 3D preview…",
     ready:"Drag to orbit. Scroll or pinch to zoom.",
     unsupported:"3D is unavailable in this browser.",
     failed:"The 3D preview could not load.",
@@ -70,25 +79,28 @@ export function VehicleViewport({active = true, onAirfoil, wing}: {
   };
 
   return <div className="vehicle-viewport" data-wing-selected={wing?.selected || undefined}>
-      <div className="inspection-bay" data-render-status={status}
+      <div className="inspection-bay" data-render-status={status} data-render-tier={renderScene ? compact ? "compact" : "desktop" : undefined}
         data-triangles={stats?.triangles} data-draw-calls={stats?.calls}>
-        {status !== "ready" && !wing?.selected && <Image className="inspection-poster" src={vehiclePath+"poster.webp"}
-          width={1440} height={720} alt="AF–02 from the front three-quarter angle" unoptimized/>}
+        {initialized && status !== "ready" && !wing?.selected && <Image className="inspection-poster" src={vehiclePath+"poster.webp"}
+          width={1440} height={720} alt="AF–02 from the front three-quarter angle" loading="eager" fetchPriority="high" unoptimized/>}
         {renderScene && <GraphicsBoundary onFailure={() => setStatus("failed")}>
-          <Scene command={command} pose={pose} wingPose={wingPose} wingSelected={!!wing?.selected}
+          <Scene command={command} pose={pose} wingPose={wingPose} wingSelected={!!wing?.selected} compact={compact} cameraHelp={cameraHelp}
             onInspect={wing ? inspect : undefined} onProgress={setProgress}
             onFailure={kind=>setStatus(kind)}
             onReady={value=>{setStats(value);setStatus("ready");}}/>
         </GraphicsBoundary>}
         <div className="inspection-state">
-          <p role="status" aria-label="Graphics status">{message}</p>
-          {!renderScene && status !== "unsupported" && <button className="inspection-button" onClick={start}>
+          <p role="status" aria-label="Graphics status">{message}
+            {status==="loading" && progress!==null && <span aria-hidden="true"> {progress}%</span>}
+          </p>
+          {!renderScene && status !== "unsupported" && <button className="inspection-button" disabled={!initialized} onClick={start}>
             {status === "poster" ? "Enable 3D" : "Retry 3D"}
           </button>}
           {!renderScene && status !== "poster" && !wing?.selected && (onAirfoil
             ? <button className="inspection-button" onClick={onAirfoil}>Continue in 2D</button>
             : <a className="inspection-button" href="/studio/?view=airfoil">Continue in 2D</a>)}
         </div>
+        {renderScene && <span id={cameraHelp} hidden>Use the arrow keys to orbit the car.</span>}
       </div>
       <div className="inspection-toolbar">
         {wing && <>

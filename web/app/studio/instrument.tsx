@@ -342,6 +342,28 @@ export default function Instrument(props:InstrumentProps) {
       <button className="chip micro" disabled={cannotSave} onClick={saveDesign}>Save design</button>
     </div>;
 
+  const telemetryPanel = <aside className="v2-telemetry" aria-label="Predicted performance">
+    <div className="v2-panel-heading"><h2>Predicted performance</h2><span className="micro">Isolated 2D section</span></div>
+    <div className="v2-metrics">
+      {([["Lift coefficient","CL","cl",4],["Drag coefficient","CD","cd",5],["Lift to drag","L/D","ratio",2]] as const)
+        .map(([label,symbol,key,digits])=><div className="v2-metric" key={key}>
+          <div className="v2-metric-label"><span>{label}</span><abbr title={label}>{symbol}</abbr></div>
+          <Readout id={key} value={current?.[key]} previous={result?.[key]} pending={pending} sweeping={sweeping && inBounds} digits={digits}/>
+        </div>)}
+    </div>
+    <div className="v2-model">
+      <div className="v2-latency"><span>Inference</span><strong data-testid="latency">{latency}</strong></div>
+      <p role="status" aria-label="Prediction status">{sweeping && inBounds ? "Alpha sweep playing" : statusText}</p>
+      <button className="status-button" onClick={()=>openDrawer("Details")}><StatusPill state={inBounds?"valid":"warning"}>{domainLabel}</StatusPill></button>
+      {domainError && !invalid && <p className="v2-warning">{domainError}</p>}
+      {inBounds && !model.domain.sampled_reynolds.includes(design.re) && <p className="v2-note">Reynolds interpolation between sampled levels.</p>}
+      <button className="chip micro details-button" onClick={()=>openDrawer("Details")}>Details / evidence</button>
+      <span className="sr-only" data-testid="applicability">{domainError || "Finite evidence domain. XFOIL agreement on sampled cases. Continuous-domain and experimental accuracy are not established."}
+        {!model.domain.sampled_reynolds.includes(design.re)&&" Reynolds interpolation between sampled levels."}</span>
+    </div>
+  </aside>;
+  const analysisTelemetryFirst = compact && view==="analysis";
+
   return <div className="instrument v2-workspace">
     <header className="v2-header">
       <a href="/" className="v2-brand" aria-label="AeroForge home">
@@ -366,10 +388,10 @@ export default function Instrument(props:InstrumentProps) {
             <div><p className="micro">{view==="studio" ? "Vehicle studio" : view==="airfoil" ? "Representative NACA section" : "Isolated 2D section analysis"}</p>
               <h1 ref={viewHeading} tabIndex={-1}>{view==="studio" ? "AF–02" : nameOf(design)}</h1></div>
             {view==="studio" && <p className="v2-car-label">Illustrative car</p>}
-            {compact && <button className="chip micro v2-edit" aria-haspopup="dialog"
-              onClick={()=>openDrawer("Design parameters")}>Edit parameters</button>}
+            <button className="chip micro v2-edit" aria-haspopup="dialog"
+              onClick={()=>openDrawer("Design parameters")}>Edit parameters</button>
           </div>
-          <VehicleViewport active={view==="studio" && props.urlReady} onAirfoil={()=>changeMode("airfoil")}
+          <VehicleViewport active={view==="studio"} initialized={props.urlReady} onAirfoil={()=>changeMode("airfoil")}
             wing={{selected:wingSelected,onInspect:inspectWing,onReturn:()=>setWingSelected(false)}}/>
           {view==="studio" && wingSelected && <section className="v2-wing-study" aria-labelledby={wingTitle}>
             <div className="v2-wing-copy">
@@ -399,6 +421,7 @@ export default function Instrument(props:InstrumentProps) {
               </div>
             </div>
           </>}
+          {analysisTelemetryFirst && telemetryPanel}
           {view==="analysis" && <section className="v2-analysis" aria-label="Section analysis">
             <div className="v2-analysis-summary">
               <SectionPreview design={design} invalid={invalid} saved={saved?.design}/>
@@ -411,26 +434,7 @@ export default function Instrument(props:InstrumentProps) {
             {saved && comparisonPanel}
           </section>}
         </div>
-        <aside className="v2-telemetry" aria-label="Predicted performance">
-          <div className="v2-panel-heading"><h2>Predicted performance</h2><span className="micro">Isolated 2D section</span></div>
-          <div className="v2-metrics">
-            {([["Lift coefficient","CL","cl",4],["Drag coefficient","CD","cd",5],["Lift to drag","L/D","ratio",2]] as const)
-              .map(([label,symbol,key,digits])=><div className="v2-metric" key={key}>
-                <div className="v2-metric-label"><span>{label}</span><abbr title={label}>{symbol}</abbr></div>
-                <Readout id={key} value={current?.[key]} previous={result?.[key]} pending={pending} sweeping={sweeping && inBounds} digits={digits}/>
-              </div>)}
-          </div>
-          <div className="v2-model">
-            <div className="v2-latency"><span>Inference</span><strong data-testid="latency">{latency}</strong></div>
-            <p role="status" aria-label="Prediction status">{sweeping && inBounds ? "Alpha sweep playing" : statusText}</p>
-            <button className="status-button" onClick={()=>openDrawer("Details")}><StatusPill state={inBounds?"valid":"warning"}>{domainLabel}</StatusPill></button>
-            {domainError && !invalid && <p className="v2-warning">{domainError}</p>}
-            {inBounds && !model.domain.sampled_reynolds.includes(design.re) && <p className="v2-note">Reynolds interpolation between sampled levels.</p>}
-            <button className="chip micro details-button" onClick={()=>openDrawer("Details")}>Details / evidence</button>
-            <span className="sr-only" data-testid="applicability">{domainError || "Finite evidence domain. XFOIL agreement on sampled cases. Continuous-domain and experimental accuracy are not established."}
-              {!model.domain.sampled_reynolds.includes(design.re)&&" Reynolds interpolation between sampled levels."}</span>
-          </div>
-        </aside>
+        {!analysisTelemetryFirst && telemetryPanel}
       </div>
       {view!=="analysis" && <div className="v2-dock">
         <nav aria-label="Analysis dock">

@@ -30,8 +30,8 @@ for (const name of [
   `${runtime}/ort-wasm-simd-threaded.wasm`, 'licenses/AeroForge-MIT.txt', 'licenses/ONNX-Runtime-LICENSE.txt',
   'licenses/Three-LICENSE.txt', 'licenses/React-Three-Fiber-LICENSE.txt',
 ]) assert(files.some(file => file.name === name && file.bytes > 0), `Missing Pages asset: ${name}`);
-for (const [name, kib] of [['car.glb', 900], ['poster.webp', 160]]) {
-  const path = `vehicle/af02-v1/${name}`;
+for (const [path, kib] of [['vehicle/af02-v1/car.glb', 900], ['vehicle/af02-v1/poster.webp', 160],
+  ['vehicle/af02-mobile-v1/car.glb', 450]]) {
   const file = files.find(entry => entry.name === path);
   assert(file && file.bytes > 0 && file.bytes <= kib * 1024, `Missing or over-budget inspection asset: ${path}`);
 }

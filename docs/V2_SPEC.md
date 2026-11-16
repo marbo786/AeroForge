@@ -1,6 +1,6 @@
 # AeroForge v2 Design Studio
 
-**2026-11-16 · V2.4 complete · Awaiting approval for V2.5**
+**2026-11-16 · V2.5 implementation complete · Awaiting approval for V2.6**
 
 The Design Studio opens in a dark inspection bay built around an original, unbranded Formula-style racing car. Selecting the front wing turns the bay into a close-up section study. The user can work with the same design in Studio, Airfoil and Analysis without losing edits or a saved comparison. The current public v1 release is the baseline, commit `e8e0ea0`.
 
@@ -100,7 +100,7 @@ Ship same-origin, versioned assets in the existing `web/out` static export with 
 
 ## Phases and acceptance gates
 
-After each phase update `PROGRESS.md`, commit with a lowercase imperative message, and stop for approval. The current approval extends through V2.4. [V2.1 visual evidence](v2-1/README.md) · [V2.2 visual evidence](v2-2/README.md) · [V2.3 visual evidence](v2-3/README.md) · [V2.4 visual evidence](v2-4/README.md)
+After each phase update `PROGRESS.md`, commit with a lowercase imperative message, and stop for approval. The current approval extends through V2.5. [V2.1 visual evidence](v2-1/README.md) · [V2.2 visual evidence](v2-2/README.md) · [V2.3 visual evidence](v2-3/README.md) · [V2.4 visual evidence](v2-4/README.md) · [V2.5 visual evidence](v2-5/README.md)
 
 | Phase | Deliverable | Acceptance evidence |
 | --- | --- | --- |
