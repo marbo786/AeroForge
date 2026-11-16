@@ -6,11 +6,16 @@ Last updated: 2026-11-16 (Asia/Karachi).
 
 GitHub `main` contains the V2.5 implementation through PR #1 at merge `075bf74`. The v2 Studio is live and passed the public HTTPS smoke test on 2026-11-16. The previous v1 source baseline is `e8e0ea0`. V2.6 remains pending for deployment metadata and separate preview and rollback checks. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release evidence](docs/RELEASE_CHECKLIST.md)
 
+## Cleanup Phase B Reynolds disclosure
+
+- Added the Reynolds-number and isolated-section disclosure in the shared scientific limitations component used by the Studio Details dialog and `/model/`, plus the README limitations. The comparison is scoped to full-scale Formula 1 front-wing conditions. [Front-wing research](https://link.springer.com/article/10.1007/s00348-026-04191-5)
+- Extended the existing Model Evidence browser test to check the exact sentence on the page and in the Details dialog. Phase C awaits approval.
+- Verified lint, strict TypeScript, 23 Node tests, the production export and asset hashes, 59 Playwright tests with ten profile-specific skips, and all 104 Python tests.
+
 ## Cleanup Phase A documentation consistency
 
 - Compared the live AF–02 workflow, the desktop and compact GLBs, and the poster with the merged v2 tree. Verified same-origin browser inference and the public model and preprocessing hashes. Synchronized the README, release checklist, deployment guide, architecture and version status with that evidence.
 - Re-ran lint, strict TypeScript, the static export guard, 23 Node tests and 59 Playwright tests with ten profile-specific skips. The Python audit passed 104 tests in `.venv-ml`.
-- Source and scientific artifacts remain at the v2 release versions. Phase B awaits approval.
 
 ## Phase V2.5 visual polish and performance
 

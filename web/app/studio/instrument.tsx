@@ -185,6 +185,7 @@ export function ModelDetails() {
       <p>Symmetric sections use canonical camber position zero. Intermediate Reynolds numbers are interpolations. The “In domain” status checks input bounds. Evaluation covers a finite panel of conditions.</p>
     </Module>
     <Module number="02" title="Scientific limitations">
+      <p>The model’s Reynolds number range of 100,000 to 500,000 is below typical full-scale Formula 1 front-wing conditions, so its predictions apply only to isolated airfoil sections.</p>
       <p>Evaluation measures agreement with XFOIL. Experimental accuracy, post-stall behavior and calibrated uncertainty remain unverified. Drag errors were higher at low Reynolds numbers, and high-camber sections were harder to predict.</p>
       <p>The model returns dimensionless lift and drag coefficients. The flow display is conceptual. The airfoil outline comes from the analytic NACA geometry.</p>
       <p>The isolated section model excludes 3D vehicle effects, ground effect and interactions between components.</p>

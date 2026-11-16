@@ -366,12 +366,18 @@ test("controls drawer, display toggles, reduced motion and real exports remain u
 
 test("model evidence page loads without console errors and returns to studio",async({page})=>{
   const errors:string[]=[];page.on("pageerror",e=>errors.push(e.message));page.on("console",m=>{if(m.type()==="error")errors.push(m.text());});
+  const disclosure = "The model’s Reynolds number range of 100,000 to 500,000 is below typical full-scale Formula 1 front-wing conditions, so its predictions apply only to isolated airfoil sections.";
   await page.goto("/model/");
   await expect(page.getByRole("heading",{name:"Model evidence /",exact:true})).toBeVisible();
   await expect(page.getByText("0.01484",{exact:true})).toBeVisible();
+  await expect(page.getByRole("main").getByText(disclosure,{exact:true})).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.getByRole("link",{name:"Return to studio",exact:true}).click();
-  await expect(page.locator('[aria-label="Prediction status"]')).toHaveText("Prediction ready");expect(errors).toEqual([]);
+  await expect(page.locator('[aria-label="Prediction status"]')).toHaveText("Prediction ready");
+  await page.getByRole("button",{name:"Details / evidence",exact:true}).click();
+  const details = page.getByRole("dialog",{name:"Details",exact:true});
+  await expect(details.getByText(disclosure,{exact:true})).toBeVisible();
+  expect(errors).toEqual([]);
 });
 
 test("saved comparisons overlay airfoils and real sweeps, restore and clear", async ({page}, info) => {
