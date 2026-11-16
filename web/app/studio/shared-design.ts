@@ -4,7 +4,7 @@ import type { Design } from "../../lib/inference/surrogate";
 const keys = ["m", "p", "t", "aoa", "re"] as const;
 const decimal = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i;
 export const views = ["studio", "airfoil", "analysis"] as const;
-export type WorkspaceView = typeof views[number];
+export type WorkspaceView = (typeof views)[number];
 
 export function readWorkspaceView(search: string): WorkspaceView {
   const view = new URLSearchParams(search).get("view");
@@ -13,8 +13,8 @@ export function readWorkspaceView(search: string): WorkspaceView {
 
 export function readSharedDesign(search: string): Design | null {
   const params = new URLSearchParams(search);
-  if (!keys.some(key => params.has(key))) return null;
-  const [m, p, t, alpha, re] = keys.map(key => {
+  if (!keys.some((key) => params.has(key))) return null;
+  const [m, p, t, alpha, re] = keys.map((key) => {
     const values = params.getAll(key);
     if (values.length !== 1 || !decimal.test(values[0])) throw new Error("Invalid design link");
     const value = Number(values[0]);

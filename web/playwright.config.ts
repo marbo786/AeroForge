@@ -15,13 +15,22 @@ export default defineConfig({
   },
   projects: [
     { name: "desktop", use: { viewport: { width: 1440, height: 900 } } },
-    { name: "tablet", testMatch: "**/studio.spec.ts", use: { viewport: { width: 1024, height: 768 } } },
-    { name: "mobile", use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
+    {
+      name: "tablet",
+      testMatch: "**/studio.spec.ts",
+      use: { viewport: { width: 1024, height: 768 } },
+    },
+    {
+      name: "mobile",
+      use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true },
+    },
   ],
-  webServer: externalOrigin ? undefined : {
-    command: "npm run serve",
-    url: "http://127.0.0.1:4173",
-    reuseExistingServer: false,
-    timeout: 30_000,
-  },
+  webServer: externalOrigin
+    ? undefined
+    : {
+        command: "npm run serve",
+        url: "http://127.0.0.1:4173",
+        reuseExistingServer: false,
+        timeout: 30_000,
+      },
 });

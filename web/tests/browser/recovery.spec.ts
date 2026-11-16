@@ -1,7 +1,10 @@
 import { test, expect } from "@playwright/test";
 import { writeFile } from "node:fs/promises";
 
-test("recovered model passes frozen accuracy metadata and production browser numerical checks", async ({ page, request }, testInfo) => {
+test("recovered model passes frozen accuracy metadata and production browser numerical checks", async ({
+  page,
+  request,
+}, testInfo) => {
   const root = "/models/recovery-v1-complete/";
   const metadata = await (await request.get(root + "model.json")).json();
   const golden = await (await request.get(root + "golden.json")).json();
@@ -11,37 +14,62 @@ test("recovered model passes frozen accuracy metadata and production browser num
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/spike/");
-  const result = await page.evaluate(async ({ root, golden }) => {
-    const url = location.origin + "/runtime/1.31.1/ort.wasm.min.mjs";
-    const ort = await import(url);
-    ort.env.wasm.numThreads = 1; ort.env.wasm.proxy = false;
-    ort.env.wasm.wasmPaths = location.origin + "/runtime/1.31.1/";
-    const start = performance.now();
-    const session = await ort.InferenceSession.create(root + "selected.onnx", { executionProviders: ["wasm"] });
-    const sessionInitMs = performance.now() - start;
-    const x = golden.features as number[][];
-    const feeds = { features: new ort.Tensor("float32", Float32Array.from(x.flat()), [x.length, 5]) };
-    const results = await session.run(feeds);
-    const expected = (golden.expected.selected as number[][]).flat();
-    const actual = Array.from(results.coefficients.data as Float32Array);
-    const repeated = (await session.run(feeds)).coefficients.data as Float32Array;
-    const repeatMatches = actual.length === repeated.length && actual.every((value, i) => value === repeated[i]);
-    const maxError = Math.max(...actual.map((value, i) => Math.abs(value - expected[i])));
-    const timings: Record<string, { p50_ms: number; p95_ms: number }> = {};
-    for (const [name, count] of [["single", 1], ["batch17", 17]] as const) {
-      const features = new ort.Tensor("float32", Float32Array.from(x.slice(0, count).flat()), [count, 5]);
-      for (let i = 0; i < 10; i++) await session.run({ features });
-      const times = [];
-      for (let i = 0; i < 100; i++) {
-        const start = performance.now(); await session.run({ features }); times.push(performance.now() - start);
+  const result = await page.evaluate(
+    async ({ root, golden }) => {
+      const url = location.origin + "/runtime/1.31.1/ort.wasm.min.mjs";
+      const ort = await import(url);
+      ort.env.wasm.numThreads = 1;
+      ort.env.wasm.proxy = false;
+      ort.env.wasm.wasmPaths = location.origin + "/runtime/1.31.1/";
+      const start = performance.now();
+      const session = await ort.InferenceSession.create(root + "selected.onnx", {
+        executionProviders: ["wasm"],
+      });
+      const sessionInitMs = performance.now() - start;
+      const x = golden.features as number[][];
+      const feeds = {
+        features: new ort.Tensor("float32", Float32Array.from(x.flat()), [x.length, 5]),
+      };
+      const results = await session.run(feeds);
+      const expected = (golden.expected.selected as number[][]).flat();
+      const actual = Array.from(results.coefficients.data as Float32Array);
+      const repeated = (await session.run(feeds)).coefficients.data as Float32Array;
+      const repeatMatches =
+        actual.length === repeated.length && actual.every((value, i) => value === repeated[i]);
+      const maxError = Math.max(...actual.map((value, i) => Math.abs(value - expected[i])));
+      const timings: Record<string, { p50_ms: number; p95_ms: number }> = {};
+      for (const [name, count] of [
+        ["single", 1],
+        ["batch17", 17],
+      ] as const) {
+        const features = new ort.Tensor("float32", Float32Array.from(x.slice(0, count).flat()), [
+          count,
+          5,
+        ]);
+        for (let i = 0; i < 10; i++) await session.run({ features });
+        const times = [];
+        for (let i = 0; i < 100; i++) {
+          const start = performance.now();
+          await session.run({ features });
+          times.push(performance.now() - start);
+        }
+        times.sort((a, b) => a - b);
+        timings[name] = { p50_ms: times[49], p95_ms: times[94] };
       }
-      times.sort((a, b) => a - b);
-      timings[name] = { p50_ms: times[49], p95_ms: times[94] };
-    }
-    await session.release();
-    return { maxError, shape: results.coefficients.dims, cases: x.length, timings, sessionInitMs, repeatMatches, isolated: crossOriginIsolated,
-      positiveDrag: actual.filter((_, i) => i % 2 === 1).every((value) => value > 0) };
-  }, { root, golden });
+      await session.release();
+      return {
+        maxError,
+        shape: results.coefficients.dims,
+        cases: x.length,
+        timings,
+        sessionInitMs,
+        repeatMatches,
+        isolated: crossOriginIsolated,
+        positiveDrag: actual.filter((_, i) => i % 2 === 1).every((value) => value > 0),
+      };
+    },
+    { root, golden },
+  );
   expect(result.maxError).toBeLessThan(1e-5);
   expect(result.shape).toEqual([golden.features.length, 2]);
   expect(result.positiveDrag).toBe(true);

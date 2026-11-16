@@ -1,10 +1,22 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { cosineStations, generateGeometry, geometryId, getPreset, normalizeGeometry, parseNaca, presetCodes, sectionAt } from "../lib/geometry/naca4.ts";
+import {
+  cosineStations,
+  generateGeometry,
+  geometryId,
+  getPreset,
+  normalizeGeometry,
+  parseNaca,
+  presetCodes,
+  sectionAt,
+} from "../lib/geometry/naca4.ts";
 
-const reference = JSON.parse(await readFile(new URL("../../tests/reference/naca4-stations.json", import.meta.url), "utf8"));
-const near = (actual: number, expected: number, tolerance = 1e-13) => assert.ok(Math.abs(actual - expected) <= tolerance, `${actual} != ${expected}`);
+const reference = JSON.parse(
+  await readFile(new URL("../../tests/reference/naca4-stations.json", import.meta.url), "utf8"),
+);
+const near = (actual: number, expected: number, tolerance = 1e-13) =>
+  assert.ok(Math.abs(actual - expected) <= tolerance, `${actual} != ${expected}`);
 
 for (const entry of reference.cases) {
   test(`NACA ${entry.code} agrees with independent high-precision station references`, () => {
@@ -23,9 +35,9 @@ for (const entry of reference.cases) {
 
 test("symmetric p is canonical across coordinates, IDs, signed zero and metadata", () => {
   const base = generateGeometry(parseNaca("0012"));
-  for (const p of [-10, 0, .2, .4, .6, 100]) {
-    const input = { m: -0, p, t: .12 };
-    assert.deepEqual(normalizeGeometry(input), { m: 0, p: 0, t: .12 });
+  for (const p of [-10, 0, 0.2, 0.4, 0.6, 100]) {
+    const input = { m: -0, p, t: 0.12 };
+    assert.deepEqual(normalizeGeometry(input), { m: 0, p: 0, t: 0.12 });
     assert.deepEqual(generateGeometry(input), base);
     assert.equal(geometryId(input), base.geometryId);
   }
@@ -56,15 +68,16 @@ for (const code of presetCodes) {
       near((xu + xl) / 2, g.x[i], 1e-15);
       near((yu + yl) / 2, s.camber, 1e-15);
       near(Math.hypot(xu - xl, yu - yl), 2 * s.halfThickness, 1e-15);
-      near((xu - xl) + s.slope * (yu - yl), 0, 1e-15);
+      near(xu - xl + s.slope * (yu - yl), 0, 1e-15);
     }
     const [xu, yu] = g.upper.at(-1)!;
     const [xl, yl] = g.lower.at(-1)!;
-    near(Math.hypot(xu - xl, yu - yl), .021 * p.t, 1e-15);
-    const area = g.contour.reduce((sum, a, i) => {
-      const b = g.contour[(i + 1) % g.contour.length];
-      return sum + a[0] * b[1] - b[0] * a[1];
-    }, 0) / 2;
+    near(Math.hypot(xu - xl, yu - yl), 0.021 * p.t, 1e-15);
+    const area =
+      g.contour.reduce((sum, a, i) => {
+        const b = g.contour[(i + 1) % g.contour.length];
+        return sum + a[0] * b[1] - b[0] * a[1];
+      }, 0) / 2;
     assert.ok(area > 0);
   });
 }
@@ -75,23 +88,27 @@ test("camber peak, continuous slope, finite-difference derivative and true nose 
   assert.equal(sectionAt(p, p.p).slope, 0);
   assert.equal(sectionAt(p, 0).camber, 0);
   assert.equal(sectionAt(p, 1).camber, 0);
-  for (const x of [.05, .3, .4, .8]) {
+  for (const x of [0.05, 0.3, 0.4, 0.8]) {
     const h = 1e-7;
     const derivative = (sectionAt(p, x + h).camber - sectionAt(p, x - h).camber) / (2 * h);
     near(sectionAt(p, x).slope, derivative, 1e-8);
   }
   near(sectionAt(p, p.p - 1e-9).camber, sectionAt(p, p.p + 1e-9).camber, 1e-15);
-  assert.ok(sectionAt(parseNaca("6618"), .0001).upper[0] < 0);
+  assert.ok(sectionAt(parseNaca("6618"), 0.0001).upper[0] < 0);
 });
 
 test("cosine sampling has exact endpoints, clusters at both edges and preserves identity", () => {
   const x = cosineStations(101);
-  assert.equal(x[0], 0); assert.equal(x[100], 1);
-  near(x[50], .5);
-  assert.ok(x[1] < .001 && x[100] - x[99] < .001);
+  assert.equal(x[0], 0);
+  assert.equal(x[100], 1);
+  near(x[50], 0.5);
+  assert.ok(x[1] < 0.001 && x[100] - x[99] < 0.001);
   // Separate cosine evaluations can differ by a few float64 ULPs.
   for (let i = 0; i < x.length; ++i) near(x[i], 1 - x[100 - i], 1e-15);
-  assert.equal(generateGeometry(parseNaca("2412"), 3).geometryId, generateGeometry(parseNaca("2412"), 1001).geometryId);
+  assert.equal(
+    generateGeometry(parseNaca("2412"), 3).geometryId,
+    generateGeometry(parseNaca("2412"), 1001).geometryId,
+  );
 });
 
 test("normalization has explicit units, is idempotent, preserves precision, and does not mutate input", () => {
@@ -101,7 +118,7 @@ test("normalization has explicit units, is idempotent, preserves precision, and 
   assert.deepEqual(input, { m: 2, p: 40, t: 12 });
   assert.deepEqual(normalizeGeometry(p), p);
   assert.deepEqual(parseNaca(" naca 0412 "), parseNaca("0012"));
-  const precise = { m: .013456789, p: .456789012, t: .123456789 };
+  const precise = { m: 0.013456789, p: 0.456789012, t: 0.123456789 };
   assert.deepEqual(normalizeGeometry(precise), precise);
   assert.equal(geometryId(p), "naca4-open-v1:3f947ae147ae147b:3fd999999999999a:3fbeb851eb851eb8");
   for (const key of ["m", "p", "t"] as const) {
@@ -112,15 +129,38 @@ test("normalization has explicit units, is idempotent, preserves precision, and 
 });
 
 test("invalid geometry values are rejected rather than clamped or coerced", () => {
-  const invalid: unknown[] = [null, {}, { m: 0 }, { m: true, p: .4, t: .12 },
-    { m: .02, p: "0.4", t: .12 }, { m: -1e-9, p: .4, t: .12 },
-    { m: .0600001, p: .4, t: .12 }, { m: .02, p: 0, t: .12 },
-    { m: .02, p: .600001, t: .12 }, { m: 0, p: NaN, t: .12 },
-    { m: 0, p: 0, t: .0799999 }, { m: 0, p: 0, t: .1800001 }, { m: 0, p: 0, t: Infinity }];
+  const invalid: unknown[] = [
+    null,
+    {},
+    { m: 0 },
+    { m: true, p: 0.4, t: 0.12 },
+    { m: 0.02, p: "0.4", t: 0.12 },
+    { m: -1e-9, p: 0.4, t: 0.12 },
+    { m: 0.0600001, p: 0.4, t: 0.12 },
+    { m: 0.02, p: 0, t: 0.12 },
+    { m: 0.02, p: 0.600001, t: 0.12 },
+    { m: 0, p: NaN, t: 0.12 },
+    { m: 0, p: 0, t: 0.0799999 },
+    { m: 0, p: 0, t: 0.1800001 },
+    { m: 0, p: 0, t: Infinity },
+  ];
   for (const values of invalid) assert.throws(() => normalizeGeometry(values));
-  for (const code of [2412, "", "241", "24123", "24.12", "１２１２", "NACA 9912", "1012", "2400", "6407"]) {
+  for (const code of [
+    2412,
+    "",
+    "241",
+    "24123",
+    "24.12",
+    "１２１２",
+    "NACA 9912",
+    "1012",
+    "2400",
+    "6407",
+  ]) {
     assert.throws(() => parseNaca(code as string));
   }
-  for (const n of [true, 2, 3.5, 10002, NaN, "201"]) assert.throws(() => cosineStations(n as number));
-  for (const x of [-1e-6, 1.00001, NaN, Infinity, true, "0.5"]) assert.throws(() => sectionAt(parseNaca("2412"), x as number));
+  for (const n of [true, 2, 3.5, 10002, NaN, "201"])
+    assert.throws(() => cosineStations(n as number));
+  for (const x of [-1e-6, 1.00001, NaN, Infinity, true, "0.5"])
+    assert.throws(() => sectionAt(parseNaca("2412"), x as number));
 });

@@ -6,7 +6,9 @@ let sessionPromise: Promise<InferenceSession> | undefined;
 
 function loadRuntime(): Promise<typeof import("onnxruntime-web")> {
   // A native ESM import prevents webpack from also emitting an unused WASM copy.
-  return import(/* webpackIgnore: true */ `${location.origin}/runtime/${runtimeVersion}/ort.wasm.min.mjs`);
+  return import(
+    /* webpackIgnore: true */ `${location.origin}/runtime/${runtimeVersion}/ort.wasm.min.mjs`
+  );
 }
 
 async function loadSession() {
@@ -22,14 +24,17 @@ export async function runFixture(values: number[]) {
   if (!values.length || values.some((x) => !Number.isFinite(x) || Math.abs(x) > 1e6)) {
     throw new Error("Enter finite values between -1,000,000 and 1,000,000.");
   }
-  if (!sessionPromise) sessionPromise = loadSession().catch((error: unknown) => {
-    sessionPromise = undefined;
-    throw error;
-  });
+  if (!sessionPromise)
+    sessionPromise = loadSession().catch((error: unknown) => {
+      sessionPromise = undefined;
+      throw error;
+    });
   const session = await sessionPromise;
   const { Tensor } = await loadRuntime();
   const start = performance.now();
-  const result = await session.run({ x: new Tensor("float32", Float32Array.from(values), [values.length]) });
+  const result = await session.run({
+    x: new Tensor("float32", Float32Array.from(values), [values.length]),
+  });
   const durationMs = performance.now() - start;
   const output = Array.from(result.y.data as Float32Array);
   if (output.length !== values.length || output.some((x) => !Number.isFinite(x))) {

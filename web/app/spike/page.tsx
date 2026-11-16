@@ -1,2 +1,4 @@
 import InferenceCheck from "./inference-check";
-export default function Spike() { return <InferenceCheck />; }
+export default function Spike() {
+  return <InferenceCheck />;
+}

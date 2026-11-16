@@ -13,9 +13,17 @@ export function features(design: Design): number[] {
   const p = normalizeGeometry(design);
   const [low, high] = model.domain.alpha_deg;
   const reynolds = model.domain.sampled_reynolds;
-  if (!Number.isFinite(design.alpha) || design.alpha < low || design.alpha > high ||
-      !Number.isFinite(design.re) || design.re < reynolds[0] || design.re > reynolds[reynolds.length - 1]) {
-    throw new Error("Predictions require an angle from -4 to 8° and Reynolds number from 100,000 to 500,000.");
+  if (
+    !Number.isFinite(design.alpha) ||
+    design.alpha < low ||
+    design.alpha > high ||
+    !Number.isFinite(design.re) ||
+    design.re < reynolds[0] ||
+    design.re > reynolds[reynolds.length - 1]
+  ) {
+    throw new Error(
+      "Predictions require an angle from -4 to 8° and Reynolds number from 100,000 to 500,000.",
+    );
   }
   // All scaling, engineered features and output inversion are inside the graph.
   return [p.m, p.p, p.t, design.alpha, Math.log10(design.re)];
@@ -45,16 +53,26 @@ export async function predict(design: Design) {
 export async function predictBatch(designs: readonly Design[]) {
   if (!designs.length) throw new Error("At least one design is required.");
   const input = Float32Array.from(designs.flatMap(features));
-  sessionPromise ??= loadSession().catch((error: unknown) => { sessionPromise = undefined; throw error; });
+  sessionPromise ??= loadSession().catch((error: unknown) => {
+    sessionPromise = undefined;
+    throw error;
+  });
   const session = await sessionPromise;
   const ort = await runtime();
   const start = performance.now();
-  const result = await session.run({ features: new ort.Tensor("float32", input, [designs.length, 5]) });
+  const result = await session.run({
+    features: new ort.Tensor("float32", input, [designs.length, 5]),
+  });
   const durationMs = performance.now() - start;
   const output = result.coefficients;
   const data = output?.data;
-  if (!(data instanceof Float32Array) || output.dims.length !== 2 ||
-      output.dims[0] !== designs.length || output.dims[1] !== 2 || data.length !== designs.length * 2) {
+  if (
+    !(data instanceof Float32Array) ||
+    output.dims.length !== 2 ||
+    output.dims[0] !== designs.length ||
+    output.dims[1] !== 2 ||
+    data.length !== designs.length * 2
+  ) {
     throw new Error("Model returned invalid coefficients.");
   }
   const rows = designs.map((_, index) => {

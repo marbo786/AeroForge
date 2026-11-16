@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function InspectionPage() {
-  return <Preview/>;
+  return <Preview />;
 }

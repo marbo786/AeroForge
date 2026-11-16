@@ -19,7 +19,9 @@
     "smoke": "playwright test",
     "check:pages": "node scripts/check-pages.mjs",
     "smoke:pages": "node scripts/smoke-pages.mjs",
-    "verify": "npm run assets && npm run lint && npm run typecheck && npm test && npm run build && npm run check:pages && npm run smoke"
+    "verify": "npm run format:check && npm run assets && npm run lint && npm run typecheck && npm test && npm run build && npm run check:pages && npm run smoke",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@react-three/fiber": "9.8.2",
@@ -39,6 +41,7 @@
     "@types/three": "0.187.0",
     "eslint": "10.14.0",
     "onnx-proto": "8.0.1",
+    "prettier": "3.9.6",
     "tailwindcss": "4.3.5",
     "typescript": "5.9.3",
     "typescript-eslint": "8.72.1"

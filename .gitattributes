@@ -5,3 +5,10 @@ data/recovery-v1/** -text -whitespace
 artifacts/recovery*/** -text
 configs/recovery-v1/plan.json -text whitespace=cr-at-eol
 artifacts/recovery-diagnosis/*.csv whitespace=cr-at-eol
+
+# Keep Prettier checks consistent across Windows and Linux checkouts.
+web/**/*.ts text eol=lf
+web/**/*.tsx text eol=lf
+web/**/*.css text eol=lf
+web/**/*.mjs text eol=lf
+web/*.json text eol=lf

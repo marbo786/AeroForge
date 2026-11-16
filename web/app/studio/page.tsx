@@ -1,2 +1,4 @@
 import Studio from "./studio";
-export default function StudioPage() { return <Studio />; }
+export default function StudioPage() {
+  return <Studio />;
+}
