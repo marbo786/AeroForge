@@ -35,9 +35,11 @@ test("Studio starts with the car, and workspace modes share edits and comparison
   await openControls(page);
   await page.getByLabel("Airfoil preset").selectOption("4412");
   await page.getByLabel("Angle of attack",{exact:true}).fill("5");
+  await page.getByLabel("Reynolds number",{exact:true}).fill("500000");
   await closeControls(page);
   await expect(lift).not.toHaveText("0.6972");
   await expect(lift).toHaveText(/\d+\.\d{4}/);
+  const currentLift = await lift.innerText();
 
   await navigation.getByRole("button",{name:"Analysis",exact:true}).click();
   const analysis = page.getByRole("region",{name:"Section analysis"});
@@ -45,8 +47,30 @@ test("Studio starts with the car, and workspace modes share edits and comparison
   await expect(analysis.getByRole("img",{name:"Drag / angle of attack",exact:true})).toBeVisible();
   await expect(analysis.getByRole("row",{name:/^Design /})).toContainText("NACA 2412");
   await expect(analysis.getByRole("row",{name:/^Design /})).toContainText("NACA 4412");
+  await expect(analysis.getByRole("row",{name:/^Condition /})).toContainText("Re 250,000");
+  await expect(analysis.getByRole("row",{name:/^Condition /})).toContainText("Re 500,000");
+  await expect(analysis.locator(".v2-saved-outline")).toBeVisible();
+  await expect(lift).toHaveText(currentLift);
+  await page.getByRole("button",{name:"Share",exact:true}).click();
+  const share = await page.getByRole("textbox",{name:"Design URL"}).inputValue();
+  expect(new URL(share).searchParams.get("view")).toBe("analysis");
+  expect(new URL(share).searchParams.get("re")).toBe("500000");
+  await page.keyboard.press("Escape");
+  await expect(analysis.getByTestId("inspect-cl")).toContainText(`Current ${currentLift}`);
+  await analysis.getByRole("spinbutton",{name:"Inspect CL angle"}).fill("6.5");
+  await analysis.getByRole("button",{name:"Export +",exact:true}).click();
+  const download = page.waitForEvent("download");
+  await analysis.getByRole("button",{name:"csv",exact:true}).click();
+  const rows = (await readFile((await (await download).path())!,"utf8")).trim().split("\n");
+  expect(rows).toHaveLength(26);
+  expect(Number(rows.find(row=>row.startsWith("5,"))?.split(",")[1]).toFixed(4)).toBe(currentLift);
 
   await navigation.getByRole("button",{name:"Studio",exact:true}).click();
+  await expect(lift).toHaveText(currentLift);
+  await dock.getByRole("button",{name:"Lift & drag",exact:true}).click();
+  await expect(page.getByRole("spinbutton",{name:"Inspect CD angle"})).toHaveValue("6.5");
+  await page.getByRole("button",{name:"Follow design angle"}).click();
+  await expect(page.getByRole("spinbutton",{name:"Inspect CL angle"})).toHaveValue("5");
   await dock.getByRole("button",{name:"Comparison",exact:true}).click();
   await expect(page.getByRole("row",{name:/^Design /})).toContainText("NACA 4412");
   await navigation.getByRole("button",{name:"Airfoil",exact:true}).click();
@@ -71,6 +95,75 @@ test("2D deep links avoid vehicle assets and legacy links retain their design", 
   await page.goto("/studio/?m=.04&p=.4&t=.12&aoa=4&re=250000");
   await expect(page.getByRole("heading",{name:"AF–02",exact:true})).toBeVisible();
   await expect(page.getByTestId("cl")).toHaveText(lift);
+});
+
+test("superseded ONNX results stay hidden and sweeps preserve missing rows and recover from errors", async ({page},info)=>{
+  test.skip(info.project.name!=="desktop");
+  type WorkerProbe = { hold:boolean; pending:(()=>void)[]; replies:number; nextBatch:"gap"|"error"|null };
+  type ProbeWindow = typeof window & { inferenceProbe:WorkerProbe };
+  await page.addInitScript(()=>{
+    const control:WorkerProbe={hold:false,pending:[],replies:0,nextBatch:null};
+    (window as ProbeWindow).inferenceProbe=control;
+    const send = Worker.prototype.postMessage;
+    const observed = new WeakSet<Worker>();
+    Worker.prototype.postMessage = function(this:Worker, message, transfer) {
+      const exactSend=()=>Reflect.apply(send,this,transfer===undefined ? [message] : [message,transfer]);
+      if(message?.type!=="run") return exactSend();
+      if(!observed.has(this)) {
+        observed.add(this);
+        const receive=this.onmessage;
+        this.onmessage=event=>{
+          if(event.data?.type==="run") {
+            control.replies++;
+            const coefficients=event.data.out?.[0];
+            if(coefficients?.[1]?.[0]===25 && control.nextBatch) {
+              if(control.nextBatch==="gap") coefficients[2][8*2]=NaN; // One missing sample at 0°.
+              else event.data.err="Injected batch failure";
+              control.nextBatch=null;
+            }
+          }
+          receive?.call(this,event);
+        };
+      }
+      if(control.hold) control.pending.push(exactSend);
+      else exactSend();
+    };
+  });
+  await page.goto("/studio/?view=analysis");
+  const lines=page.locator(".chart-line");
+  const lift=page.getByTestId("cl");
+  await expect(lift).toHaveText("0.6972");
+  await expect(lines).toHaveCount(2);
+  await page.evaluate(()=>{const probe=(window as ProbeWindow).inferenceProbe;probe.hold=true;probe.replies=0;});
+  const thickness=page.getByLabel("Thickness",{exact:true});
+  await thickness.fill("13");
+  await expect.poll(()=>page.evaluate(()=>(window as ProbeWindow).inferenceProbe.pending.length)).toBe(2);
+  await thickness.fill("16");
+  await expect.poll(()=>page.evaluate(()=>(window as ProbeWindow).inferenceProbe.pending.length)).toBe(4);
+  await page.evaluate(()=>(window as ProbeWindow).inferenceProbe.pending.splice(0,2).forEach(send=>send()));
+  await expect.poll(()=>page.evaluate(()=>(window as ProbeWindow).inferenceProbe.replies)).toBe(2);
+  await expect(lift).toHaveText("—");
+  await expect(lines).toHaveCount(0);
+  await page.evaluate(()=>{
+    const probe=(window as ProbeWindow).inferenceProbe;
+    probe.nextBatch="gap";
+    probe.hold=false;
+    probe.pending.splice(0).forEach(send=>send());
+  });
+  await expect(lift).toHaveText(/^\d+\.\d{4}$/);
+  await expect(lines).toHaveCount(2);
+  for (const line of await lines.all()) expect((await line.getAttribute("d"))!.match(/M/g)).toHaveLength(2);
+  await page.getByRole("spinbutton",{name:"Inspect CL angle"}).fill("0");
+  await expect(page.getByTestId("inspect-cl")).toHaveText("Current —");
+  await expect(page.getByTestId("inspect-cd")).toHaveText("Current —");
+
+  await page.evaluate(()=>{(window as ProbeWindow).inferenceProbe.nextBatch="error";});
+  await thickness.fill("17");
+  await expect(page.getByRole("alert").filter({hasText:"Current sweep."})).toContainText("Sweep unavailable");
+  await expect(lines).toHaveCount(0);
+  await page.getByRole("button",{name:"Retry current sweep"}).click();
+  await expect(lines).toHaveCount(2);
+  await expect(page.getByTestId("inspect-cl")).toHaveText(/Current -?\d/);
 });
 
 test("studio uses real model outputs and accurate geometry without external requests", async ({ page, request }) => {
@@ -237,6 +330,12 @@ test("alpha sweep gives predictions time to read and pauses on manual input", as
   await expect(page.getByTestId("cl")).toHaveText("—");
   await page.getByRole("button", { name: "Pause alpha sweep" }).click();
   await expect(page.locator('[aria-label="Prediction status"]')).toHaveText("Outside model bounds");
+  await scrubber.fill("4");
+  await page.getByRole("button",{name:"Play alpha sweep"}).click();
+  await page.getByRole("button",{name:"Analysis",exact:true}).click();
+  await expect(page.getByRole("spinbutton",{name:"Inspect CL angle"})).toHaveValue("4");
+  await page.getByRole("button",{name:"Airfoil",exact:true}).click();
+  await expect(page.getByRole("button",{name:"Play alpha sweep"})).toBeVisible();
 });
 
 test("controls drawer, display toggles, reduced motion and real exports remain usable", async ({ page },info) => {

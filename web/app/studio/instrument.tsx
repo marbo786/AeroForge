@@ -43,14 +43,17 @@ function subscribeCompact(changed:()=>void) {
   return () => query.removeEventListener("change",changed);
 }
 
-function SectionPreview({design,invalid,wing=false}:{design:Design; invalid:boolean; wing?:boolean}) {
-  const outline = generateGeometry(design).contour.map(([x,y]) => `${x} ${-y}`).join(" ");
+const sectionOutline = (design:Design) => generateGeometry(design).contour.map(([x,y]) => `${x} ${-y}`).join(" ");
+
+function SectionPreview({design,invalid,wing=false,saved}:{design:Design; invalid:boolean; wing?:boolean; saved?:Design}) {
   return <figure className="v2-section-preview">
     <svg role="img" aria-label="Representative NACA section" viewBox={wing ? "-.06 -.17 1.12 .36" : "-.06 -.24 1.12 .48"}>
       <g transform={`rotate(${design.alpha} .25 0)`}>
-        <polygon points={outline}/>
+        <polygon points={sectionOutline(design)}/>
         <path d="M0 0H1"/>
       </g>
+      {saved && <polygon className="v2-saved-outline" transform={`rotate(${saved.alpha} .25 0)`}
+        points={sectionOutline(saved)} aria-label="Saved section outline"/>}
     </svg>
     <figcaption>{nameOf(design)} · {design.alpha}° · Re {design.re.toLocaleString("en-US")}{invalid ? " · Last valid geometry" : ""}</figcaption>
   </figure>;
@@ -125,8 +128,11 @@ function svgSnapshot() {
   clone.setAttribute("height", String(imageHeight));
   return new XMLSerializer().serializeToString(clone);
 }
-function ExportMenu({design,current,points}:{design:Design;current:Result|null;points:SweepPoint[]}) {
-  const [open,setOpen]=useState(false),[error,setError]=useState("");
+function ExportMenu({design,current,points,loading,invalid,open,onOpen,dataOnly=false}:{
+  design:Design;current:Result|null;points:SweepPoint[];loading:boolean;invalid:boolean;
+  open:boolean;onOpen:(open:boolean)=>void;dataOnly?:boolean;
+}) {
+  const [error,setError]=useState("");
   async function save(format:string) {
     setError(""); const name=nameOf(design).toLowerCase().replaceAll(" ","-");
     try {
@@ -151,10 +157,20 @@ function ExportMenu({design,current,points}:{design:Design;current:Result|null;p
         }
         finally {URL.revokeObjectURL(url);}
       }
-      setOpen(false);
+      onOpen(false);
     } catch {setError("Export failed. Try SVG or JSON.");}
   }
-  return <div className="export-menu"><button className="chip micro" aria-expanded={open} onClick={()=>setOpen(!open)}>Export +</button>{open&&<div className="export-options" aria-label="Export formats">{["svg","png","csv","json"].map(format=><button className="chip micro" key={format} disabled={format==="csv"&&!points.length} onClick={()=>void save(format)}>{format}</button>)}</div>}{error&&<span role="alert">{error}</span>}</div>;
+  const formats=dataOnly ? ["csv","json"] : ["svg","png","csv","json"];
+  return <div className="export-menu">
+    <button className="chip micro" disabled={invalid} aria-expanded={open} onClick={()=>onOpen(!open)}>Export +</button>
+    {open && !invalid && <div className="export-options" role="group" aria-label="Export formats">
+      <div>{formats.map(format=><button className="chip micro" key={format} disabled={format==="csv"&&!points.length}
+        onClick={()=>void save(format)}>{format}</button>)}</div>
+      {loading && <span className="micro" role="status">Calculating CSV samples…</span>}
+      {!loading && !points.length && <span className="micro">CSV samples unavailable</span>}
+    </div>}
+    {error&&<span role="alert">{error}</span>}
+  </div>;
 }
 
 export function ModelDetails() {
@@ -171,6 +187,7 @@ export function ModelDetails() {
     <Module number="02" title="Scientific limitations">
       <p>Evaluation measures agreement with XFOIL. Experimental accuracy, post-stall behavior and calibrated uncertainty remain unverified. Drag errors were higher at low Reynolds numbers, and high-camber sections were harder to predict.</p>
       <p>The model returns dimensionless lift and drag coefficients. The flow display is conceptual. The airfoil outline comes from the analytic NACA geometry.</p>
+      <p>The isolated section model excludes 3D vehicle effects, ground effect and interactions between components.</p>
     </Module>
     <Module number="03" title="Model provenance">
       <div className="detail-grid">
@@ -198,6 +215,8 @@ export default function Instrument(props:InstrumentProps) {
   const [shareUrl, setShareUrl] = useState("");
   const [playing,setPlaying]=useState(false);
   const [saved,setSaved]=useState<SavedDesign|null>(null);
+  const [inspectionAngle,setInspectionAngle]=useState<number|null>(null);
+  const [exportOpen,setExportOpen]=useState(false);
   const [dock,setDock]=useState<Dock|null>(null);
   const [wingSelected,setWingSelected]=useState(false);
   const [morePresets,setMorePresets]=useState(false);
@@ -214,9 +233,13 @@ export default function Instrument(props:InstrumentProps) {
   }
   const reynolds = model.domain.sampled_reynolds;
   const supportsSweep = (value: Design) => value.re >= reynolds[0] && value.re <= reynolds[reynolds.length - 1];
-  const needsCurves = view !== "studio" || dock === "curves" || drawer === "Charts";
-  const sweep = useSweep(design, needsCurves && props.urlReady && !invalid && !failure && supportsSweep(design) && (!!result || !!domainError));
-  const comparison = useSweep(saved?.design ?? design, needsCurves && !!saved && supportsSweep(saved.design));
+  const chartsVisible = view === "analysis" || dock === "curves" || drawer === "Charts";
+  const currentUnavailable = invalid ? "Correct the current section inputs to calculate its sweep." :
+    !supportsSweep(design) ? "Current sweep requires Reynolds number from 100,000 to 500,000." :
+    failure ? "Retry the prediction model to calculate the current sweep." : "";
+  const savedUnavailable = saved && !supportsSweep(saved.design) ? "Saved Reynolds number is outside the prediction bounds." : "";
+  const sweep = useSweep(design, (chartsVisible || exportOpen) && props.urlReady && !currentUnavailable);
+  const comparison = useSweep(saved?.design ?? design, chartsVisible && !!saved && !savedUnavailable);
   const inBounds=!invalid&&!domainError;
   const pending=inBounds&&!current&&!failure;
   const domainLabel=invalid?"Invalid input":domainError?"Out of domain":"In domain";
@@ -273,6 +296,7 @@ export default function Instrument(props:InstrumentProps) {
   function changeMode(next: WorkspaceView) {
     if (next === view) return;
     setPlaying(false);
+    setExportOpen(false);
     props.onView(next);
   }
   useEffect(()=>{
@@ -306,8 +330,11 @@ export default function Instrument(props:InstrumentProps) {
     <button className="chip micro v2-reset" onClick={()=>{setPlaying(false);onReset();}}>Reset</button>
   </>;
 
-  const curves = <ChartPanel sweep={failure ? {...sweep,error:failure} : sweep}
-    comparison={comparison} comparing={!!saved} alpha={design.alpha}/>;
+  const curves = <ChartPanel sweep={sweep} comparison={comparison} currentUnavailable={currentUnavailable}
+    savedUnavailable={savedUnavailable} selected={inspectionAngle ?? design.alpha}
+    following={inspectionAngle===null} onInspect={setInspectionAngle}/>;
+  const dataExport = <ExportMenu design={design} current={current} points={sweep.points} loading={sweep.loading}
+    invalid={!props.urlReady || invalid} open={exportOpen} onOpen={setExportOpen} dataOnly={view==="analysis"}/>;
   const comparisonPanel = saved ? <Comparison design={design} current={current} saved={saved}
     onRestore={()=>props.onRestore(saved.design)} onClear={()=>setSaved(null)}/> :
     <div className="v2-empty-comparison">
@@ -368,14 +395,20 @@ export default function Instrument(props:InstrumentProps) {
                 <button className="chip micro" onClick={()=>openDrawer("Charts")}>Charts +</button>
                 {saved ? <button className="chip micro" onClick={()=>openDrawer("Charts")}>Compare</button> :
                   <button className="chip micro" disabled={cannotSave} onClick={saveDesign}>Save design</button>}
-                <ExportMenu design={design} current={current} points={sweep.points}/>
+                {dataExport}
               </div>
             </div>
           </>}
           {view==="analysis" && <section className="v2-analysis" aria-label="Section analysis">
-            <SectionPreview design={design} invalid={invalid}/>
+            <div className="v2-analysis-summary">
+              <SectionPreview design={design} invalid={invalid} saved={saved?.design}/>
+              <div className="v2-analysis-actions">
+                {!saved && <button className="chip micro" disabled={cannotSave} onClick={saveDesign}>Save design</button>}
+                {dataExport}
+              </div>
+            </div>
             {curves}
-            {comparisonPanel}
+            {saved && comparisonPanel}
           </section>}
         </div>
         <aside className="v2-telemetry" aria-label="Predicted performance">
@@ -406,7 +439,7 @@ export default function Instrument(props:InstrumentProps) {
           {dock && <button className="chip micro v2-collapse" onClick={()=>setDock(null)}>Collapse dock</button>}
         </nav>
         <div id={dockId} hidden={!dock} className="v2-dock-content">
-          {dock==="section" && <SectionPreview design={design} invalid={invalid}/>}
+          {dock==="section" && <SectionPreview design={design} invalid={invalid} saved={saved?.design}/>}
           {dock==="curves" && drawer!=="Charts" && curves}
           {dock==="comparison" && drawer!=="Charts" && comparisonPanel}
         </div>

@@ -4,7 +4,15 @@ Last updated: 2026-11-16 (Asia/Karachi).
 
 ## Current phase and session rule
 
-Phase V2.3 is complete on `codex/aeroforge-v2`. The local production export includes front-wing inspection. Approval is pending for V2.4, analysis integration. The public v1 baseline is `e8e0ea0`. [Public v1](https://aeroforge-9tf.pages.dev/)
+Phase V2.4 is complete on `codex/aeroforge-v2`. The local production export integrates analysis across the workspace. Approval is pending for V2.5, visual polish and performance. The public v1 baseline is `e8e0ea0`. [Public v1](https://aeroforge-9tf.pages.dev/)
+
+## Phase V2.4 analysis integration
+
+- The Studio dock, Airfoil charts and Analysis share one inspection cursor. It follows the operating angle until the user selects a sample. **Follow design angle** resumes following. Both plots use the same sampled results, leave missing values as gaps and offer a retry after a failed batch. Alpha playback keeps its paced dwell and pauses on mode changes.
+- The current and saved designs each use their own Reynolds number. One saved comparison supplies the overlay, dashed curves and operating-point table across views. Analysis supports CSV and JSON downloads. Airfoil retains SVG, PNG, CSV and JSON. Legacy and view-specific links restore the same validated design.
+- Curve batches start when charts or CSV need them and reuse the matching result when reopened. A controlled browser test delivered superseded point and sweep results while newer requests were pending and verified that neither appeared as current. It also verified a missing-row gap and batch recovery. The Pages guard verifies the accepted model and preprocessing hashes.
+- Inspected desktop and phone captures and refined the chart input width and preview spacing. [Screenshots and verification](docs/v2-4/README.md)
+- `npm run verify` passed lint, TypeScript, 23 Node tests, the static export, the Pages asset guard and 59 production Playwright tests with ten profile-specific skips. Verified matching CL, CD and L/D across all modes and Analysis data exports with WebGL disabled. The V2.4 commit remains local to the v2 branch.
 
 ## Phase V2.3 front-wing inspection
 
