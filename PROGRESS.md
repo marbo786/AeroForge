@@ -4,7 +4,15 @@ Last updated: 2026-11-16 (Asia/Karachi).
 
 ## Current phase and session rule
 
-Phase 7 is complete. The existing [public Cloudflare Pages deployment](https://aeroforge-9tf.pages.dev/) passed the HTTPS smoke test again during the final launch audit. The dark workstation candidate passed local production verification and is ready for rollout and a public smoke test.
+Phase V2.0 planning is complete. Approval is pending for V2.1, the isolated 3D preview. The public v1 baseline is `e8e0ea0`, with the light theme, simplified header and slower alpha sweep. Its public Pages smoke test and mobile playback check passed. [Public v1](https://aeroforge-9tf.pages.dev/)
+
+## Phase V2.0 architecture and visual planning
+
+- Reviewed the current studio, frozen model, NACA geometry, sharing, charts, exports and Cloudflare static delivery. The plan keeps those engineering features in one shared design controller and puts the original Formula-style car in a separate illustrative renderer. [V2 specification](docs/V2_SPEC.md)
+- Registry metadata supports React Three Fiber 9.8.2 and Three.js 0.187.0 as candidates for the current React 19.3.1 stack. A local production-build browser probe rendered a WebGL2 pixel on integrated AMD Radeon graphics. With WebGL disabled, the v1 2D studio still produced the same lift reading, 0.6972. The exact Fiber production build, scene performance and physical mobile checks are subsequent phase gates.
+- Screened two third-party mesh listings for license claims and triangle counts. Recommended a locally authored, unbranded GLB with reproducible source and named wing parts. Defined desktop and mobile budgets, the accessible 2D fallback, and deliverables and acceptance evidence for V2.1 through V2.6.
+- The v1 baseline passed lint, type checks, all 23 Node tests, the static production export and the Pages asset guard. The first browser run passed 43 of 44 tests due to a tablet retry-test timeout. The trace showed the retry loaded the real model and reported prediction ready before the expected second retry button. A complete browser rerun passed all 44 on their first attempt. The specification records how to stabilize the test during V2.1.
+- This phase delivers the plan and records the baseline. Stop here for approval of V2.1.
 
 ## Final v1 launch audit
 
