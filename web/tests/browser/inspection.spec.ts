@@ -80,8 +80,13 @@ test("loads the local mesh, presents four rendered views, and allows zoom and or
   expect(errors).toEqual([]);
 });
 
-test("falls back after an asset failure and allows a retry", async ({ page }, info) => {
+test("falls back after a mesh failure and retries with direct lighting when needed", async ({
+  page,
+}, info) => {
   test.skip(info.project.name !== "desktop");
+  await page.route("**/room.rgba16f.gz", (route) =>
+    route.fulfill({ status: 404, body: "missing lighting" }),
+  );
   await page.route(model, (route) => route.fulfill({ status: 404, body: "missing" }), { times: 1 });
   await page.goto(path);
   await expect(status(page)).toHaveAttribute("data-render-status", "failed");

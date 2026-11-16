@@ -1,24 +1,77 @@
 import { useThree } from "@react-three/fiber";
 import { useEffect } from "react";
-import { Color, PMREMGenerator } from "three";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { Color, CompressedCubeTexture, HalfFloatType, LinearSRGBColorSpace } from "three";
 
-export function Lighting({ compact }: { compact: boolean }) {
-  const { gl, scene, invalidate } = useThree();
+const roomPath = "/vehicle/lighting-v1/room.rgba16f.gz";
+const mipSizes = [64, 32, 16, 8, 4, 2];
+const texelCount = 6 * mipSizes.reduce((total, size) => total + size ** 2, 0);
+
+async function loadRoom(signal: AbortSignal) {
+  const response = await fetch(roomPath, { signal });
+  if (!response.ok || !response.body) throw new Error("Studio lighting unavailable.");
+  const pixels = new Response(response.body.pipeThrough(new DecompressionStream("gzip")));
+  const buffer = await pixels.arrayBuffer();
+  if (buffer.byteLength !== texelCount * 8) throw new Error("Invalid studio lighting.");
+
+  const view = new DataView(buffer);
+  const values = new Uint16Array(buffer.byteLength / 2);
+  for (let index = 0; index < values.length; ++index) {
+    values[index] = view.getUint16(index * 2, true);
+  }
+  let offset = 0;
+  const faces = Array.from({ length: 6 }, () => ({
+    width: mipSizes[0],
+    height: mipSizes[0],
+    mipmaps: mipSizes.map((size) => {
+      const end = offset + size ** 2 * 4;
+      const mip = { data: values.subarray(offset, end), width: size, height: size };
+      offset = end;
+      return mip;
+    }),
+  }));
+  // Three's cubemap mip loader also accepts uncompressed RGBA faces.
+  const room = new CompressedCubeTexture(faces, undefined, HalfFloatType);
+  room.colorSpace = LinearSRGBColorSpace;
+  room.isPMREMTexture = true;
+  room.needsUpdate = true;
+  return room;
+}
+
+export function Lighting({ onSettled }: { onSettled: (settled: boolean) => void }) {
+  const { scene, invalidate } = useThree();
   useEffect(() => {
-    const studio = new RoomEnvironment();
-    const pmrem = new PMREMGenerator(gl);
-    const lighting = pmrem.fromScene(studio, 0.05, 0.1, 100, { size: compact ? 64 : 128 });
-    scene.environment = lighting.texture;
-    scene.environmentIntensity = 0.68;
-    studio.dispose();
-    pmrem.dispose();
-    invalidate();
+    const request = new AbortController();
+    const deadline = window.setTimeout(() => request.abort(), 2500);
+    let disposed = false;
+    let lighting: CompressedCubeTexture | undefined;
+    void loadRoom(request.signal)
+      .then((room) => {
+        if (request.signal.aborted) {
+          room.dispose();
+          return;
+        }
+        lighting = room;
+        scene.environment = room;
+        scene.environmentIntensity = 0.68;
+        invalidate();
+      })
+      .catch(() => {
+        // Direct lighting keeps the car usable if the reflection map cannot load.
+      })
+      .finally(() => {
+        window.clearTimeout(deadline);
+        if (!disposed) onSettled(true);
+      });
     return () => {
-      scene.environment = null;
-      lighting.dispose();
+      disposed = true;
+      request.abort();
+      window.clearTimeout(deadline);
+      if (lighting) {
+        scene.environment = null;
+        lighting.dispose();
+      }
     };
-  }, [gl, scene, invalidate, compact]);
+  }, [scene, invalidate, onSettled]);
   return (
     <>
       <hemisphereLight args={["#dfefff", "#30353d", 1.1]} />

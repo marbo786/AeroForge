@@ -35,7 +35,9 @@ createServer(async (req, res) => {
     const gzip = /\bgzip\b/.test(req.headers["accept-encoding"] ?? "") && original.length > 1024;
     const bytes = gzip ? gzipSync(original) : original;
     const etag = `"${bytes.length}-${(await stat(file)).mtimeMs}-${gzip ? "gzip" : "raw"}"`;
-    const cache = /^\/(runtime|models|vehicle\/af02-(?:mobile-)?v1)\//.test(pathname)
+    const cache = /^\/(runtime|models|vehicle\/(?:af02-(?:mobile-)?v1|lighting-v1))\//.test(
+      pathname,
+    )
       ? "public, max-age=31536000, immutable"
       : "no-cache";
     const headers = {

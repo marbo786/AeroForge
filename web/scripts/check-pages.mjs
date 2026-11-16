@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { readFile, readdir, stat } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { gunzipSync } from "node:zlib";
 
 const root = fileURLToPath(new URL("../out/", import.meta.url));
 const entries = await readdir(root, { recursive: true, withFileTypes: true });
@@ -29,6 +30,7 @@ const lock = JSON.parse(await readFile(new URL("../package-lock.json", import.me
 const runtime = `runtime/${lock.packages["node_modules/onnxruntime-web"].version}`;
 const model = `models/${manifest.version}/${manifest.model_file}`;
 const preprocessing = `models/${manifest.version}/preprocessing.json`;
+const roomLighting = "vehicle/lighting-v1/room.rgba16f.gz";
 for (const name of [
   "index.html",
   "studio/index.html",
@@ -55,6 +57,7 @@ for (const [path, kib] of [
   ["vehicle/af02-v1/car.glb", 900],
   ["vehicle/af02-v1/poster.webp", 160],
   ["vehicle/af02-mobile-v1/car.glb", 450],
+  [roomLighting, 100],
 ]) {
   const file = files.find((entry) => entry.name === path);
   assert(
@@ -62,6 +65,13 @@ for (const [path, kib] of [
     `Missing or over-budget inspection asset: ${path}`,
   );
 }
+const roomBytes = 6 * (64 ** 2 + 32 ** 2 + 16 ** 2 + 8 ** 2 + 4 ** 2 + 2 ** 2) * 8;
+const packedLighting = await readFile(join(root, roomLighting));
+assert.equal(
+  gunzipSync(packedLighting, { maxOutputLength: roomBytes }).byteLength,
+  roomBytes,
+  "Unexpected studio lighting cubemap dimensions",
+);
 const exportedHash = createHash("sha256")
   .update(await readFile(join(root, model)))
   .digest("hex");

@@ -103,6 +103,7 @@ export default function Instrument(props: InstrumentProps) {
   );
   const dockId = useId();
   const wingTitle = useId();
+  const analysisTitle = useId();
   const viewHeading = useRef<HTMLHeadingElement>(null);
   const focusAirfoil = useRef(false);
   function inspectWing() {
@@ -370,7 +371,10 @@ export default function Instrument(props: InstrumentProps) {
             )}
             {analysisTelemetryFirst && telemetryPanel}
             {view === "analysis" && (
-              <section className="v2-analysis" aria-label="Section analysis">
+              <section className="v2-analysis" aria-labelledby={analysisTitle}>
+                <h2 className="sr-only" id={analysisTitle}>
+                  Section analysis
+                </h2>
                 <div className="v2-analysis-summary">
                   <SectionPreview design={design} invalid={invalid} saved={saved?.design} />
                   <div className="v2-analysis-actions">

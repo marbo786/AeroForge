@@ -32,6 +32,7 @@ export default function Scene({
   ...callbacks
 }: SceneProps) {
   const [anchor, setAnchor] = useState<Vector3 | null>(null);
+  const [lightingSettled, setLightingSettled] = useState(false);
   return (
     <div className="inspection-render">
       <Canvas
@@ -41,13 +42,14 @@ export default function Scene({
         gl={{ antialias: true, powerPreference: "low-power" }}
       >
         <color attach="background" args={["#151b20"]} />
-        <Lighting compact={compact} />
+        <Lighting onSettled={setLightingSettled} />
         <Floor />
         <Vehicle
           {...callbacks}
           onAnchor={setAnchor}
           wingSelected={wingSelected}
           compact={compact}
+          lightingSettled={lightingSettled}
         />
         <CameraRig
           command={command}

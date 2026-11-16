@@ -60,6 +60,7 @@ type VehicleProps = {
   wingSelected: boolean;
   onInspect?: () => void;
   compact: boolean;
+  lightingSettled: boolean;
   alpha: number;
   onAnchor: (anchor: Vector3 | null) => void;
 };
@@ -72,6 +73,7 @@ export function Vehicle({
   wingSelected,
   onInspect,
   compact,
+  lightingSettled,
   alpha,
 }: VehicleProps) {
   const { gl, invalidate } = useThree();
@@ -122,8 +124,9 @@ export function Vehicle({
     };
   }, [gl, invalidate, compact]);
 
+  const visible = lightingSettled ? loaded : undefined;
   useFrame(() => {
-    if (!loaded || ready.current) return;
+    if (!visible || ready.current) return;
     ready.current = true;
     // Read render counters after Fiber has submitted the first model frame.
     queueMicrotask(() => {
@@ -131,11 +134,11 @@ export function Vehicle({
       callbacks.current.onReady({ calls, triangles });
     });
   });
-  return loaded ? (
+  return visible ? (
     <>
-      <primitive object={loaded.model} dispose={null} />
-      {loaded.pivot && <WingPitch pivot={loaded.pivot} alpha={alpha} />}
-      <WingInteraction model={loaded.model} selected={wingSelected} onInspect={onInspect} />
+      <primitive object={visible.model} dispose={null} />
+      {visible.pivot && <WingPitch pivot={visible.pivot} alpha={alpha} />}
+      <WingInteraction model={visible.model} selected={wingSelected} onInspect={onInspect} />
     </>
   ) : null;
 }

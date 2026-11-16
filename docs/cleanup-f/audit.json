@@ -1,0 +1,339 @@
+{
+  "route": "/studio/",
+  "baselineCommit": "a773202",
+  "lighthouseSettings": "Local static export, Chrome in headless mode, simulated throttling, cold navigation, two samples per build and profile.",
+  "lighthouse": {
+    "before": {
+      "desktop": [
+        {
+          "sample": 1,
+          "scores": {
+            "performance": 86,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "firstContentfulPaintMs": 263.3,
+          "largestContentfulPaintMs": 686.6,
+          "totalBlockingTimeMs": 324.5,
+          "layoutShift": 0.0085,
+          "scriptEvaluationMs": 748.2,
+          "longestAuditedTaskMs": 409
+        },
+        {
+          "sample": 2,
+          "scores": {
+            "performance": 85,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "firstContentfulPaintMs": 262.6,
+          "largestContentfulPaintMs": 874.2,
+          "totalBlockingTimeMs": 336.5,
+          "layoutShift": 0.0096,
+          "scriptEvaluationMs": 709.2,
+          "longestAuditedTaskMs": 404
+        }
+      ],
+      "mobile": [
+        {
+          "sample": 1,
+          "scores": {
+            "performance": 91,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "firstContentfulPaintMs": 913.8,
+          "largestContentfulPaintMs": 3327.6,
+          "totalBlockingTimeMs": 116,
+          "layoutShift": 0.007,
+          "scriptEvaluationMs": 349.0,
+          "longestAuditedTaskMs": 164
+        },
+        {
+          "sample": 2,
+          "scores": {
+            "performance": 92,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "firstContentfulPaintMs": 911.6,
+          "largestContentfulPaintMs": 3323.1,
+          "totalBlockingTimeMs": 107,
+          "layoutShift": 0.007,
+          "scriptEvaluationMs": 354.6,
+          "longestAuditedTaskMs": 152
+        }
+      ]
+    },
+    "after": {
+      "desktop": [
+        {
+          "sample": 1,
+          "scores": {
+            "performance": 100,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "firstContentfulPaintMs": 257.9,
+          "largestContentfulPaintMs": 675.7,
+          "totalBlockingTimeMs": 0,
+          "layoutShift": 0.0085,
+          "scriptEvaluationMs": 338.8,
+          "longestAuditedTaskMs": null
+        },
+        {
+          "sample": 2,
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "firstContentfulPaintMs": 258.0,
+          "largestContentfulPaintMs": 890.9,
+          "totalBlockingTimeMs": 4.5,
+          "layoutShift": 0.0096,
+          "scriptEvaluationMs": 361.1,
+          "longestAuditedTaskMs": 59
+        }
+      ],
+      "mobile": [
+        {
+          "sample": 1,
+          "scores": {
+            "performance": 91,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "firstContentfulPaintMs": 909.9,
+          "largestContentfulPaintMs": 3319.8,
+          "totalBlockingTimeMs": 120,
+          "layoutShift": 0.007,
+          "scriptEvaluationMs": 306.0,
+          "longestAuditedTaskMs": 198
+        },
+        {
+          "sample": 2,
+          "scores": {
+            "performance": 91,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "firstContentfulPaintMs": 912.5,
+          "largestContentfulPaintMs": 3325.0,
+          "totalBlockingTimeMs": 123,
+          "layoutShift": 0.0083,
+          "scriptEvaluationMs": 308.9,
+          "longestAuditedTaskMs": 173
+        }
+      ]
+    }
+  },
+  "chromeProfiler": {
+    "before": {
+      "pmremFromSceneSampledMs": 340.6,
+      "longTasks": [
+        {
+          "startMs": 35.1,
+          "durationMs": 58
+        },
+        {
+          "startMs": 608.1,
+          "durationMs": 383
+        },
+        {
+          "startMs": 1063.9,
+          "durationMs": 84
+        }
+      ],
+      "graphicsReadyMs": 1150.2,
+      "predictionReadyMs": 1189.8,
+      "shaderCompilations": 16
+    },
+    "after": {
+      "pmremFromSceneSampledMs": 0.0,
+      "longTasks": [
+        {
+          "startMs": 36.2,
+          "durationMs": 65
+        },
+        {
+          "startMs": 753.1,
+          "durationMs": 109
+        }
+      ],
+      "graphicsReadyMs": 864.4,
+      "predictionReadyMs": 1030.7,
+      "shaderCompilations": 4
+    }
+  },
+  "axe": {
+    "before": [
+      {
+        "width": 1440,
+        "state": "Studio",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 1440,
+        "state": "Front wing",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 1440,
+        "state": "Airfoil",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 1440,
+        "state": "Analysis",
+        "version": "4.14.0",
+        "violations": [
+          {
+            "id": "heading-order",
+            "impact": "moderate",
+            "targets": [
+              [
+                ".plot:nth-child(1) > h3"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "width": 1440,
+        "state": "Share dialog",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 390,
+        "state": "Studio",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 390,
+        "state": "Studio 3D opt-in",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 390,
+        "state": "Front wing",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 390,
+        "state": "Airfoil",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 390,
+        "state": "Parameter sheet",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 390,
+        "state": "Analysis",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 390,
+        "state": "Share dialog",
+        "version": "4.14.0",
+        "violations": []
+      }
+    ],
+    "after": [
+      {
+        "width": 1440,
+        "state": "Studio",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 1440,
+        "state": "Front wing",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 1440,
+        "state": "Airfoil",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 1440,
+        "state": "Analysis",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 1440,
+        "state": "Share dialog",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 390,
+        "state": "Studio",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 390,
+        "state": "Studio 3D opt-in",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 390,
+        "state": "Front wing",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 390,
+        "state": "Airfoil",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 390,
+        "state": "Parameter sheet",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 390,
+        "state": "Analysis",
+        "version": "4.14.0",
+        "violations": []
+      },
+      {
+        "width": 390,
+        "state": "Share dialog",
+        "version": "4.14.0",
+        "violations": []
+      }
+    ]
+  },
+  "lighthouseVersion": "13.6.0",
+  "chromeUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36"
+}
