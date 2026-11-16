@@ -1,6 +1,6 @@
 "use client";
 import { useReducedPreference } from "./use-reduced-preference";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 
 import { model, type Design, type predict } from "../../lib/inference/surrogate";
 import { presetCodes } from "../../lib/geometry/naca4";
@@ -12,8 +12,10 @@ import type { Draft, Field } from "./studio";
 import "./tokens.css";
 import "./instrument.css";
 
-type Result = Awaited<ReturnType<typeof predict>> & { key:string };
+type Result = Awaited<ReturnType<typeof predict>> & { key:string; alpha:number };
 type SavedDesign = { design: Design; result: Result | null };
+type StudioDrawer = "Details" | "Charts" | "Share design";
+const sweepHoldMs = 850;
 export type InstrumentProps = {
   draft:Draft; design:Design; preset:string; expanded:boolean; invalid:boolean; domainError:string;
   errors:Partial<Record<Field,string>>; current:Result|null; result:Result|null; status:string; failure:string;
@@ -165,7 +167,7 @@ export function ModelDetails() {
 export default function Instrument(props:InstrumentProps) {
   const {design,draft,preset,expanded,invalid,domainError,current,result,status,failure,errors,onChange,onPreset,onReset,onExpanded,onRetry}=props;
   const [display,setDisplay]=useState<Display>({grid:false,camber:true,chord:true,labels:true,flow:false});
-  const [drawer,setDrawer]=useState<"Details"|"Charts"|"Share design"|null>(null);
+  const [drawer,setDrawer]=useState<StudioDrawer|null>(null);
   const [shareUrl, setShareUrl] = useState("");
   const [playing,setPlaying]=useState(false);
   const [saved,setSaved]=useState<SavedDesign|null>(null);
@@ -182,64 +184,110 @@ export default function Instrument(props:InstrumentProps) {
   const pending=inBounds&&!current&&!failure;
   const domainLabel=invalid?"Invalid input":domainError?"Out of domain":"In domain";
   const statusText=invalid?"Check parameters":domainError?"Outside model bounds":current?"Prediction ready":pending&&status==="Prediction ready"?"Loading / calculating":status;
-  function openShare() {
+  const sweeping = playing && !reduced && !invalid && !failure;
+  // Hold the last complete prediction and its chart markers together between sweep samples.
+  const telemetry = current ?? (sweeping && pending ? result : null);
+  const latency = telemetry ? `${telemetry.durationMs.toFixed(2)} ms` : "—";
+  function changeField(field: Field, value: string) {
     setPlaying(false);
-    setShareUrl(sharedDesignUrl(window.location.origin, design));
-    setDrawer("Share design");
+    onChange(field, value);
   }
-  useEffect(()=>{
-    if(!playing||reduced)return;
-    let frame=0,previous=0;
-    function tick(now:number) {
-      if(document.hidden){setPlaying(false);return;}
-      if(now-previous>=140){previous=now;const alpha=latest.current.design.alpha;if(alpha>=12){setPlaying(false);return;}latest.current.onChange("alpha",String(Math.min(12,Number((alpha+.2).toFixed(1)))));}
-      frame=requestAnimationFrame(tick);
+  function openDrawer(next: StudioDrawer) {
+    setPlaying(false);
+    setDrawer(next);
+  }
+  function openShare() {
+    setShareUrl(sharedDesignUrl(window.location.origin, design));
+    openDrawer("Share design");
+  }
+  const toggleSweep = useCallback(() => {
+    if (playing) {
+      setPlaying(false);
+      return;
     }
-    frame=requestAnimationFrame(tick);return()=>cancelAnimationFrame(frame);
-  },[playing,reduced]);
+    const inputs = latest.current;
+    if (reduced || !inputs.urlReady || inputs.invalid || inputs.failure) return;
+    if (inputs.design.alpha >= 12) inputs.onChange("alpha", "-4");
+    setPlaying(true);
+  }, [playing, reduced]);
+  useEffect(() => {
+    // Give each completed prediction its full reading time, even on slow devices.
+    if (!sweeping || pending) return;
+    const timer = window.setTimeout(() => {
+      const next = Math.min(12, Number((design.alpha + .5).toFixed(1)));
+      latest.current.onChange("alpha", String(next));
+      if (next === 12) setPlaying(false);
+    }, sweepHoldMs);
+    return () => window.clearTimeout(timer);
+  }, [sweeping, pending, design.alpha]);
+  useEffect(() => {
+    const pauseWhenHidden = () => { if (document.hidden) setPlaying(false); };
+    document.addEventListener("visibilitychange", pauseWhenHidden);
+    return () => document.removeEventListener("visibilitychange", pauseWhenHidden);
+  }, []);
   useEffect(()=>{
     const key=(event:globalThis.KeyboardEvent)=>{
-      if(event.code!=="Space"||reduced||document.querySelector("dialog[open]")||(event.target instanceof Element&&event.target.closest("input,button,a,select,textarea,[contenteditable=true],[role=slider]")))return;
-      event.preventDefault();setPlaying(value=>!value);
+      if(event.code!=="Space"||event.repeat||reduced||document.querySelector("dialog[open]")||(event.target instanceof Element&&event.target.closest("input,button,a,select,textarea,[contenteditable=true],[role=slider]")))return;
+      event.preventDefault();toggleSweep();
     };window.addEventListener("keydown",key);return()=>window.removeEventListener("keydown",key);
-  },[reduced]);
+  },[reduced,toggleSweep]);
   const fields=[{key:"m",label:"Maximum camber",unit:"%",min:0,max:6,step:.1},{key:"p",label:"Camber position",unit:"%c",min:20,max:60,step:1},{key:"t",label:"Thickness",unit:"%",min:8,max:18,step:.1},{key:"alpha",label:"Angle of attack",unit:"°",min:-4,max:12,step:.1},{key:"re",label:"Reynolds number",unit:"Re",min:100000,max:1000000,step:1000}] as const;
-  const control=(field:typeof fields[number])=><Slider key={field.key} id={field.key} label={field.label} unit={field.unit} min={field.min} max={field.max} step={field.step} value={field.key==="p"&&Number(draft.m)===0?"0":draft[field.key]} disabled={field.key==="p"&&Number(draft.m)===0} error={errors[field.key]} onChange={value=>onChange(field.key,value)}/>;
+  const control=(field:typeof fields[number])=><Slider key={field.key} id={field.key} label={field.label} unit={field.unit} min={field.min} max={field.max} step={field.step} value={field.key==="p"&&Number(draft.m)===0?"0":draft[field.key]} disabled={field.key==="p"&&Number(draft.m)===0} error={errors[field.key]} onChange={value=>changeField(field.key,value)}/>;
   function toggleSheet(){const next=!expanded;onExpanded(next);setSheet(next?"half":"peek");}
   const size=sheet==="peek"?"78px":sheet==="half"?"50dvh":"72dvh";
   return <div className="instrument" style={{"--sheet-height":size} as CSSProperties}>
-    <header className="instrument-topbar"><a href="/" className="logo-tile" aria-label="AF—01 AeroForge home"><svg viewBox="0 0 32 24" width="28" height="24" aria-hidden="true"><path d="M2 18Q9 2 28 17Q16 21 2 18ZM3 18H29" fill="none" stroke="currentColor" strokeWidth="1.5"/></svg><span className="micro">AF—01</span></a><div className="project-title"><span className="micro muted">AeroForge / aerodynamic design studio</span><h1 className="display">{nameOf(design)} <span>/</span></h1><span className="micro muted">Design. Simulate. Optimize.</span></div><div className="top-status"><div><span className="micro muted">Model status</span><span className="micro">{statusText}</span></div><div><span className="micro muted">Domain status</span><button className="status-button" onClick={()=>setDrawer("Details")} title="Input bounds only; finite XFOIL evidence, not experimental validation"><StatusPill state={inBounds?"valid":"warning"}>{domainLabel}</StatusPill></button></div><div><span className="micro muted">Inference ms</span><strong data-testid="latency">{current?`${current.durationMs.toFixed(2)} ms`:"—"}</strong></div></div></header>
-    <span className="sr-only" role="status">{statusText}</span><main className="instrument-workspace">
-      <aside className="readout-column" aria-label="Predicted performance"><Module number="01" title="Lift CL"><Readout id="cl" value={current?.cl} previous={result?.cl} pending={pending} digits={4}><Sparkline points={sweep.points} field="cl" current={current?{alpha:design.alpha,value:current.cl}:undefined}/></Readout></Module><Module number="02" title="Drag CD"><Readout id="cd" value={current?.cd} previous={result?.cd} pending={pending} digits={5}><Sparkline points={sweep.points} field="cd" current={current?{alpha:design.alpha,value:current.cd}:undefined}/></Readout></Module><Module number="03" title="Efficiency L/D"><Readout id="ratio" value={current?.ratio} previous={result?.ratio} pending={pending} digits={2}/><div className="ratio-meter" title="L/D magnitude on a fixed 0–100 display scale"><span style={{width:`${Math.min(100,Math.abs(current?.ratio||0))}%`}}/></div><div className="meter-labels micro"><span>0</span><span>|L/D| / 100</span></div></Module></aside>
+    <header className="instrument-topbar studio-topbar">
+      <a href="/" className="logo-tile" aria-label="AF—01 AeroForge home"><svg viewBox="0 0 32 24" width="28" height="24" aria-hidden="true"><path d="M2 18Q9 2 28 17Q16 21 2 18ZM3 18H29" fill="none" stroke="currentColor" strokeWidth="1.5"/></svg><span className="micro">AF—01</span></a>
+      <div className="project-title"><span className="micro muted">AeroForge / design studio</span><h1 className="display">{nameOf(design)} <span>/</span></h1></div>
+      <div className="header-latency"><span className="micro muted">Inference</span><strong data-testid="latency">{latency}</strong></div>
+    </header>
+    <span className="sr-only" role="status">{sweeping && inBounds ? "Alpha sweep playing" : statusText}</span>
+    <main className="instrument-workspace">
+      <aside className="readout-column" aria-label="Predicted performance">
+        <Module number="01" title="Lift CL">
+          <Readout id="cl" value={current?.cl} previous={result?.cl} pending={pending} sweeping={sweeping && inBounds} digits={4}>
+            <Sparkline points={sweep.points} field="cl" current={telemetry ? {alpha:telemetry.alpha,value:telemetry.cl} : undefined}/>
+          </Readout>
+        </Module>
+        <Module number="02" title="Drag CD">
+          <Readout id="cd" value={current?.cd} previous={result?.cd} pending={pending} sweeping={sweeping && inBounds} digits={5}>
+            <Sparkline points={sweep.points} field="cd" current={telemetry ? {alpha:telemetry.alpha,value:telemetry.cd} : undefined}/>
+          </Readout>
+        </Module>
+        <Module number="03" title="Efficiency L/D">
+          <Readout id="ratio" value={current?.ratio} previous={result?.ratio} pending={pending} sweeping={sweeping && inBounds} digits={2}/>
+          <div className="ratio-meter" title="L/D magnitude on a fixed 0–100 display scale"><span style={{width:`${Math.min(100,Math.abs(telemetry?.ratio || 0))}%`}}/></div>
+          <div className="meter-labels micro"><span>0</span><span>|L/D| / 100</span></div>
+        </Module>
+      </aside>
       <div className="hero-column">
-        <Stage design={design} saved={saved?.design} display={display} invalid={invalid} onChange={onChange}/>
+        <Stage design={design} saved={saved?.design} display={display} invalid={invalid} onChange={changeField}/>
         <div className="hero-state">
           <span className="micro muted">Section geometry / {invalid ? "last valid" : "live study"}</span>
           <h2 className="display">{nameOf(design)}</h2>
           <div className="micro hero-caption">
             Alpha {design.alpha.toFixed(1)}° / Re {(design.re / 1000).toFixed(0)}k /{" "}
-            <button onClick={() => setDrawer("Details")} className="domain-inline">{domainLabel}</button>
+            <button onClick={() => openDrawer("Details")} className="domain-inline">{domainLabel}</button>
           </div>
         </div>
         <div className="preset-row">
           <span className="micro muted">Presets</span>
           {(morePresets ? presetCodes : ["0012", "2412", "4412"]).map(code =>
-            <Chip key={code} active={preset === code} onClick={() => onPreset(code)}>{code}</Chip>
+            <Chip key={code} active={preset === code} onClick={() => { setPlaying(false); onPreset(code); }}>{code}</Chip>
           )}
           <Chip onClick={() => setMorePresets(!morePresets)} active={morePresets}>More</Chip>
           {saved
-            ? <button className="chip micro active" onClick={() => setDrawer("Charts")}>Compare</button>
+            ? <button className="chip micro active" onClick={() => openDrawer("Charts")}>Compare</button>
             : <button className="chip micro" disabled={!props.urlReady || invalid || pending}
                 onClick={() => setSaved({ design, result: current })}>Save design</button>}
         </div>
         <div className="hero-dock">
-          <Scrubber alpha={design.alpha} reduced={reduced} playing={playing && !reduced}
-            onPlay={() => setPlaying(!playing)}
-            onChange={alpha => { setPlaying(false); onChange("alpha", String(alpha)); }}/>
+          <Scrubber alpha={design.alpha} reduced={reduced} playing={sweeping}
+            onPlay={toggleSweep} onChange={alpha => changeField("alpha", String(alpha))}/>
           <div className="dock-actions">
-            <button className="chip micro" onClick={() => setDrawer("Charts")}>Charts +</button>
+            <button className="chip micro" onClick={() => openDrawer("Charts")}>Charts +</button>
             <ExportMenu design={design} current={current} points={sweep.points}/>
-            <button className="chip micro" onClick={onReset}>Reset</button>
+            <button className="chip micro" onClick={() => { setPlaying(false); onReset(); }}>Reset</button>
             <button className="chip micro share-action" disabled={!props.urlReady || invalid} onClick={openShare}>Share</button>
             <span className="micro muted">2D / equal axis scale</span>
           </div>

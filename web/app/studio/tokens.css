@@ -11,15 +11,15 @@
   --radius-instrument: var(--radius);
 }
 .instrument {
-  --paper: #0c141c; --surface: #141f2b; --workspace: #101b25; --elevated: #202f3d;
-  --ink: #e4edf4; --line: #334757; --muted: #a6b9c9;
-  --accent: #75d9ea; --accent-display: #e4edf4; --accent-control: #8ce0ef;
-  --valid: #91dfb4; --valid-bg: #18372c; --amber: #ffd090; --amber-bg: #392c22; --danger: #ffabac;
-  --foil-fill: #223d4c; --foil-line: #b6ecf3; --construction: #668396;
+  --paper: #ecebe7; --surface: #f7f6f2; --workspace: var(--paper); --elevated: #e9e7df;
+  --ink: #141414; --line: #d9d7d0; --muted: #676660;
+  --accent: #f2511f; --accent-display: #e84a1d; --accent-control: #c73e19;
+  --valid: #177b42; --valid-bg: #edf3eb; --amber: #8c5d0b; --amber-bg: #f7eedc; --danger: #9c3b15;
+  --foil-fill: var(--surface); --foil-line: #292822; --construction: #8c8b83;
   --radius: 3px; --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px; --space-8: 32px;
   --type-micro: 10px; --type-body: 13px; --type-readout: 44px; --type-hero: clamp(52px, 6vw, 88px);
   --motion-fast: 140ms; --motion-panel: 260ms; --ease-panel: cubic-bezier(.2,.8,.2,1);
-  color-scheme: dark; color: var(--ink); background: var(--paper);
+  color-scheme: light; color: var(--ink); background: var(--paper);
   font-family: var(--font-geist), sans-serif; font-size: var(--type-body); min-height: 100vh;
 }
 .instrument *, .instrument *::before, .instrument *::after { box-sizing: border-box; }
@@ -53,16 +53,16 @@
 .instrument [role=alert] { color: var(--danger); }
 .field-error { font-size: 11px; line-height: 1.4; margin-top: 8px !important; }
 .instrument .chip { border: 1px solid var(--line); padding: 8px 10px; min-height: 34px; background: var(--surface); font-size: 9px; font-weight: 500; letter-spacing: .06em; }
-.instrument .chip:hover { border-color: var(--construction); background: var(--elevated); }
-.instrument .chip.active { background: #1c3a48; border-color: var(--accent); color: var(--accent-control); }
+.instrument .chip:hover { border-color: var(--ink); background: var(--elevated); }
+.instrument .chip.active { background: var(--accent-control); border-color: var(--accent-control); color: #fff; }
 .status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px; border: 1px solid var(--line); font-size: 8px !important; white-space: nowrap; }
 .status-pill i { width: 5px; height: 5px; background: currentColor; }
 .status-pill.valid { color: var(--valid); background: var(--valid-bg); }
 .status-pill.warning { color: var(--amber); background: var(--amber-bg); }
 .status-pill.inactive { color: var(--muted); }
 .scrubber { display: flex; align-items: center; gap: 20px; background: var(--surface); border: 1px solid var(--line); padding: 20px; }
-.instrument .play-button { border: 0; background: var(--accent); color: var(--paper); min-width: 44px; height: 44px; padding: 0; border-radius: 50%; font-size: 15px; }
-.instrument .play-button:hover { background: var(--foil-line); }
+.instrument .play-button { border: 0; background: var(--accent); color: var(--ink); min-width: 44px; height: 44px; padding: 0; border-radius: 50%; font-size: 15px; }
+.instrument .play-button:hover { background: var(--accent-control); }
 .instrument .play-button:disabled { opacity: .45; cursor: default; }
 .scrubber-track { flex: 1; min-width: 0; }
 .scrubber-heading,.scrubber-ticks { display: flex; justify-content: space-between; gap: 12px; }
@@ -71,7 +71,7 @@
 .scrubber-heading > span:last-child { font-size: 8px; }
 .scrubber-ticks { color: var(--muted); font-size: 8px !important; }
 .instrument .instrument-drawer { position: fixed; inset: 0 0 0 auto; margin: 0; padding: 0; max-height: 100dvh; height: 100dvh; max-width: min(720px,100vw); width: 720px; border: 0; border-left: 1px solid var(--line); color: var(--ink); background: var(--surface); }
-.instrument-drawer::backdrop { background: rgb(5 10 15 / .7); }
+.instrument-drawer::backdrop { background: rgb(20 20 20 / .25); }
 .drawer-body { padding: 32px; min-height: 100%; }
 .drawer-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 24px; border-bottom: 1px solid var(--line); margin-bottom: 24px; }
 .drawer-heading h2 { font-size: 38px; }

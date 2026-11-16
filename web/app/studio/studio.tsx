@@ -41,7 +41,7 @@ export default function Studio() {
   const [preset, setPreset] = useState("2412");
   const [expanded, setExpanded] = useState(false);
   const [retry, setRetry] = useState(0);
-  const [result, setResult] = useState<(Awaited<ReturnType<typeof predict>> & { key: string }) | null>(null);
+  const [result, setResult] = useState<(Awaited<ReturnType<typeof predict>> & { key: string; alpha: number }) | null>(null);
   const [status, setStatus] = useState("Loading model");
   const [failure, setFailure] = useState("");
   const [urlReady, setUrlReady] = useState(false);
@@ -73,7 +73,7 @@ export default function Studio() {
     setStatus("Loading / calculating"); setFailure("");
     const timer = setTimeout(() => {
       void predict(design).then((value) => {
-        if (!cancelled) { setResult({ ...value, key }); setStatus("Prediction ready"); }
+        if (!cancelled) { setResult({ ...value, key, alpha: design.alpha }); setStatus("Prediction ready"); }
       }).catch(() => {
         if (!cancelled) { setFailure("The prediction model could not run. Check your connection and retry. If the runtime still fails, reload this page."); setStatus("Model unavailable"); }
       });

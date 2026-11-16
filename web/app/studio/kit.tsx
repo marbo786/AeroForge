@@ -9,12 +9,12 @@ export function Module({ number, title, children, className = "" }: { number: st
   </section>;
 }
 
-export function Readout({ id, value, previous, digits, pending, children }: { id: string; value?: number; previous?: number; digits: number; pending: boolean; children?: ReactNode }) {
+export function Readout({ id, value, previous, digits, pending, sweeping, children }: { id: string; value?: number; previous?: number; digits: number; pending: boolean; sweeping?: boolean; children?: ReactNode }) {
   const shown = value ?? (pending ? previous : undefined);
-  return <div className={`readout ${pending ? "is-pending" : ""}`}>
+  return <div className={`readout ${pending && !sweeping ? "is-pending" : ""}`}>
     <span className="sr-only" data-testid={id}>{value === undefined ? "—" : value.toFixed(digits)}</span>
     <div className="readout-number" aria-hidden="true">{shown === undefined ? "—" : shown.toFixed(digits)}</div>
-    <div className="readout-caption micro">{pending ? "Previous / updating" : "Dimensionless"}{pending && <i className="loading-tick"/>}</div>{children}
+    <div className="readout-caption micro">{sweeping ? "Latest sample" : pending ? "Previous / updating" : "Dimensionless"}{pending && !sweeping && <i className="loading-tick"/>}</div>{children}
   </div>;
 }
 

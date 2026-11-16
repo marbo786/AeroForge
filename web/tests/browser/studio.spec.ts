@@ -144,6 +144,33 @@ test("direct manipulation changes geometry and real predictions; scrubber and dr
   await expect(page.getByRole("dialog",{name:"Details",exact:true})).not.toBeVisible();
 });
 
+test("alpha sweep gives predictions time to read and pauses on manual input", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("status")).toHaveText("Prediction ready");
+  const header = page.getByRole("banner");
+  await expect(header.getByText(/model status|domain status/i)).toHaveCount(0);
+  await expect(header.getByTestId("latency")).toBeVisible();
+  const scrubber = page.getByRole("slider", { name: "Alpha sweep", exact: true });
+  const originalLift = await page.getByTestId("cl").textContent();
+  await page.getByRole("button", { name: "Play alpha sweep" }).click();
+  await expect(page.getByRole("status")).toHaveText("Alpha sweep playing");
+  await expect(page.getByLabel("Predicted performance").getByText("Latest sample")).toHaveCount(3);
+  // Enforce a readable dwell rather than merely checking that the angle advances.
+  await page.waitForTimeout(300);
+  await expect(scrubber).toHaveValue("4");
+  await expect(scrubber).toHaveValue("4.5");
+  await expect(page.getByTestId("cl")).toHaveText(/^-?\d+\.\d{4}$/);
+  await expect(page.getByTestId("cl")).not.toHaveText(originalLift!);
+  await scrubber.fill("8");
+  await expect(page.getByRole("button", { name: "Play alpha sweep" })).toBeVisible();
+  await expect(page.getByRole("status")).toHaveText("Prediction ready");
+  await page.getByRole("button", { name: "Play alpha sweep" }).click();
+  await expect(scrubber).toHaveValue("8.5");
+  await expect(page.getByTestId("cl")).toHaveText("—");
+  await page.getByRole("button", { name: "Pause alpha sweep" }).click();
+  await expect(page.getByRole("status")).toHaveText("Outside model bounds");
+});
+
 test("sheet snaps, display toggles, reduced motion and real exports remain usable", async ({ page },info) => {
   await page.goto("/studio/");await expect(page.getByRole("status")).toHaveText("Prediction ready");
   await openControls(page);
