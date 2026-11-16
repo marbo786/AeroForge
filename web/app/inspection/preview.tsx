@@ -16,13 +16,19 @@ class GraphicsBoundary extends Component<{children:ReactNode; onFailure:()=>void
 
 type Status = "poster" | "loading" | "ready" | "unsupported" | "failed" | "lost";
 
-export function VehicleViewport({active = true, onAirfoil}: {active?: boolean; onAirfoil?: () => void}) {
+type WingInspection = { selected: boolean; onInspect: () => void; onReturn: () => void };
+
+export function VehicleViewport({active = true, onAirfoil, wing}: {
+  active?: boolean; onAirfoil?: () => void; wing?: WingInspection;
+}) {
   const [status, setStatus] = useState<Status>("poster");
   const [progress, setProgress] = useState<number | null>(null);
   const [stats, setStats] = useState<RenderStats>();
   const [view, setView] = useState<View>("Three-quarter");
   const [command, setCommand] = useState<CameraCommand>({view:"Three-quarter"});
   const pose = useRef<CameraPose>(null);
+  const wingPose = useRef<CameraPose>(null);
+  const wingAction = useRef<HTMLButtonElement>(null);
 
   function start() {
     try {
@@ -36,6 +42,7 @@ export function VehicleViewport({active = true, onAirfoil}: {active?: boolean; o
     setView("Three-quarter");
     setCommand({view:"Three-quarter"});
     pose.current = null;
+    wingPose.current = null;
     setProgress(null);
     setStatus("loading");
   }
@@ -56,13 +63,20 @@ export function VehicleViewport({active = true, onAirfoil}: {active?: boolean; o
     lost:"The 3D graphics context was lost.",
   }[status];
 
-  return <div className="vehicle-viewport">
+  const inspect = () => {
+    wingPose.current = null;
+    wing?.onInspect();
+    wingAction.current?.focus({preventScroll:true});
+  };
+
+  return <div className="vehicle-viewport" data-wing-selected={wing?.selected || undefined}>
       <div className="inspection-bay" data-render-status={status}
         data-triangles={stats?.triangles} data-draw-calls={stats?.calls}>
-        {status !== "ready" && <Image className="inspection-poster" src={vehiclePath+"poster.webp"}
+        {status !== "ready" && !wing?.selected && <Image className="inspection-poster" src={vehiclePath+"poster.webp"}
           width={1440} height={720} alt="AF–02 from the front three-quarter angle" unoptimized/>}
         {renderScene && <GraphicsBoundary onFailure={() => setStatus("failed")}>
-          <Scene command={command} pose={pose} onProgress={setProgress}
+          <Scene command={command} pose={pose} wingPose={wingPose} wingSelected={!!wing?.selected}
+            onInspect={wing ? inspect : undefined} onProgress={setProgress}
             onFailure={kind=>setStatus(kind)}
             onReady={value=>{setStats(value);setStatus("ready");}}/>
         </GraphicsBoundary>}
@@ -71,20 +85,31 @@ export function VehicleViewport({active = true, onAirfoil}: {active?: boolean; o
           {!renderScene && status !== "unsupported" && <button className="inspection-button" onClick={start}>
             {status === "poster" ? "Enable 3D" : "Retry 3D"}
           </button>}
-          {!renderScene && status !== "poster" && (onAirfoil
+          {!renderScene && status !== "poster" && !wing?.selected && (onAirfoil
             ? <button className="inspection-button" onClick={onAirfoil}>Continue in 2D</button>
             : <a className="inspection-button" href="/studio/?view=airfoil">Continue in 2D</a>)}
         </div>
       </div>
-      <div className="inspection-controls">
-        <div className="inspection-camera" role="group" aria-label="Camera views">
-          {cameraViews.map(item=><button className="inspection-button" key={item} aria-pressed={view===item}
-            disabled={status!=="ready"} onClick={()=>{setView(item);setCommand({view:item});}}>{item}</button>)}
-        </div>
-        <div className="inspection-camera" role="group" aria-label="Camera zoom">
-          <button className="inspection-button zoom" aria-label="Zoom out" disabled={status!=="ready"} onClick={()=>setCommand({zoom:-1})}>−</button>
-          <button className="inspection-button zoom" aria-label="Zoom in" disabled={status!=="ready"} onClick={()=>setCommand({zoom:1})}>+</button>
-        </div>
+      <div className="inspection-toolbar">
+        {wing && <>
+          <button ref={wingAction} className="inspection-button inspection-wing-action" type="button"
+            onClick={wing.selected ? wing.onReturn : inspect}>
+            {wing.selected ? "Return to car" : "Inspect front wing"}
+          </button>
+          <span className="sr-only" role="status" aria-label="Component selection">
+            {wing.selected ? "Front wing selected. The representative NACA section is ready to edit." : "Car overview"}
+          </span>
+        </>}
+        {!wing?.selected && <div className="inspection-controls">
+          <div className="inspection-camera" role="group" aria-label="Camera views">
+            {cameraViews.map(item=><button className="inspection-button" key={item} aria-pressed={view===item}
+              disabled={status!=="ready"} onClick={()=>{setView(item);setCommand({view:item});}}>{item}</button>)}
+          </div>
+          <div className="inspection-camera" role="group" aria-label="Camera zoom">
+            <button className="inspection-button zoom" aria-label="Zoom out" disabled={status!=="ready"} onClick={()=>setCommand({zoom:-1})}>−</button>
+            <button className="inspection-button zoom" aria-label="Zoom in" disabled={status!=="ready"} onClick={()=>setCommand({zoom:1})}>+</button>
+          </div>
+        </div>}
       </div>
   </div>;
 }

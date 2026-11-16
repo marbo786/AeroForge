@@ -4,7 +4,14 @@ Last updated: 2026-11-16 (Asia/Karachi).
 
 ## Current phase and session rule
 
-Phase V2.2 is complete on `codex/aeroforge-v2`. The Studio-first workspace is available in the local production export. Approval is pending for V2.3, front-wing inspection. The public v1 baseline is `e8e0ea0`. [Public v1](https://aeroforge-9tf.pages.dev/)
+Phase V2.3 is complete on `codex/aeroforge-v2`. The local production export includes front-wing inspection. Approval is pending for V2.4, analysis integration. The public v1 baseline is `e8e0ea0`. [Public v1](https://aeroforge-9tf.pages.dev/)
+
+## Phase V2.3 front-wing inspection
+
+- Select a visible front-wing surface or use **Inspect front wing**. The camera focuses on the GLB inspection anchor, highlights the wing, and opens a representative NACA section. The regular camera move takes 440 ms and snaps under reduced motion. Drag and pinch retain their camera behavior. **Return to car** restores the previous overview pose and zoom.
+- The section shares the existing inputs, exact NACA contour and isolated-section ONNX results with Airfoil. The user can open the full editor and return to the active inspection. The HTML workflow also works with graphics disabled and before phones opt into 3D. The vehicle assembly uses its authored geometry while the SVG shows the editable section.
+- Captured and inspected the desktop close-up and both phone states, then softened the highlight, enlarged the SVG section and made the non-3D status a compact row. [Screenshots and verification](docs/v2-3/README.md)
+- The local production export passed lint, TypeScript, 23 Node tests, the Pages asset guard, and 58 Playwright tests with eight profile-specific skips. The zoomed overview and selected pose were reproduced pixel for pixel on return, and the production model hash matched the accepted artifact. The V2.3 commit remains local to the v2 branch.
 
 ## Phase V2.2 Studio workspace
 

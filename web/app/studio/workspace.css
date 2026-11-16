@@ -61,7 +61,8 @@
 .v2-car-label { color: var(--muted); font-size: 12px; white-space: nowrap; }
 .v2-workspace .inspection-bay { height: max(480px, calc(100svh - 243px)); border-color: var(--line); }
 .v2-workspace .vehicle-viewport { min-width: 0; --edge: var(--line); }
-.v2-workspace .inspection-controls { margin: 8px 0 0; }
+.v2-workspace .inspection-toolbar { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.v2-workspace .inspection-controls { flex: 1; margin: 0; }
 .v2-workspace .vehicle-viewport .inspection-button {
   display: inline-flex; justify-content: center; align-items: center; border: 1px solid var(--line);
   padding: 6px 11px; min-height: 34px; background: var(--surface); color: var(--ink); font-size: 12px;
@@ -71,6 +72,22 @@
 .v2-workspace .vehicle-viewport .inspection-button:disabled { opacity: .5; cursor: default; }
 .v2-workspace .vehicle-viewport .zoom { width: 40px; font-size: 18px; }
 .v2-workspace .inspection-state p { border-color: var(--line); color: var(--ink); }
+.v2-workspace .vehicle-viewport .inspection-wing-action { border-color: var(--accent); color: var(--accent); }
+.v2-workspace [data-wing-selected] .inspection-bay { height: clamp(310px, calc(100svh - 443px), 685px); }
+.v2-workspace [data-wing-selected] .inspection-bay:is([data-render-status="poster"], [data-render-status="unsupported"], [data-render-status="failed"], [data-render-status="lost"]) { height: auto; }
+.v2-workspace [data-wing-selected] .inspection-bay:is([data-render-status="poster"], [data-render-status="unsupported"], [data-render-status="failed"], [data-render-status="lost"]) .inspection-state {
+  position: relative; inset: auto; padding: 6px;
+}
+.v2-wing-study {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); align-items: center;
+  gap: 16px; padding: 12px; background: var(--surface); border: 1px solid var(--line);
+}
+.v2-wing-study .v2-section-preview { width: 100%; }
+.v2-wing-study .v2-section-preview svg { max-height: 118px; }
+.v2-wing-copy { display: grid; justify-items: start; gap: 6px; }
+.v2-wing-copy .micro { color: var(--accent); }
+.v2-wing-copy h2 { font: 625 23px/1.1 var(--font-geist), sans-serif; letter-spacing: -.04em; }
+.v2-wing-copy > p { color: var(--muted); }
 .v2-workspace .stage-viewport { margin: 0; height: clamp(285px, 54svh, 660px); flex: none; min-height: 0; max-height: none; }
 .v2-airfoil-tools { display: grid; gap: 8px; }
 .v2-airfoil-tools .scrubber { padding: 12px; }
@@ -158,7 +175,12 @@
   .v2-workspace .vehicle-viewport:not(:has(.inspection-bay[data-render-status="ready"])) .inspection-controls { display: none; }
   .v2-workspace .vehicle-viewport .inspection-button { min-height: 44px; padding-inline: 8px; }
   .v2-workspace .vehicle-viewport .zoom { width: 44px; }
+  .v2-workspace .inspection-toolbar { flex-wrap: wrap; }
+  .v2-workspace .inspection-toolbar .inspection-controls { flex: 1 0 100%; }
   .v2-workspace .inspection-controls { gap: 6px; }
+  .v2-workspace [data-wing-selected] .inspection-bay { height: clamp(245px, 32svh, 340px); }
+  .v2-wing-study { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .v2-wing-study .v2-section-preview svg { max-height: 96px; }
   .v2-metric-label { min-height: 34px; font-size: 10px; line-height: 1.25; }
   .v2-metric-label abbr { font-size: 9px; }
   .v2-model { grid-template-columns: minmax(0,1fr) auto; gap: 4px 8px; }

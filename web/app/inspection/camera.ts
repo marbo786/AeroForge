@@ -3,6 +3,7 @@ export type View = typeof cameraViews[number];
 export type CameraCommand = {view: View} | {zoom: -1 | 1};
 export type CameraPose = {
   position: [number, number, number];
+  target: [number, number, number];
   orthographic: boolean;
   halfHeight: number;
   zoom: number;

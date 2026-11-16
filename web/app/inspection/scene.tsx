@@ -1,10 +1,10 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import {
   Color, Material, Mesh, Object3D, OrthographicCamera, PerspectiveCamera,
-  PMREMGenerator, Quaternion, Vector3, MathUtils,
+  PMREMGenerator, Quaternion, Vector3, Vector2, MathUtils, MeshStandardMaterial, Raycaster, Box3,
 } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
@@ -15,12 +15,16 @@ import { vehiclePath, type CameraCommand, type CameraPose, type RenderStats, typ
 type SceneProps = {
   command:CameraCommand;
   pose:RefObject<CameraPose|null>;
+  wingPose:RefObject<CameraPose|null>;
+  wingSelected:boolean;
+  onInspect?:()=>void;
   onProgress:(value:number|null)=>void;
   onFailure:(kind:"failed"|"lost")=>void;
   onReady:(stats:RenderStats)=>void;
 };
 
 const target = new Vector3(0,.54,0);
+const wingDirection = new Vector3(.68,.42,1).normalize();
 const initial = [6,3.1,7.4] as const;
 const views: Record<View, { direction:[number,number,number]; height:number; width:number }> = {
   "Three-quarter": {direction:[.94,.43,1],height:3.28,width:5.85},
@@ -43,8 +47,8 @@ function fitPerspective(direction:Vector3, slope:number, aspect:number) {
   }));
 }
 
-function Rig({command, pose}:Pick<SceneProps,"command"|"pose">) {
-  const { camera, gl, set, invalidate, size } = useThree();
+function Rig({command, pose, wingPose, wingSelected, anchor}: Pick<SceneProps,"command"|"pose"|"wingPose"|"wingSelected"> & {anchor:Vector3|null}) {
+  const { camera, gl, set, get, invalidate, size } = useThree();
   const [perspective] = useState(() => camera as PerspectiveCamera);
   const [orthographic] = useState(() => Object.assign(
     new OrthographicCamera(-1,1,1,-1,.1,80), {manual:true},
@@ -52,6 +56,8 @@ function Rig({command, pose}:Pick<SceneProps,"command"|"pose">) {
   const controls = useRef<OrbitControls>(null);
   const move = useRef<((now:number)=>void)|null>(null);
   const first = useRef(true);
+  const wasSelected = useRef(false);
+  const returnCommand = useRef<CameraCommand>(null);
   const reduced = useReducedPreference();
 
   useEffect(() => {
@@ -90,34 +96,79 @@ function Rig({command, pose}:Pick<SceneProps,"command"|"pose">) {
   useEffect(() => {
     const orbit = controls.current;
     if (!orbit || !size.width || !size.height) return;
-    // Resize refits a preset without applying the same relative zoom twice.
-    if ("zoom" in command && lastCommand.current === command) return;
-    lastCommand.current = command;
+    if (wingSelected && !anchor) return;
     const aspect = size.width/size.height;
-    if (first.current && pose.current) {
-      const saved = pose.current;
+    const slope = Math.tan(MathUtils.degToRad(perspective.fov/2));
+    const resumed = first.current && (wingSelected ? wingPose.current : pose.current);
+
+    function restore(saved:CameraPose) {
       const restored = saved.orthographic ? orthographic : perspective;
+      orbit!.target.fromArray(saved.target);
       restored.position.fromArray(saved.position);
       if (restored instanceof OrthographicCamera) {
+        const viewport = get().size;
         restored.top = saved.halfHeight;
         restored.bottom = -saved.halfHeight;
-        restored.right = saved.halfHeight * aspect;
+        restored.right = saved.halfHeight * viewport.width / viewport.height;
         restored.left = -restored.right;
         restored.zoom = saved.zoom;
         restored.updateProjectionMatrix();
       }
-      restored.lookAt(target);
-      orbit.object = restored;
+      restored.lookAt(orbit!.target);
+      orbit!.object = restored;
       set({camera:restored});
+    }
+
+    const selectionChanged = wasSelected.current !== wingSelected;
+    wasSelected.current = wingSelected;
+    orbit.minDistance = wingSelected ? 1.5 : 3.2;
+    if (resumed) {
+      lastCommand.current = command;
       first.current = false;
+      restore(resumed);
       invalidate();
       return;
     }
-    const slope = Math.tan(MathUtils.degToRad(perspective.fov/2));
+    if ((wingSelected && anchor) || selectionChanged) {
+      if (!selectionChanged) return;
+      lastCommand.current = command;
+      returnCommand.current = wingSelected ? null : command;
+      const saved = wingSelected ? null : pose.current;
+      const nextTarget = wingSelected && anchor ? anchor : saved ? new Vector3(...saved.target) : target;
+      const distance = Math.max(1.34, 3.05 / aspect) / (2 * slope);
+      const nextPosition = saved ? new Vector3(...saved.position) : nextTarget.clone().addScaledVector(wingDirection,distance);
+      const fromTarget = orbit.target.clone();
+      const previous = orbit.object;
+      const fromOffset = previous.position.clone().sub(fromTarget);
+      if (previous instanceof OrthographicCamera) fromOffset.setLength(previous.top/(previous.zoom*slope));
+      const nextOffset = nextPosition.clone().sub(nextTarget);
+      if (saved?.orthographic) nextOffset.setLength(saved.halfHeight/(saved.zoom*slope));
+      const startDirection = fromOffset.clone().normalize();
+      const rotation = new Quaternion().setFromUnitVectors(startDirection,nextOffset.clone().normalize());
+      const identity = new Quaternion();
+      const partial = new Quaternion();
+      orbit.object = perspective;
+      set({camera:perspective});
+      animate((t,finished) => {
+        orbit.target.lerpVectors(fromTarget,nextTarget,t);
+        perspective.position.copy(startDirection).applyQuaternion(partial.slerpQuaternions(identity,rotation,t))
+          .multiplyScalar(MathUtils.lerp(fromOffset.length(),nextOffset.length(),t)).add(orbit.target);
+        perspective.lookAt(orbit.target);
+        if (finished && saved) restore(saved);
+      });
+      return;
+    }
+    // The section panel changes the canvas height on return. Keep the restored framing.
+    if (returnCommand.current === command) return;
+    returnCommand.current = null;
+    // Resize refits a preset without applying the same relative zoom twice.
+    if ("zoom" in command && lastCommand.current === command) return;
+    lastCommand.current = command;
     const view = "view" in command ? command.view : undefined;
     const spec = view && views[view];
     const activeCamera = orbit.object as PerspectiveCamera | OrthographicCamera;
-    const from = activeCamera.position.clone().sub(target);
+    const fromTarget = orbit.target.clone();
+    const from = activeCamera.position.clone().sub(fromTarget);
     if (activeCamera instanceof OrthographicCamera && !view) {
       const start = activeCamera.zoom;
       const end = MathUtils.clamp(start * ("zoom" in command && command.zoom === 1 ? 1.2 : 1/1.2),.6,2.2);
@@ -141,9 +192,10 @@ function Rig({command, pose}:Pick<SceneProps,"command"|"pose">) {
     const identity = new Quaternion();
     const partial = new Quaternion();
     animate((t,finished) => {
+      orbit.target.lerpVectors(fromTarget,target,t);
       perspective.position.copy(fromDirection).applyQuaternion(partial.slerpQuaternions(identity,rotation,t))
-        .multiplyScalar(MathUtils.lerp(from.length(),distance,t)).add(target);
-      perspective.lookAt(target);
+        .multiplyScalar(MathUtils.lerp(from.length(),distance,t)).add(orbit.target);
+      perspective.lookAt(orbit.target);
       if (finished && view && view!=="Three-quarter") {
         orthographic.left=-height*aspect/2;
         orthographic.right=height*aspect/2;
@@ -169,16 +221,19 @@ function Rig({command, pose}:Pick<SceneProps,"command"|"pose">) {
       };
       invalidate();
     }
-  }, [command,size.width,size.height,reduced,perspective,orthographic,pose,set,invalidate]);
+  }, [command,size.width,size.height,reduced,perspective,orthographic,pose,wingPose,wingSelected,anchor,get,set,invalidate]);
 
   useFrame(()=>{
     move.current?.(performance.now());
     if (move.current) invalidate();
     else controls.current?.update();
-    const camera = controls.current?.object;
-    if (camera) {
+    const orbit = controls.current;
+    const camera = orbit?.object;
+    if (camera && !move.current && (!wingSelected || anchor)) {
       const ortho = camera instanceof OrthographicCamera;
-      pose.current = {position:camera.position.toArray(), orthographic:ortho, halfHeight:ortho ? camera.top : 0, zoom:ortho ? camera.zoom : 1};
+      const destination = wingSelected ? wingPose : pose;
+      destination.current = {position:camera.position.toArray(), target:orbit.target.toArray(),
+        orthographic:ortho, halfHeight:ortho ? camera.top : 0, zoom:ortho ? camera.zoom : 1};
     }
   });
   return null;
@@ -280,11 +335,95 @@ async function loadVehicle(signal:AbortSignal, progress:SceneProps["onProgress"]
   return new GLTFLoader().parseAsync(await new Blob(chunks).arrayBuffer(),vehiclePath);
 }
 
-function Vehicle({onProgress,onFailure,onReady}:Omit<SceneProps,"command"|"pose">) {
+function WingInteraction({model, selected, onInspect}: {model:Object3D; selected:boolean; onInspect?:()=>void}) {
+  const {gl,invalidate,get}=useThree();
+  const inspect=useRef(onInspect);
+  inspect.current=onInspect;
+  const enabled=!!onInspect;
+
+  useLayoutEffect(()=>{
+    if (!enabled) return;
+    const wing=model.getObjectByName("Front_wing");
+    if (!wing) return;
+    if (selected) {
+      const originals=new Map<Mesh,MeshStandardMaterial>();
+      wing.traverse(part=>{
+        if (!(part instanceof Mesh) || !(part.material instanceof MeshStandardMaterial)) return;
+        originals.set(part,part.material);
+        const highlight=part.material.clone();
+        highlight.color.lerp(new Color("#209da8"),.64);
+        highlight.emissive.set("#167684");
+        highlight.emissiveIntensity=.36;
+        part.material=highlight;
+      });
+      invalidate();
+      return ()=>{
+        for(const [part,original] of originals) {
+          (part.material as Material).dispose();
+          part.material=original;
+        }
+        invalidate();
+      };
+    }
+
+    const canvas=gl.domElement;
+    const pickVolume=new Box3().setFromObject(wing);
+    const raycaster=new Raycaster();
+    const point=new Vector2();
+    const pointers=new Set<number>();
+    let tap:{id:number;x:number;y:number}|null=null;
+    function hitsWing(event:PointerEvent) {
+      const box=canvas.getBoundingClientRect();
+      point.set(2*(event.clientX-box.left)/box.width-1,1-2*(event.clientY-box.top)/box.height);
+      raycaster.setFromCamera(point,get().camera);
+      if (!raycaster.ray.intersectsBox(pickVolume)) return false;
+      const front=raycaster.intersectObject(model,true)[0];
+      for(let part:Object3D|null=front?.object??null;part;part=part.parent) if(part===wing) return true;
+      return false;
+    }
+    function down(event:PointerEvent) {
+      pointers.add(event.pointerId);
+      tap = pointers.size===1 && event.button===0 && hitsWing(event) ?
+        {id:event.pointerId,x:event.clientX,y:event.clientY} : null;
+      canvas.style.cursor="";
+    }
+    function moved(event:PointerEvent) {
+      if (tap?.id===event.pointerId && Math.hypot(event.clientX-tap.x,event.clientY-tap.y)>8) tap=null;
+      if (!pointers.size && event.pointerType==="mouse") canvas.style.cursor=hitsWing(event)?"pointer":"";
+    }
+    function end(event:PointerEvent) {
+      const candidate=tap;
+      tap=null;
+      pointers.delete(event.pointerId);
+      if (event.type==="pointerup" && candidate?.id===event.pointerId &&
+        Math.hypot(event.clientX-candidate.x,event.clientY-candidate.y)<=8 && hitsWing(event)) inspect.current?.();
+    }
+    canvas.addEventListener("pointerdown",down);
+    canvas.addEventListener("pointermove",moved);
+    canvas.addEventListener("pointerup",end);
+    canvas.addEventListener("pointercancel",end);
+    canvas.addEventListener("lostpointercapture",end);
+    return ()=>{
+      canvas.removeEventListener("pointerdown",down);
+      canvas.removeEventListener("pointermove",moved);
+      canvas.removeEventListener("pointerup",end);
+      canvas.removeEventListener("pointercancel",end);
+      canvas.removeEventListener("lostpointercapture",end);
+      canvas.style.cursor="";
+    };
+  },[enabled,get,gl,invalidate,model,selected]);
+  return null;
+}
+
+type VehicleProps = Pick<SceneProps,"onProgress"|"onFailure"|"onReady"|"wingSelected"|"onInspect"> & {
+  onAnchor:(anchor:Vector3|null)=>void;
+};
+
+function Vehicle({onProgress,onFailure,onReady,onAnchor,wingSelected,onInspect}:VehicleProps) {
   const {gl,invalidate}=useThree();
   const [model,setModel]=useState<Object3D>();
-  const callbacks=useRef({onProgress,onFailure,onReady});
-  callbacks.current={onProgress,onFailure,onReady};
+  const callbacks=useRef({onProgress,onFailure,onReady,onAnchor});
+  callbacks.current={onProgress,onFailure,onReady,onAnchor};
   const ready=useRef(false);
 
   useEffect(()=>{
@@ -298,6 +437,8 @@ function Vehicle({onProgress,onFailure,onReady}:Omit<SceneProps,"command"|"pose"
     void loadVehicle(controller.signal,value=>callbacks.current.onProgress(value)).then(({scene})=>{
       if(controller.signal.aborted){disposeVehicle(scene);return;}
       vehicle=scene;
+      const anchor=scene.getObjectByName("Front_wing_inspection_anchor");
+      callbacks.current.onAnchor(anchor?.getWorldPosition(new Vector3()) ?? null);
       setModel(scene);
       invalidate();
     }).catch(()=>{
@@ -319,20 +460,24 @@ function Vehicle({onProgress,onFailure,onReady}:Omit<SceneProps,"command"|"pose"
       callbacks.current.onReady({calls,triangles});
     });
   });
-  return model ? <primitive object={model} dispose={null}/> : null;
+  return model ? <>
+    <primitive object={model} dispose={null}/>
+    <WingInteraction model={model} selected={wingSelected} onInspect={onInspect}/>
+  </> : null;
 }
 
-export default function Scene({command,pose,...callbacks}:SceneProps) {
+export default function Scene({command,pose,wingPose,wingSelected,...callbacks}:SceneProps) {
   const compact=typeof window!=="undefined"&&matchMedia("(max-width: 740px)").matches;
-  return <div className="inspection-render" role="img" aria-label="Interactive illustrative AF–02 racing car">
+  const [anchor,setAnchor]=useState<Vector3|null>(null);
+  return <div className="inspection-render" role="img" aria-label={wingSelected ? "Illustrative AF–02 front-wing close-up" : "Interactive illustrative AF–02 racing car"}>
     <Canvas frameloop="demand" dpr={[1,compact?1.25:1.5]}
       camera={{position:[...initial],fov:36,near:.1,far:140}}
       gl={{antialias:true,powerPreference:"low-power"}}>
       <color attach="background" args={["#151b20"]}/>
       <Lighting/>
       <Floor/>
-      <Vehicle {...callbacks}/>
-      <Rig command={command} pose={pose}/>
+      <Vehicle {...callbacks} onAnchor={setAnchor} wingSelected={wingSelected}/>
+      <Rig command={command} pose={pose} wingPose={wingPose} wingSelected={wingSelected} anchor={wingSelected ? anchor : null}/>
     </Canvas>
   </div>;
 }

@@ -43,10 +43,10 @@ function subscribeCompact(changed:()=>void) {
   return () => query.removeEventListener("change",changed);
 }
 
-function SectionPreview({design,invalid}:{design:Design; invalid:boolean}) {
-  const outline = generateGeometry(design,65).contour.map(([x,y]) => `${x} ${-y}`).join(" ");
+function SectionPreview({design,invalid,wing=false}:{design:Design; invalid:boolean; wing?:boolean}) {
+  const outline = generateGeometry(design).contour.map(([x,y]) => `${x} ${-y}`).join(" ");
   return <figure className="v2-section-preview">
-    <svg role="img" aria-label="Representative NACA section" viewBox="-.06 -.24 1.12 .48">
+    <svg role="img" aria-label="Representative NACA section" viewBox={wing ? "-.06 -.17 1.12 .36" : "-.06 -.24 1.12 .48"}>
       <g transform={`rotate(${design.alpha} .25 0)`}>
         <polygon points={outline}/>
         <path d="M0 0H1"/>
@@ -199,11 +199,19 @@ export default function Instrument(props:InstrumentProps) {
   const [playing,setPlaying]=useState(false);
   const [saved,setSaved]=useState<SavedDesign|null>(null);
   const [dock,setDock]=useState<Dock|null>(null);
+  const [wingSelected,setWingSelected]=useState(false);
   const [morePresets,setMorePresets]=useState(false);
   const reduced=!!useReducedPreference();
   const latest=useRef(props);latest.current=props;
   const compact = useSyncExternalStore(subscribeCompact,()=>matchMedia(compactQuery).matches,()=>false);
   const dockId = useId();
+  const wingTitle = useId();
+  const viewHeading = useRef<HTMLHeadingElement>(null);
+  const focusAirfoil = useRef(false);
+  function inspectWing() {
+    setPlaying(false);
+    setWingSelected(true);
+  }
   const reynolds = model.domain.sampled_reynolds;
   const supportsSweep = (value: Design) => value.re >= reynolds[0] && value.re <= reynolds[reynolds.length - 1];
   const needsCurves = view !== "studio" || dock === "curves" || drawer === "Charts";
@@ -267,6 +275,11 @@ export default function Instrument(props:InstrumentProps) {
     setPlaying(false);
     props.onView(next);
   }
+  useEffect(()=>{
+    if (view !== "airfoil" || !focusAirfoil.current) return;
+    focusAirfoil.current = false;
+    viewHeading.current?.focus();
+  },[view]);
   function saveDesign() {
     setSaved({design,result:current});
   }
@@ -324,12 +337,24 @@ export default function Instrument(props:InstrumentProps) {
         <div className="v2-center">
           <div className="v2-view-heading">
             <div><p className="micro">{view==="studio" ? "Vehicle studio" : view==="airfoil" ? "Representative NACA section" : "Isolated 2D section analysis"}</p>
-              <h1>{view==="studio" ? "AF–02" : nameOf(design)}</h1></div>
+              <h1 ref={viewHeading} tabIndex={-1}>{view==="studio" ? "AF–02" : nameOf(design)}</h1></div>
             {view==="studio" && <p className="v2-car-label">Illustrative car</p>}
             {compact && <button className="chip micro v2-edit" aria-haspopup="dialog"
               onClick={()=>openDrawer("Design parameters")}>Edit parameters</button>}
           </div>
-          <VehicleViewport active={view==="studio" && props.urlReady} onAirfoil={()=>changeMode("airfoil")}/>
+          <VehicleViewport active={view==="studio" && props.urlReady} onAirfoil={()=>changeMode("airfoil")}
+            wing={{selected:wingSelected,onInspect:inspectWing,onReturn:()=>setWingSelected(false)}}/>
+          {view==="studio" && wingSelected && <section className="v2-wing-study" aria-labelledby={wingTitle}>
+            <div className="v2-wing-copy">
+              <div><p className="micro">Representative NACA section</p><h2 id={wingTitle}>Front wing</h2></div>
+              <p>Predictions apply to this isolated profile.</p>
+              <button type="button" className="chip micro" onClick={()=>{
+                focusAirfoil.current = true;
+                changeMode("airfoil");
+              }}>Open Airfoil editor</button>
+            </div>
+            <SectionPreview design={design} invalid={invalid} wing/>
+          </section>}
           {view==="airfoil" && <>
             <Stage design={design} saved={saved?.design} display={display} invalid={invalid} onChange={changeField}/>
             <div className="v2-airfoil-tools">
