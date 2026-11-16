@@ -1,0 +1,98 @@
+[
+  {
+    "profile": "mobile",
+    "lighthouse": "13.6.0",
+    "throttling": "simulate",
+    "scores": {
+      "performance": 92.0,
+      "accessibility": 100.0,
+      "best-practices": 100.0,
+      "seo": 100.0
+    },
+    "audits": {
+      "first-contentful-paint": {
+        "score": 1,
+        "value": 916.3375000000001,
+        "display": "0.9 s"
+      },
+      "largest-contentful-paint": {
+        "score": 0.69,
+        "value": 3332.675,
+        "display": "3.3 s"
+      },
+      "speed-index": {
+        "score": 1,
+        "value": 1029.6894319694306,
+        "display": "1.0 s"
+      },
+      "total-blocking-time": {
+        "score": 0.98,
+        "value": 92,
+        "display": "90 ms"
+      },
+      "cumulative-layout-shift": {
+        "score": 1,
+        "value": 0.008529276339256452,
+        "display": "0.009"
+      },
+      "errors-in-console": {
+        "score": 1,
+        "value": null,
+        "display": null
+      },
+      "color-contrast": {
+        "score": 1,
+        "value": null,
+        "display": null
+      }
+    }
+  },
+  {
+    "profile": "desktop",
+    "lighthouse": "13.6.0",
+    "throttling": "simulate",
+    "scores": {
+      "performance": 86.0,
+      "accessibility": 100.0,
+      "best-practices": 100.0,
+      "seo": 100.0
+    },
+    "audits": {
+      "first-contentful-paint": {
+        "score": 1,
+        "value": 264.8041,
+        "display": "0.3 s"
+      },
+      "largest-contentful-paint": {
+        "score": 0.97,
+        "value": 826.6082,
+        "display": "0.8 s"
+      },
+      "speed-index": {
+        "score": 1,
+        "value": 518.3088755738224,
+        "display": "0.5 s"
+      },
+      "total-blocking-time": {
+        "score": 0.56,
+        "value": 313.0000000000001,
+        "display": "310 ms"
+      },
+      "cumulative-layout-shift": {
+        "score": 1,
+        "value": 0.008431329632183404,
+        "display": "0.008"
+      },
+      "errors-in-console": {
+        "score": 1,
+        "value": null,
+        "display": null
+      },
+      "color-contrast": {
+        "score": 1,
+        "value": null,
+        "display": null
+      }
+    }
+  }
+]

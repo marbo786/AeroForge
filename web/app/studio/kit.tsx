@@ -37,7 +37,7 @@ export function Callout({ x, y, labelX, labelY, label, value }: { x: number; y: 
 export function Scrubber({ alpha, playing, reduced, onChange, onPlay }: { alpha: number; playing: boolean; reduced: boolean; onChange: (alpha: number) => void; onPlay: () => void }) {
   return <section className="scrubber" aria-label="Alpha sweep scrubber"><button className="play-button" aria-label={playing ? "Pause alpha sweep" : "Play alpha sweep"} disabled={reduced} onClick={onPlay}>{playing ? "Ⅱ" : "▶"}</button><div className="scrubber-track"><div className="scrubber-heading micro"><span>Alpha sweep</span><strong>{alpha.toFixed(1)}°</strong><span className="muted">{reduced ? "Manual / reduced motion" : "Space / play-pause"}</span></div><input aria-label="Alpha sweep" type="range" min="-4" max="12" step="0.1" value={alpha} onChange={(e) => onChange(Number(e.target.value))}/><div className="scrubber-ticks micro">{[-4,0,4,8,12].map((v) => <span key={v}>{v}°</span>)}</div></div></section>;
 }
-export function Drawer({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: ReactNode }) {
+export function Drawer({ open, onClose, title, children, className = "" }: { open: boolean; onClose: () => void; title: string; children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDialogElement>(null);
   const closeRef = useRef(onClose); closeRef.current = onClose;
   const reduced = useReducedPreference();
@@ -49,7 +49,7 @@ export function Drawer({ open, onClose, title, children }: { open: boolean; onCl
     if (!open && dialog.open) dialog.close();
     return () => { if (dialog.open) dialog.close(); if (open) trigger?.focus(); };
   }, [open]);
-  return <dialog className="instrument-drawer" ref={ref} aria-label={title} onCancel={(e) => { e.preventDefault(); closeRef.current(); }} onClick={(e) => { if (e.target === e.currentTarget) closeRef.current(); }}>
+  return <dialog className={`instrument-drawer ${className}`} ref={ref} aria-label={title} onCancel={(e) => { e.preventDefault(); closeRef.current(); }} onClick={(e) => { if (e.target === e.currentTarget) closeRef.current(); }}>
     {open && <motion.div className="drawer-body" initial={reduced ? false : { x: 40, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: .26 }}><div className="drawer-heading"><h2 className="display">{title}</h2><button className="chip micro" onClick={onClose} aria-label={`Close ${title}`}>Close ×</button></div>{children}</motion.div>}
   </dialog>;
 }

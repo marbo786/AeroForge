@@ -4,7 +4,53 @@ Last updated: 2026-11-16 (Asia/Karachi).
 
 ## Current phase and session rule
 
-Phase 7 is complete. The existing [public Cloudflare Pages deployment](https://aeroforge-9tf.pages.dev/) passed the HTTPS smoke test again during the final launch audit. The dark workstation candidate passed local production verification and is ready for rollout and a public smoke test.
+Phase V2.5 implementation is complete on `codex/aeroforge-v2`. Approval is pending for V2.6, production verification. The public v1 baseline is `e8e0ea0`. [Public v1](https://aeroforge-9tf.pages.dev/)
+
+## Phase V2.5 visual polish and performance
+
+- Reviewed the four workspace views at 1920, 1440, 768 and 390 px before and after refinement, plus loading and failed-asset fallback. Enlarged the desktop car, refined wing framing, brought the tablet dock into view and moved compact Analysis telemetry above the charts. Reserved the bay and hid desktop controls at the right breakpoint before hydration to reduce layout shift.
+- The compact 3D option loads a dedicated 399,464-byte model, down from 828,248 bytes, with 14,874 rendered triangles and 34 draw calls. Reduced the reflection-map resolution while preserving the car shading. Tested Meshopt stream encoding offline and kept native glTF buffers in the shipped assets. Static guards enforce both geometry budgets and verify the accepted ONNX model and preprocessing hashes.
+- Added keyboard orbit and larger phone touch targets, and disabled orbit damping under reduced motion. Fixed a remount race that could replace the stored camera pose with its default. Four consecutive browser checks reproduced the selected pose across mode switches. Axe reported zero violations across 12 states. Phone gestures were tested with browser touch emulation. Physical phone frame timing remains open.
+- `npm run verify` passed lint, TypeScript, 23 Node tests, the static build and asset checks, and 59 Playwright tests with ten profile-specific skips. [Screenshots and verification](docs/v2-5/README.md)
+- On the integrated Radeon desktop, 3D became interactive at 2.24 s under the 10 Mbps / 100 ms profile and orbit p95 was 17.5 ms, with zero draws at rest. The 2D shell added 9.4 KiB gzip versus v1. Median warm edits stayed near 92 ms and cold edits rose 2.6%. Lighthouse scored 92 mobile and 86 desktop for performance, below the desktop goal of 90, and 100 for the other categories in both profiles.
+
+## Phase V2.4 analysis integration
+
+- The Studio dock, Airfoil charts and Analysis share one inspection cursor. It follows the operating angle until the user selects a sample. **Follow design angle** resumes following. Both plots use the same sampled results, leave missing values as gaps and offer a retry after a failed batch. Alpha playback keeps its paced dwell and pauses on mode changes.
+- The current and saved designs each use their own Reynolds number. One saved comparison supplies the overlay, dashed curves and operating-point table across views. Analysis supports CSV and JSON downloads. Airfoil retains SVG, PNG, CSV and JSON. Legacy and view-specific links restore the same validated design.
+- Curve batches start when charts or CSV need them and reuse the matching result when reopened. A controlled browser test delivered superseded point and sweep results while newer requests were pending and verified that neither appeared as current. It also verified a missing-row gap and batch recovery. The Pages guard verifies the accepted model and preprocessing hashes.
+- Inspected desktop and phone captures and refined the chart input width and preview spacing. [Screenshots and verification](docs/v2-4/README.md)
+- `npm run verify` passed lint, TypeScript, 23 Node tests, the static export, the Pages asset guard and 59 production Playwright tests with ten profile-specific skips. Verified matching CL, CD and L/D across all modes and Analysis data exports with WebGL disabled. The V2.4 commit remains local to the v2 branch.
+
+## Phase V2.3 front-wing inspection
+
+- Select a visible front-wing surface or use **Inspect front wing**. The camera focuses on the GLB inspection anchor, highlights the wing, and opens a representative NACA section. The regular camera move takes 440 ms and snaps under reduced motion. Drag and pinch retain their camera behavior. **Return to car** restores the previous overview pose and zoom.
+- The section shares the existing inputs, exact NACA contour and isolated-section ONNX results with Airfoil. The user can open the full editor and return to the active inspection. The HTML workflow also works with graphics disabled and before phones opt into 3D. The vehicle assembly uses its authored geometry while the SVG shows the editable section.
+- Captured and inspected the desktop close-up and both phone states, then softened the highlight, enlarged the SVG section and made the non-3D status a compact row. [Screenshots and verification](docs/v2-3/README.md)
+- The local production export passed lint, TypeScript, 23 Node tests, the Pages asset guard, and 58 Playwright tests with eight profile-specific skips. The zoomed overview and selected pose were reproduced pixel for pixel on return, and the production model hash matched the accepted artifact. The V2.3 commit remains local to the v2 branch.
+
+## Phase V2.2 Studio workspace
+
+- The root and `/studio/` open in Studio with the original AF–02 car, parameter controls, section telemetry and a collapsed analysis dock. Airfoil mode opens the accurate NACA editor and Analysis opens the ONNX-backed lift and drag charts and saved-design comparison. All three use the same design inputs and comparison. On phones, parameter controls open in a bottom sheet and the car starts with a still image and a 3D opt-in.
+- Sharing preserves the selected view and all five design inputs. Legacy links restore their design and open Studio. Direct Airfoil and Analysis links defer all vehicle assets. Switching away from Studio releases the canvas and switching back restores the live camera pose.
+- Reviewed the final four viewport sizes, the Airfoil and Analysis views, and the phone controls sheet in Playwright Chrome. The visual refinement brought the collapsed dock within both desktop viewports and removed unavailable camera controls from the phone still-image view. [Screenshots and verification](docs/v2-2/README.md)
+- The local production export passed lint, TypeScript, 23 Node tests, the Pages asset guard, and 55 Playwright tests with five profile-specific skips. The production model hash is unchanged. The V2.2 commit remains local to the v2 branch.
+
+## Phase V2.1 vehicle inspection
+
+- Built the original AF–02 GLB and retained its procedural source, license provenance and named front-wing inspection anchor. The isolated route uses React Three Fiber 9.8.2 with Three.js 0.187.0, a perspective overview, three orthographic presets, orbit and zoom. It detects WebGL2 before loading the scene and links to the working v1 2D editor from every graphics state.
+- Reviewed all four camera views in Playwright at 1440 × 900, then checked 1920 × 1080, 768 × 1024 and 390 × 844, including the phone poster and 3D opt-in. The second visual pass expanded the bay, fit the whole car and softened shallow-angle grid aliasing. [Screenshots and asset provenance](docs/v2-1/README.md)
+- Desktop rendered 35,606 triangles in 34 calls. The GLB is 828,248 bytes and the deferred graphics chunks total 269,832 gzip bytes. Phone opt-in currently uses the desktop GLB. Mobile optimization and physical device performance are scheduled for V2.5.
+- Verified the static export, numeric model hash, 23 Node tests and 49 browser tests. Five cross-project cases were intentionally skipped because desktop and mobile inspection tests have distinct targets. Coverage includes load and retry, no-WebGL, graphics context loss, orbit and zoom, four camera presets, and real 2D inference after fallback. Stabilized the existing tablet model-retry test by waiting for the mocked corrupt response.
+- Stop here for V2.2 approval. The preview is local to the v2 branch.
+
+## Phase V2.0 architecture and visual planning
+
+- Reviewed the current studio, frozen model, NACA geometry, sharing, charts, exports and Cloudflare static delivery. The plan keeps those engineering features in one shared design controller and puts the original Formula-style car in a separate illustrative renderer. [V2 specification](docs/V2_SPEC.md)
+- Registry metadata supports React Three Fiber 9.8.2 and Three.js 0.187.0 as candidates for the current React 19.3.1 stack. A local production-build browser probe rendered a WebGL2 pixel on integrated AMD Radeon graphics. With WebGL disabled, the v1 2D studio still produced the same lift reading, 0.6972. The exact Fiber production build, scene performance and physical mobile checks are subsequent phase gates.
+- Screened two third-party mesh listings for license claims and triangle counts. Recommended a locally authored, unbranded GLB with reproducible source and named wing parts. Defined desktop and mobile budgets, the accessible 2D fallback, and deliverables and acceptance evidence for V2.1 through V2.6.
+- The v1 baseline passed lint, type checks, all 23 Node tests, the static production export and the Pages asset guard. The first browser run passed 43 of 44 tests due to a tablet retry-test timeout. The trace showed the retry loaded the real model and reported prediction ready before the expected second retry button. A complete browser rerun passed all 44 on their first attempt. The specification records how to stabilize the test during V2.1.
+- This phase delivers the plan and records the baseline. Stop here for approval of V2.1.
 
 ## Final v1 launch audit
 

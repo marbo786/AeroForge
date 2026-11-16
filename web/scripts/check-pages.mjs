@@ -23,12 +23,21 @@ const manifest = JSON.parse(await readFile(new URL('../../artifacts/recovery-v1-
 const lock = JSON.parse(await readFile(new URL('../package-lock.json', import.meta.url)));
 const runtime = `runtime/${lock.packages['node_modules/onnxruntime-web'].version}`;
 const model = `models/${manifest.version}/${manifest.model_file}`;
+const preprocessing = `models/${manifest.version}/preprocessing.json`;
 for (const name of [
-  'index.html', 'studio/index.html', 'model/index.html', 'spike/index.html', '404.html', '_headers',
-  model, `${runtime}/ort.wasm.min.mjs`, `${runtime}/ort-wasm-simd-threaded.mjs`,
+  'index.html', 'studio/index.html', 'model/index.html', 'spike/index.html', 'inspection/index.html', '404.html', '_headers',
+  model, preprocessing, `${runtime}/ort.wasm.min.mjs`, `${runtime}/ort-wasm-simd-threaded.mjs`,
   `${runtime}/ort-wasm-simd-threaded.wasm`, 'licenses/AeroForge-MIT.txt', 'licenses/ONNX-Runtime-LICENSE.txt',
+  'licenses/Three-LICENSE.txt', 'licenses/React-Three-Fiber-LICENSE.txt',
 ]) assert(files.some(file => file.name === name && file.bytes > 0), `Missing Pages asset: ${name}`);
+for (const [path, kib] of [['vehicle/af02-v1/car.glb', 900], ['vehicle/af02-v1/poster.webp', 160],
+  ['vehicle/af02-mobile-v1/car.glb', 450]]) {
+  const file = files.find(entry => entry.name === path);
+  assert(file && file.bytes > 0 && file.bytes <= kib * 1024, `Missing or over-budget inspection asset: ${path}`);
+}
 const exportedHash = createHash('sha256').update(await readFile(join(root, model))).digest('hex');
 assert.equal(exportedHash, manifest.model_sha256, 'Exported model hash differs from the accepted model');
+const preprocessingHash = createHash('sha256').update(await readFile(join(root, preprocessing))).digest('hex');
+assert.equal(preprocessingHash, manifest.preprocessing_sha256, 'Exported preprocessing hash differs from the accepted model');
 const totalBytes = files.reduce((sum, file) => sum + file.bytes, 0);
-console.log(JSON.stringify({ files: files.length, totalBytes, largest, modelSha256: exportedHash }, null, 2));
+console.log(JSON.stringify({ files: files.length, totalBytes, largest, modelSha256: exportedHash, preprocessingSha256: preprocessingHash }, null, 2));

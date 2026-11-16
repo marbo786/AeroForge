@@ -22,11 +22,13 @@
     "verify": "npm run assets && npm run lint && npm run typecheck && npm test && npm run build && npm run check:pages && npm run smoke"
   },
   "dependencies": {
+    "@react-three/fiber": "9.8.2",
     "motion": "14.10.1",
     "next": "16.4.5",
     "onnxruntime-web": "1.31.1",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "three": "0.187.0"
   },
   "devDependencies": {
     "@playwright/test": "1.65.0",
@@ -34,6 +36,7 @@
     "@types/node": "24.10.1",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
+    "@types/three": "0.187.0",
     "eslint": "10.14.0",
     "onnx-proto": "8.0.1",
     "tailwindcss": "4.3.5",

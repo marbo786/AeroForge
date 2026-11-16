@@ -1,0 +1,99 @@
+{
+  "browser": "157.0.8103.51",
+  "platform": "win32",
+  "v1Shell": {
+    "files": 7,
+    "gzip": 196588,
+    "decoded": 634155
+  },
+  "v2Shell": {
+    "files": 8,
+    "gzip": 206187,
+    "decoded": 662926
+  },
+  "desktopStartupMs": 2238.9,
+  "deferred3d": {
+    "files": 5,
+    "gzip": 271327,
+    "decoded": 1013132
+  },
+  "desktop": {
+    "renderer": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "viewport": [
+      1440,
+      900
+    ],
+    "dpr": 1,
+    "triangles": 35606,
+    "drawCalls": 34,
+    "asset": {
+      "gzip": 346836,
+      "decoded": 828248
+    },
+    "poster": {
+      "gzip": 34510,
+      "decoded": 34884
+    },
+    "orbit": {
+      "samples": 300,
+      "p95ms": 17.5
+    },
+    "framesAtRest": 0
+  },
+  "phoneEmulation": {
+    "renderer": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "viewport": [
+      390,
+      844
+    ],
+    "dpr": 1.25,
+    "triangles": 14874,
+    "drawCalls": 34,
+    "asset": {
+      "gzip": 146359,
+      "decoded": 399464
+    },
+    "poster": {
+      "gzip": 34510,
+      "decoded": 34884
+    }
+  },
+  "timings": {
+    "v1": {
+      "cold": [
+        554.2,
+        556.5,
+        530.6,
+        545.5,
+        548.5
+      ],
+      "warm": [
+        107.3,
+        90,
+        92,
+        90.7,
+        108.6
+      ],
+      "coldMedian": 548.5,
+      "warmMedian": 92
+    },
+    "v2": {
+      "cold": [
+        580.3,
+        561.7,
+        562.8,
+        554.6,
+        572.7
+      ],
+      "warm": [
+        90.3,
+        108.1,
+        91.6,
+        91.7,
+        91.4
+      ],
+      "coldMedian": 562.8,
+      "warmMedian": 91.6
+    }
+  }
+}
