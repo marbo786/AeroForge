@@ -38,4 +38,4 @@ The XFOIL binary and archive are excluded from the repository and release. XFOIL
 
 ## Publishing status
 
-Public publishing requires approval of the release commit, GitHub push and Cloudflare Free project. Git integration also requires authorization of the Cloudflare GitHub app for this repository. Use the issued HTTPS URL for the first public smoke run and record the result. [Publishing and public verification](DEPLOYMENT.md)
+The [public Cloudflare Pages deployment](https://aeroforge-9tf.pages.dev/) passed the HTTPS smoke test on 2026-11-16 in Chrome 157.0.8103.51. All four routes passed, including a restored shared design. The check confirmed same-origin ONNX inference, the expected model hash, MIME and cache headers, a 404 for missing WASM, and zero browser errors. The Lighthouse results above remain local measurements. [Publishing and public verification](DEPLOYMENT.md)

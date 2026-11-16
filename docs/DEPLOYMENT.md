@@ -58,4 +58,4 @@ For a manually managed project, choose **Direct Upload** instead and upload the 
 3. Verify the first and repeat visits in a browser. Check model and WASM requests, console errors, cache behavior and shared URL restoration. Confirm the account shows a Free Pages project with static requests and no bindings.
 4. Record the tested HTTPS URL and release commit in the README and progress tracker. If a release needs reverting, use Pages deployment rollback and repeat the smoke check against the production URL.
 
-No account, repository integration or publishing authorization was supplied for Phase 7. The local Wrangler run does not measure Cloudflare CDN behavior or verify an account configuration. See [the release audit](RELEASE.md) for the measured local results.
+The live deployment at [aeroforge-9tf.pages.dev](https://aeroforge-9tf.pages.dev/) passed the public HTTPS smoke test on 2026-11-16. See [the release audit](RELEASE.md) for the public result and local performance measurements.

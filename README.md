@@ -33,6 +33,6 @@ To reproduce training, create a fresh recovery plan with `scripts/plan_recovery.
 
 ## Hosting and license
 
-The production export is prepared for Cloudflare Pages Free. Public publishing awaits account and release approval. Follow the [deployment and public verification guide](docs/DEPLOYMENT.md) and [progress record](PROGRESS.md).
+The production export is live on [Cloudflare Pages](https://aeroforge-9tf.pages.dev/). The public HTTPS smoke test passed on 2026-11-16. See the [deployment and verification guide](docs/DEPLOYMENT.md) and [progress record](PROGRESS.md).
 
 Original application code and documentation use the [MIT License](LICENSE). The browser export includes third-party notices for the runtime, framework, animation packages and fonts. XFOIL uses its upstream license and runs offline. The binary is excluded from this distribution.
