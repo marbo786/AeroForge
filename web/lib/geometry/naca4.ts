@@ -20,6 +20,7 @@ export type AirfoilGeometry = Readonly<{
 }>;
 export const schemaVersion = spec.schemaVersion;
 export const presetCodes: readonly string[] = Object.freeze([...spec.presets]);
+export const candidateBounds = spec.candidateBounds;
 
 function finite(value: unknown, name: string): number {
   if (typeof value !== "number" || !Number.isFinite(value))

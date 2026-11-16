@@ -1,7 +1,9 @@
 "use client";
 import { useReducedPreference } from "./use-reduced-preference";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 import { motion } from "motion/react";
+import { modelBounds, type Bounds } from "../../lib/inference/domain";
+import { explorationAlpha } from "./design-fields";
 
 export function Module({
   number,
@@ -28,34 +30,30 @@ export function Module({
 export function Readout({
   id,
   value,
-  previous,
   digits,
   pending,
   sweeping,
-  children,
 }: {
   id: string;
   value?: number;
-  previous?: number;
   digits: number;
   pending: boolean;
   sweeping?: boolean;
-  children?: ReactNode;
 }) {
-  const shown = value ?? (pending ? previous : undefined);
+  const shown = value === undefined ? "—" : value.toFixed(digits);
   return (
-    <div className={`readout ${pending && !sweeping ? "is-pending" : ""}`}>
-      <span className="sr-only" data-testid={id}>
-        {value === undefined ? "—" : value.toFixed(digits)}
-      </span>
-      <div className="readout-number" aria-hidden="true">
-        {shown === undefined ? "—" : shown.toFixed(digits)}
+    <div className={`readout ${pending ? "is-pending" : ""}`}>
+      <div className="readout-number" data-testid={id}>
+        {shown}
       </div>
       <div className="readout-caption micro">
-        {sweeping ? "Latest sample" : pending ? "Previous / updating" : "Dimensionless"}
-        {pending && !sweeping && <i className="loading-tick" />}
+        {pending
+          ? "Calculating"
+          : sweeping && value !== undefined
+            ? "Latest sample"
+            : "Dimensionless"}
+        {pending && <i className="loading-tick" />}
       </div>
-      {children}
     </div>
   );
 }
@@ -67,6 +65,7 @@ export function Slider({
   value,
   min,
   max,
+  supported,
   step,
   disabled,
   error,
@@ -78,16 +77,21 @@ export function Slider({
   value: string;
   min: number;
   max: number;
+  supported: Bounds;
   step: number;
   disabled?: boolean;
   error?: string;
   onChange: (value: string) => void;
 }) {
+  const [low, high] = supported;
+  const partial = !disabled && (low > min || high < max);
+  const rangeHint = disabled
+    ? "Symmetric sections use camber position zero."
+    : `Model range ${low.toLocaleString("en-US")} to ${high.toLocaleString("en-US")}${unit === "Re" ? "" : unit}.`;
+  const marker = (bound: number) => `${((bound - min) / (max - min)) * 100}%`;
+  const descriptions = [`bounds-${id}`, error ? `error-${id}` : ""].filter(Boolean).join(" ");
   return (
-    <div
-      className="instrument-slider"
-      title={`${label}: ${min} to ${max} ${unit}${disabled ? "; symmetric position canonicalized to zero" : ""}`}
-    >
+    <div className="instrument-slider" title={rangeHint}>
       <div className="slider-caption">
         <label className="micro" htmlFor={`number-${id}`}>
           {label}
@@ -103,22 +107,37 @@ export function Slider({
             value={value}
             disabled={disabled}
             aria-invalid={!!error}
-            aria-describedby={error ? `error-${id}` : undefined}
+            aria-describedby={descriptions}
             onChange={(e) => onChange(e.target.value)}
           />
           <span className="micro">{unit}</span>
         </div>
       </div>
-      <input
-        aria-label={`${label} slider`}
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={Number.isFinite(Number(value)) ? Number(value) : min}
-        disabled={disabled}
-        onChange={(e) => onChange(e.target.value)}
-      />
+      <div className="parameter-track">
+        <input
+          aria-label={`${label} slider`}
+          aria-describedby={descriptions}
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={Number.isFinite(Number(value)) ? Number(value) : min}
+          disabled={disabled}
+          onChange={(e) => onChange(e.target.value)}
+        />
+        {partial && (
+          <span className="parameter-model-track" aria-hidden="true">
+            {(low > min ? [low, high] : [high])
+              .filter((value) => value !== max)
+              .map((value) => (
+                <i key={value} style={{ "--bound": marker(value) } as CSSProperties} />
+              ))}
+          </span>
+        )}
+      </div>
+      <p id={`bounds-${id}`} className={partial ? "parameter-model-hint" : "sr-only"}>
+        {rangeHint}
+      </p>
       {error && (
         <p className="field-error" id={`error-${id}`} role="alert">
           {error}
@@ -228,16 +247,18 @@ export function Scrubber({
         <input
           aria-label="Alpha sweep"
           type="range"
-          min="-4"
-          max="12"
+          min={explorationAlpha[0]}
+          max={explorationAlpha[1]}
           step="0.1"
           value={alpha}
           onChange={(e) => onChange(Number(e.target.value))}
         />
         <div className="scrubber-ticks micro">
-          {[-4, 0, 4, 8, 12].map((v) => (
-            <span key={v}>{v}°</span>
-          ))}
+          {[...new Set([explorationAlpha[0], 0, 4, modelBounds.alpha[1], explorationAlpha[1]])]
+            .sort((a, b) => a - b)
+            .map((v) => (
+              <span key={v}>{v}°</span>
+            ))}
         </div>
       </div>
     </section>
@@ -248,12 +269,14 @@ export function Drawer({
   onClose,
   title,
   children,
+  headerContent,
   className = "",
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
   children: ReactNode;
+  headerContent?: ReactNode;
   className?: string;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -291,11 +314,14 @@ export function Drawer({
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.26 }}
         >
-          <div className="drawer-heading">
-            <h2 className="display">{title}</h2>
-            <button className="chip micro" onClick={onClose} aria-label={`Close ${title}`}>
-              Close ×
-            </button>
+          <div className="drawer-header">
+            <div className="drawer-heading">
+              <h2 className="display">{title}</h2>
+              <button className="chip micro" onClick={onClose} aria-label={`Close ${title}`}>
+                Close ×
+              </button>
+            </div>
+            {headerContent}
           </div>
           {children}
         </motion.div>

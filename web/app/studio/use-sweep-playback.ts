@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useReducedPreference } from "./use-reduced-preference";
 import type { InstrumentProps } from "./instrument";
+import { explorationAlpha } from "./design-fields";
 
 const sweepHoldMs = 850;
+const [minAlpha, maxAlpha] = explorationAlpha;
 type SweepInputs = Pick<
   InstrumentProps,
   "design" | "failure" | "invalid" | "onChange" | "urlReady" | "view"
@@ -28,16 +30,16 @@ export function useSweepPlayback(inputs: SweepInputs, pending: boolean) {
     }
     const inputs = latest.current;
     if (reduced || !inputs.urlReady || inputs.invalid || inputs.failure) return;
-    if (inputs.design.alpha >= 12) inputs.onChange("alpha", "-4");
+    if (inputs.design.alpha >= maxAlpha) inputs.onChange("alpha", String(minAlpha));
     setPlaying(true);
   }, [playing, reduced]);
   useEffect(() => {
     // Give each completed prediction its full reading time, even on slow devices.
     if (!sweeping || pending) return;
     const timer = window.setTimeout(() => {
-      const next = Math.min(12, Number((alpha + 0.5).toFixed(1)));
+      const next = Math.min(maxAlpha, Number((alpha + 0.5).toFixed(1)));
       latest.current.onChange("alpha", String(next));
-      if (next === 12) setPlaying(false);
+      if (next === maxAlpha) setPlaying(false);
     }, sweepHoldMs);
     return () => window.clearTimeout(timer);
   }, [sweeping, pending, alpha]);

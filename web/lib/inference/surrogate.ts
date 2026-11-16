@@ -1,9 +1,8 @@
 import type { InferenceSession } from "onnxruntime-web";
-import metadata from "../../../artifacts/recovery-v1-complete/model.json" with { type: "json" };
-import { normalizeGeometry, type Parameters } from "../geometry/naca4.ts";
+import { normalizeGeometry } from "../geometry/naca4.ts";
+import { assessDomain, domainMessage, model, type Design } from "./domain.ts";
 
-export const model = metadata;
-export type Design = Parameters & { alpha: number; re: number };
+export { model, type Design } from "./domain.ts";
 let sessionPromise: Promise<InferenceSession> | undefined;
 const runtimePath = "/runtime/1.31.1/";
 const runtime = (): Promise<typeof import("onnxruntime-web")> =>
@@ -11,20 +10,8 @@ const runtime = (): Promise<typeof import("onnxruntime-web")> =>
 
 export function features(design: Design): number[] {
   const p = normalizeGeometry(design);
-  const [low, high] = model.domain.alpha_deg;
-  const reynolds = model.domain.sampled_reynolds;
-  if (
-    !Number.isFinite(design.alpha) ||
-    design.alpha < low ||
-    design.alpha > high ||
-    !Number.isFinite(design.re) ||
-    design.re < reynolds[0] ||
-    design.re > reynolds[reynolds.length - 1]
-  ) {
-    throw new Error(
-      "Predictions require an angle from -4 to 8° and Reynolds number from 100,000 to 500,000.",
-    );
-  }
+  const { outside } = assessDomain({ ...design, ...p });
+  if (outside.length) throw new Error(domainMessage(outside));
   // All scaling, engineered features and output inversion are inside the graph.
   return [p.m, p.p, p.t, design.alpha, Math.log10(design.re)];
 }

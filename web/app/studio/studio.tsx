@@ -2,49 +2,38 @@
 
 import { useEffect, useRef, useState } from "react";
 import { normalizeGeometry, parseNaca } from "../../lib/geometry/naca4";
-import { features, predict, type Design } from "../../lib/inference/surrogate";
+import {
+  assessDomain,
+  clampToModel,
+  domainMessage,
+  model,
+  type Design,
+} from "../../lib/inference/domain";
+import { predict } from "../../lib/inference/surrogate";
+import { fields, type Draft, type Field } from "./design-fields";
 import Instrument from "./instrument";
+import type { Result } from "./section-design";
 import { readSharedDesign, readWorkspaceView, type WorkspaceView } from "./shared-design";
 
-const initial = { m: "2", p: "40", t: "12", alpha: "4", re: "250000" };
-export type Field = keyof typeof initial;
-export type Draft = typeof initial;
-const controls: {
-  key: Field;
-  label: string;
-  unit: string;
-  min: number;
-  max: number;
-  step: number;
-}[] = [
-  { key: "m", label: "Maximum camber", unit: "% chord", min: 0, max: 6, step: 0.1 },
-  { key: "p", label: "Camber position", unit: "% chord", min: 20, max: 60, step: 1 },
-  { key: "t", label: "Thickness", unit: "% chord", min: 8, max: 18, step: 0.1 },
-  { key: "alpha", label: "Angle of attack", unit: "deg", min: -4, max: 12, step: 0.1 },
-  {
-    key: "re",
-    label: "Reynolds number",
-    unit: "dimensionless",
-    min: 100000,
-    max: 1000000,
-    step: 1000,
-  },
-];
+const initial: Draft = { m: "2", p: "40", t: "12", alpha: "4", re: "250000" };
 function validate(draft: Draft): { design?: Design; errors: Partial<Record<Field, string>> } {
   const errors: Partial<Record<Field, string>> = {};
-  for (const c of controls) {
-    if (c.key === "p" && Number(draft.m) === 0) continue;
-    const value = Number(draft[c.key]);
-    if (!draft[c.key].trim() || !Number.isFinite(value) || value < c.min || value > c.max)
-      errors[c.key] =
-        `Enter a value from ${c.min.toLocaleString("en-US")} to ${c.max.toLocaleString("en-US")}.`;
+  for (const {
+    key,
+    bounds: [min, max],
+  } of fields) {
+    if (key === "p" && Number(draft.m) === 0) continue;
+    const value = Number(draft[key]);
+    if (!draft[key].trim() || !Number.isFinite(value) || value < min || value > max)
+      errors[key] =
+        `Enter a value from ${min.toLocaleString("en-US")} to ${max.toLocaleString("en-US")}.`;
   }
   if (Object.keys(errors).length) return { errors };
   return {
     errors,
     design: {
       ...normalizeGeometry(
-        { m: Number(draft.m), p: Number(draft.p), t: Number(draft.t) },
+        { m: Number(draft.m), p: Number(draft.m) === 0 ? 0 : Number(draft.p), t: Number(draft.t) },
         "percent",
       ),
       alpha: Number(draft.alpha),
@@ -70,10 +59,7 @@ export default function Studio() {
   const [preset, setPreset] = useState("2412");
   const [view, setView] = useState<WorkspaceView>("studio");
   const [retry, setRetry] = useState(0);
-  const [result, setResult] = useState<
-    (Awaited<ReturnType<typeof predict>> & { key: string; alpha: number }) | null
-  >(null);
-  const [failedKey, setFailedKey] = useState<string | null>(null);
+  const [prediction, setPrediction] = useState<{ key: string; result: Result | null }>();
   const [urlReady, setUrlReady] = useState(false);
   const [linkError, setLinkError] = useState(false);
   useEffect(() => {
@@ -93,16 +79,13 @@ export default function Studio() {
   }, []);
   const validation = validate(draft);
   const invalid = !validation.design;
-  const key = JSON.stringify(design);
-  let domainError = "";
-  try {
-    features(design);
-  } catch (e) {
-    domainError = (e as Error).message;
-  }
+  const key = JSON.stringify([model.version, design, retry]);
+  const domain = assessDomain(design);
+  const domainError = domainMessage(domain.outside);
   const available = urlReady && !invalid && !domainError;
+  const active = available && prediction?.key === key ? prediction : undefined;
   const failure =
-    available && failedKey === key
+    active?.result === null
       ? "The prediction model could not run. Check your connection and retry. If the runtime still fails, reload this page."
       : "";
   useEffect(() => {
@@ -110,22 +93,19 @@ export default function Studio() {
     if (!available) return;
     const timer = setTimeout(() => {
       void predict(design)
-        .then((value) => {
-          if (!cancelled) {
-            setResult({ ...value, key, alpha: design.alpha });
-            setFailedKey(null);
-          }
+        .then((result) => {
+          if (!cancelled) setPrediction({ key, result });
         })
         .catch(() => {
-          if (!cancelled) setFailedKey(key);
+          if (!cancelled) setPrediction({ key, result: null });
         });
     }, 80);
     return () => {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [key, available, retry]); // A superseded request can never display stale coefficients.
-  const current = available && result?.key === key && !failure ? result : null;
+  }, [key, available]); // The key includes the inputs, model version and retry.
+  const current = active?.result ?? null;
   const status = current
     ? "Prediction ready"
     : failure
@@ -172,10 +152,10 @@ export default function Studio() {
       urlReady={urlReady}
       linkError={linkError}
       onDismissLinkError={() => setLinkError(false)}
+      domain={domain}
       domainError={domainError}
       errors={validation.errors}
       current={current}
-      result={result}
       status={status}
       failure={failure}
       onChange={(field, value) => {
@@ -183,16 +163,21 @@ export default function Studio() {
         if (["m", "p", "t"].includes(field)) setPreset("");
       }}
       onReset={reset}
+      onClamp={() => {
+        const next = clampToModel(design);
+        const clampedDraft = designDraft(next);
+        const draft = { ...latestDraft.current };
+        for (const field of domain.outside) draft[field] = clampedDraft[field];
+        update(draft, next);
+        if (domain.outside.some((field) => field === "m" || field === "p" || field === "t"))
+          setPreset("");
+      }}
       onPreset={selectPreset}
       onRestore={(saved) => {
         update(designDraft(saved), saved);
         setPreset("");
       }}
-      onRetry={() => {
-        setResult(null);
-        setFailedKey(null);
-        setRetry((value) => value + 1);
-      }}
+      onRetry={() => setRetry((value) => value + 1)}
     />
   );
 }

@@ -1,9 +1,17 @@
 "use client";
 import { useEffect, useState } from "react";
-import { model, predictBatch, type Design } from "../../lib/inference/surrogate";
+import { model, modelBounds, type Design } from "../../lib/inference/domain";
+import { predictBatch } from "../../lib/inference/surrogate";
+import { explorationAlpha } from "./design-fields";
 
 export type SweepPoint = { alpha: number; cl: number; cd: number; ratio: number };
-const [minAlpha, maxAlpha] = model.domain.alpha_deg;
+const [minAlpha, maxAlpha] = modelBounds.alpha;
+const [minExploration, maxExploration] = explorationAlpha;
+const explorationSpan = maxExploration - minExploration;
+const clampAlpha = (value: number) => Math.max(minExploration, Math.min(maxExploration, value));
+const angleTicks = [...new Set([minExploration, 0, 4, minAlpha, maxAlpha, maxExploration])]
+  .filter((value) => clampAlpha(value) === value)
+  .sort((a, b) => a - b);
 const angles = Array.from(
   { length: (maxAlpha - minAlpha) * 2 + 1 },
   (_, index) => minAlpha + index / 2,
@@ -12,7 +20,7 @@ const angles = Array.from(
 export function useSweep(design: Design, enabled: boolean) {
   const { m, p, t, re } = design;
   const [attempt, setAttempt] = useState(0);
-  const key = JSON.stringify([m, p, t, re, attempt]);
+  const key = JSON.stringify([model.version, m, p, t, re, attempt]);
   const [data, setData] = useState<{ key: string; points: SweepPoint[]; error?: string }>();
   const active = enabled && data?.key === key ? data : undefined;
   useEffect(() => {
@@ -35,7 +43,7 @@ export function useSweep(design: Design, enabled: boolean) {
           if (!cancelled)
             setData({ key, points: [], error: "Sweep unavailable for these conditions." });
         });
-    }, 180);
+    }, 80);
     return () => {
       cancelled = true;
       clearTimeout(timer);
@@ -61,45 +69,6 @@ function trace(
       return `${continuous ? "L" : "M"}${x(point.alpha)},${y(point[field])}`;
     })
     .join(" ");
-}
-export function Sparkline({
-  points,
-  field,
-  current,
-}: {
-  points: SweepPoint[];
-  field: "cl" | "cd";
-  current?: { alpha: number; value: number };
-}) {
-  const values = points.map((p) => p[field]);
-  const min = Math.min(...values),
-    max = Math.max(...values);
-  const x = (a: number) => 10 + ((a + 4) / 16) * 190;
-  const y = (v: number) => 54 - ((v - min) / (max - min || 1)) * 42;
-  return (
-    <svg
-      className="sparkline"
-      viewBox="0 0 210 74"
-      role="img"
-      aria-label={`${field.toUpperCase()} versus alpha, real model sweep; predictions withheld above 8 degrees`}
-    >
-      <path d="M10 10V54H200M57.5 10V54M105 10V54M152.5 10V54" className="spark-grid" />
-      <rect x="152.5" y="10" width="47.5" height="44" className="missing-region" />
-      {points.length > 0 && <path d={trace(points, x, y, field)} className="spark-line" />}
-      {points.length > 0 && current && current.alpha <= 8 && (
-        <circle cx={x(current.alpha)} cy={y(current.value)} r="2.5" className="spark-point" />
-      )}
-      <text x="10" y="70">
-        −4°
-      </text>
-      <text x="145" y="70">
-        8°
-      </text>
-      <text x="184" y="70">
-        12°
-      </text>
-    </svg>
-  );
 }
 
 type Sweep = ReturnType<typeof useSweep>;
@@ -127,7 +96,9 @@ export function ChartPanel({
       <div className="chart-legend micro">
         <span>Current / solid</span>
         {(comparison.loading || !!comparison.points.length) && <span>Saved / dashed</span>}
-        <span className="muted">Above 8° withheld</span>
+        <span className="muted">
+          Model sweep {minAlpha}° to {maxAlpha}°
+        </span>
         <button
           className="chip micro chart-follow"
           type="button"
@@ -188,8 +159,8 @@ export function ChartPanel({
         </div>
       )}
       <p className="drawer-caveat">
-        The model samples every 0.5° from −4° to 8°, at each design’s Reynolds number. Missing
-        values leave gaps. Select an angle on a chart to inspect its coefficients.
+        The sweep samples every 0.5° from {minAlpha}° to {maxAlpha}° at each design’s Reynolds
+        number. Missing values leave gaps. Select an angle on a chart to inspect its coefficients.
       </p>
     </>
   );
@@ -214,7 +185,7 @@ function SweepChart({
   const values = [...current, ...saved].map((point) => point[field]);
   const min = Math.min(0, ...values);
   const max = Math.max(0, ...values);
-  const x = (alpha: number) => 51 + ((alpha + 4) / 16) * 289;
+  const x = (alpha: number) => 51 + ((alpha - minExploration) / explorationSpan) * 289;
   const y = (value: number) => 139 - ((value - min) / (max - min || 1)) * 112;
   const selectedCurrent = current.find((point) => point.alpha === selected);
   const selectedSaved = saved.find((point) => point.alpha === selected);
@@ -223,8 +194,8 @@ function SweepChart({
     const matrix = svg.getScreenCTM();
     if (!matrix) return;
     const point = new DOMPoint(clientX, clientY).matrixTransform(matrix.inverse());
-    const alpha = Math.round((((point.x - 51) / 289) * 16 - 4) * 2) / 2;
-    onInspect(Math.max(-4, Math.min(12, alpha)));
+    const alpha = minExploration + ((point.x - 51) / 289) * explorationSpan;
+    onInspect(clampAlpha(Math.round(alpha * 2) / 2));
   }
   return (
     <section className="plot">
@@ -239,7 +210,24 @@ function SweepChart({
         }}
         onClick={(event) => inspect(event.currentTarget, event.clientX, event.clientY)}
       >
-        <rect x={x(8)} y="27" width={x(12) - x(8)} height="112" className="missing-region" />
+        {minExploration < minAlpha && (
+          <rect
+            x={x(minExploration)}
+            y="27"
+            width={x(minAlpha) - x(minExploration)}
+            height="112"
+            className="missing-region"
+          />
+        )}
+        {maxAlpha < maxExploration && (
+          <rect
+            x={x(maxAlpha)}
+            y="27"
+            width={x(maxExploration) - x(maxAlpha)}
+            height="112"
+            className="missing-region"
+          />
+        )}
         {[0, 0.25, 0.5, 0.75, 1].map((fraction) => (
           <g key={fraction}>
             <path d={`M51 ${139 - fraction * 112}H340`} className="plot-grid" />
@@ -248,7 +236,7 @@ function SweepChart({
             </text>
           </g>
         ))}
-        {[-4, 0, 4, 8, 12].map((angle) => (
+        {angleTicks.map((angle) => (
           <text key={angle} x={x(angle)} y="158" textAnchor="middle">
             {angle}°
           </text>
@@ -274,14 +262,14 @@ function SweepChart({
           Inspect angle{" "}
           <input
             type="number"
-            min="-4"
-            max="12"
+            min={minExploration}
+            max={maxExploration}
             step=".5"
             value={selected}
             aria-label={`Inspect ${label} angle`}
             onChange={(event) => {
               const value = event.currentTarget.valueAsNumber;
-              if (Number.isFinite(value)) onInspect(Math.max(-4, Math.min(12, value)));
+              if (Number.isFinite(value)) onInspect(clampAlpha(value));
             }}
           />
         </label>

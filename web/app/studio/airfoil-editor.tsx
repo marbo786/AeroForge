@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { Design } from "../../lib/inference/surrogate";
 import { Chip, Scrubber } from "./kit";
 import { Stage, type Display } from "./stage";
-import type { Field } from "./studio";
+import type { Field } from "./design-fields";
 
 type AirfoilEditorProps = {
   design: Design;

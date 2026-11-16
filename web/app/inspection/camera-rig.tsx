@@ -174,7 +174,10 @@ export function CameraRig({
       const saved = wingSelected ? null : pose.current;
       const nextTarget =
         wingSelected && anchor ? anchor : saved ? new Vector3(...saved.target) : target;
-      const distance = Math.max(1.5, 3.22 / aspect) / (2 * slope);
+      // The inset changes the bay before the renderer's resize observer publishes its new size.
+      const bay = gl.domElement.closest(".inspection-bay")?.getBoundingClientRect();
+      const wingAspect = bay?.width && bay.height ? bay.width / bay.height : aspect;
+      const distance = Math.max(1.5, 3.22 / wingAspect) / (2 * slope);
       const nextPosition = saved
         ? new Vector3(...saved.position)
         : nextTarget.clone().addScaledVector(wingDirection, distance);
@@ -296,6 +299,7 @@ export function CameraRig({
     wingPose,
     wingSelected,
     anchor,
+    gl,
     get,
     set,
     invalidate,

@@ -1,6 +1,6 @@
 # AeroForge v3 technical specification
 
-2026-11-17 · Phase V3.0 · Awaiting approval for V3.1
+2026-11-17 · Phase plan · [Current status](../PROGRESS.md)
 
 The Studio connects AF–02 inspection, representative NACA section editing, live coefficient prediction, reliability evidence, constrained design search and scientific visualization. AF–02 remains an illustrative vehicle. All predicted coefficients describe an isolated two-dimensional section. Cloudflare Pages serves static files on the Free plan. Browser ONNX handles interactive inference, with offline Python and XFOIL for evidence, verification and training.
 

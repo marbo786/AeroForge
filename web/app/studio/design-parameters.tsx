@@ -2,15 +2,7 @@ import type { Design } from "../../lib/inference/surrogate";
 import { presetCodes } from "../../lib/geometry/naca4";
 import { Chip, Slider } from "./kit";
 import { nameOf } from "./section-design";
-import type { Draft, Field } from "./studio";
-
-const fields = [
-  { key: "m", label: "Maximum camber", unit: "%", min: 0, max: 6, step: 0.1 },
-  { key: "p", label: "Camber position", unit: "%c", min: 20, max: 60, step: 1 },
-  { key: "t", label: "Thickness", unit: "%", min: 8, max: 18, step: 0.1 },
-  { key: "alpha", label: "Angle of attack", unit: "°", min: -4, max: 12, step: 0.1 },
-  { key: "re", label: "Reynolds number", unit: "Re", min: 100000, max: 1000000, step: 1000 },
-] as const;
+import { fields, type Draft, type Field } from "./design-fields";
 
 type DesignParametersProps = {
   design: Design;
@@ -41,8 +33,9 @@ export function DesignParameters({
       id={field.key}
       label={field.label}
       unit={field.unit}
-      min={field.min}
-      max={field.max}
+      min={field.bounds[0]}
+      max={field.bounds[1]}
+      supported={field.supported}
       step={field.step}
       value={field.key === "p" && Number(draft.m) === 0 ? "0" : draft[field.key]}
       disabled={field.key === "p" && Number(draft.m) === 0}

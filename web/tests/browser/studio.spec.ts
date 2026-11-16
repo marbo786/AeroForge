@@ -300,11 +300,47 @@ test("parameters validate, withhold out-of-domain predictions and recover throug
     await page.getByLabel("Angle of attack", { exact: true }).fill(String(a));
   await expect(page.locator('[aria-label="Prediction status"]')).toHaveText("Prediction ready");
   await expect(page.locator(".airfoil-svg")).toHaveAccessibleName(/at 0 degrees/);
+  await expect(
+    page.getByRole("slider", { name: "Angle of attack slider" }),
+  ).toHaveAccessibleDescription("Model range -4 to 8°.");
   await page.emulateMedia({ reducedMotion: "reduce" });
   expect(
     await page.locator(".foil-rotation").evaluate((e) => getComputedStyle(e).transitionDuration),
   ).toBe("0s");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test("a boundary edit clears every live readout and the return action clamps only unsupported inputs", async ({
+  page,
+}) => {
+  await page.goto("/studio/?view=analysis&m=.04&p=.4&t=.12&aoa=8&re=500000");
+  await expect(page.getByRole("status", { name: "Prediction status" })).toHaveText(
+    "Prediction ready",
+  );
+  await openControls(page);
+  const angle = page.getByLabel("Angle of attack", { exact: true });
+  const re = page.getByLabel("Reynolds number", { exact: true });
+  await angle.fill("8.01");
+  for (const id of ["cl", "cd", "ratio", "latency"]) {
+    await expect(page.getByTestId(id)).toHaveText("—");
+  }
+  await expect(page.locator(".chart-line")).toHaveCount(2);
+  await re.fill("500001");
+  await expect(page.locator(".chart-line")).toHaveCount(0);
+  const sheet = page.getByRole("dialog", { name: "Design parameters" });
+  const controls = (await sheet.isVisible())
+    ? sheet
+    : page.getByRole("complementary", { name: "Predicted performance" });
+  await controls.getByRole("button", { name: "Return to model range" }).click();
+  await expect(angle).toHaveValue("8");
+  await expect(re).toHaveValue("500000");
+  await expect(page.getByLabel("Maximum camber", { exact: true })).toHaveValue("4");
+  if (await sheet.isVisible())
+    await sheet.getByRole("button", { name: "Close Design parameters" }).click();
+  await expect(page.getByRole("status", { name: "Prediction status" })).toHaveText(
+    "Prediction ready",
+  );
+  await expect(page.locator(".chart-line")).toHaveCount(2);
 });
 
 test("loading state withholds telemetry; failed model and corrupt model can be retried", async ({
@@ -415,6 +451,24 @@ test("alpha sweep gives predictions time to read and pauses on manual input", as
     page.getByRole("complementary", { name: "Predicted performance" }).getByTestId("latency"),
   ).toBeVisible();
   const scrubber = page.getByRole("slider", { name: "Alpha sweep", exact: true });
+  await page.evaluate(() => {
+    const input = document.querySelector<HTMLInputElement>('[aria-label="Alpha sweep"]')!;
+    const samples: string[][] = [];
+    new MutationObserver(() => {
+      if (input.value !== "4.5") return;
+      samples.push(
+        ["cl", "cd", "ratio", "latency"].map((id) =>
+          document.querySelector(`[data-testid="${id}"]`)!.textContent!.trim(),
+        ),
+      );
+    }).observe(document.body, {
+      subtree: true,
+      childList: true,
+      characterData: true,
+      attributes: true,
+    });
+    Object.assign(window, { sweepReadouts: samples });
+  });
   const originalLift = await page.getByTestId("cl").textContent();
   await page.getByRole("button", { name: "Play alpha sweep" }).click();
   await expect(page.locator('[aria-label="Prediction status"]')).toHaveText("Alpha sweep playing");
@@ -425,6 +479,10 @@ test("alpha sweep gives predictions time to read and pauses on manual input", as
   await expect(scrubber).toHaveValue("4.5");
   await expect(page.getByTestId("cl")).toHaveText(/^-?\d+\.\d{4}$/);
   await expect(page.getByTestId("cl")).not.toHaveText(originalLift!);
+  const samples = await page.evaluate(
+    () => (window as typeof window & { sweepReadouts: string[][] }).sweepReadouts,
+  );
+  expect(samples[0]).toEqual(["—", "—", "—", "—"]);
   await scrubber.fill("8");
   await expect(page.getByRole("button", { name: "Play alpha sweep" })).toBeVisible();
   await expect(page.locator('[aria-label="Prediction status"]')).toHaveText("Prediction ready");

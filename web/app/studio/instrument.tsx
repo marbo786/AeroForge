@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 
-import { model, type Design } from "../../lib/inference/surrogate";
+import { assessDomain, domainMessage, type Design } from "../../lib/inference/domain";
 import { Drawer } from "./kit";
 import { AirfoilEditor } from "./airfoil-editor";
 import type { Display } from "./stage";
@@ -9,7 +9,7 @@ import { useSweepPlayback } from "./use-sweep-playback";
 import { ChartPanel, useSweep } from "./charts";
 import { sharedDesignUrl, views, type WorkspaceView } from "./shared-design";
 import { VehicleViewport } from "../inspection/preview";
-import type { Draft, Field } from "./studio";
+import type { Draft, Field } from "./design-fields";
 import { nameOf, type Result, type SavedDesign } from "./section-design";
 import { SectionPreview } from "./section-preview";
 import { ExportMenu, ShareDesign } from "./design-actions";
@@ -40,15 +40,16 @@ export type InstrumentProps = {
   preset: string;
   view: WorkspaceView;
   invalid: boolean;
+  domain: ReturnType<typeof assessDomain>;
   domainError: string;
   onView: (view: WorkspaceView) => void;
   errors: Partial<Record<Field, string>>;
   current: Result | null;
-  result: Result | null;
   status: string;
   failure: string;
   onChange: (field: Field, value: string) => void;
   onReset: () => void;
+  onClamp: () => void;
   onPreset: (code: string) => void;
   onRetry: () => void;
   onRestore: (design: Design) => void;
@@ -70,9 +71,9 @@ export default function Instrument(props: InstrumentProps) {
     preset,
     view,
     invalid,
+    domain,
     domainError,
     current,
-    result,
     status,
     failure,
     errors,
@@ -110,21 +111,17 @@ export default function Instrument(props: InstrumentProps) {
     pause();
     setWingSelected(true);
   }
-  const reynolds = model.domain.sampled_reynolds;
-  const supportsSweep = (value: Design) =>
-    value.re >= reynolds[0] && value.re <= reynolds[reynolds.length - 1];
   const chartsVisible = view === "analysis" || dock === "curves" || drawer === "Charts";
   const currentUnavailable = invalid
     ? "Correct the current section inputs to calculate its sweep."
-    : !supportsSweep(design)
-      ? "Current sweep requires Reynolds number from 100,000 to 500,000."
+    : !domain.sweepSupported
+      ? domainMessage(domain.outside.filter((field) => field !== "alpha"))
       : failure
         ? "Retry the prediction model to calculate the current sweep."
         : "";
-  const savedUnavailable =
-    saved && !supportsSweep(saved.design)
-      ? "Saved Reynolds number is outside the prediction bounds."
-      : "";
+  const savedUnavailable = saved
+    ? domainMessage(assessDomain(saved.design).outside.filter((field) => field !== "alpha"))
+    : "";
   const sweep = useSweep(
     design,
     (chartsVisible || exportOpen) && props.urlReady && !currentUnavailable,
@@ -135,20 +132,13 @@ export default function Instrument(props: InstrumentProps) {
   );
   const inBounds = !invalid && !domainError;
   const pending = inBounds && !current && !failure;
-  const domainLabel = invalid ? "Invalid input" : domainError ? "Out of domain" : "In domain";
-  const statusText = invalid
-    ? "Check parameters"
-    : domainError
-      ? "Outside model bounds"
-      : current
-        ? "Prediction ready"
-        : pending && status === "Prediction ready"
-          ? "Loading / calculating"
-          : status;
+  const domainLabel = invalid ? "Invalid input" : domainError ? "Out of bounds" : "Within bounds";
+  const statusText = invalid ? "Check parameters" : domainError ? "Outside model bounds" : status;
   const { reduced, sweeping, toggleSweep, pause } = useSweepPlayback(props, pending);
-  // Hold the last complete prediction and its chart markers together between sweep samples.
-  const telemetry = current ?? (sweeping && pending ? result : null);
-  const latency = telemetry ? `${telemetry.durationMs.toFixed(2)} ms` : "—";
+  function returnToModelRange() {
+    pause();
+    props.onClamp();
+  }
   function changeField(field: Field, value: string) {
     pause();
     onChange(field, value);
@@ -239,7 +229,6 @@ export default function Instrument(props: InstrumentProps) {
   const telemetryPanel = (
     <Telemetry
       current={current}
-      result={result}
       pending={pending}
       sweeping={sweeping}
       inBounds={inBounds}
@@ -247,8 +236,8 @@ export default function Instrument(props: InstrumentProps) {
       domainLabel={domainLabel}
       domainError={domainError}
       invalid={invalid}
-      re={design.re}
-      latency={latency}
+      interpolatedRe={domain.interpolatedRe}
+      onClamp={returnToModelRange}
       onDetails={() => openDrawer("Details")}
     />
   );
@@ -319,25 +308,29 @@ export default function Instrument(props: InstrumentProps) {
                 Edit parameters
               </button>
             </div>
-            <VehicleViewport
-              active={view === "studio"}
-              initialized={props.urlReady}
-              onAirfoil={() => changeMode("airfoil")}
-              alpha={design.alpha}
-              wing={{
-                selected: wingSelected,
-                onInspect: inspectWing,
-                onReturn: () => setWingSelected(false),
-              }}
-            />
-            {view === "studio" && wingSelected && (
-              <section className="v2-wing-study" aria-labelledby={wingTitle}>
-                <div className="v2-wing-copy">
-                  <div>
-                    <p className="micro">Representative NACA section</p>
+            <div
+              className="v2-vehicle-workspace"
+              hidden={view !== "studio"}
+              data-section-open={wingSelected || undefined}
+            >
+              <VehicleViewport
+                active={view === "studio"}
+                initialized={props.urlReady}
+                onAirfoil={() => changeMode("airfoil")}
+                alpha={design.alpha}
+                wing={{
+                  selected: wingSelected,
+                  onInspect: inspectWing,
+                  onReturn: () => setWingSelected(false),
+                }}
+              />
+              {view === "studio" && wingSelected && (
+                <section className="v2-wing-study" aria-labelledby={wingTitle}>
+                  <div className="v2-wing-heading">
                     <h2 id={wingTitle}>Front wing</h2>
+                    <p>Representative NACA section</p>
                   </div>
-                  <p>Predictions apply to this isolated profile.</p>
+                  <SectionPreview design={design} invalid={invalid} wing />
                   <button
                     type="button"
                     className="chip micro"
@@ -348,10 +341,9 @@ export default function Instrument(props: InstrumentProps) {
                   >
                     Open Airfoil editor
                   </button>
-                </div>
-                <SectionPreview design={design} invalid={invalid} wing />
-              </section>
-            )}
+                </section>
+              )}
+            </div>
             {view === "airfoil" && (
               <AirfoilEditor
                 display={display}
@@ -436,8 +428,23 @@ export default function Instrument(props: InstrumentProps) {
         onClose={() => setDrawer(null)}
         className="v2-control-sheet"
         title="Design parameters"
+        headerContent={
+          view === "studio" && wingSelected ? (
+            <div className="v2-sheet-section">
+              <SectionPreview design={design} invalid={invalid} wing />
+            </div>
+          ) : undefined
+        }
       >
         {compact && parameters}
+        {domainError && !invalid && (
+          <div className="v2-domain-action">
+            <p className="v2-warning">{domainError}</p>
+            <button className="chip micro v2-clamp" onClick={returnToModelRange}>
+              Return to model range
+            </button>
+          </div>
+        )}
       </Drawer>
       <Drawer open={drawer === "Details"} onClose={() => setDrawer(null)} title="Details">
         {domainError && !invalid && <p className="chart-message">{domainError}</p>}

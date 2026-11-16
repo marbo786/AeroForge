@@ -1,10 +1,8 @@
-import { model } from "../../lib/inference/surrogate";
 import { Readout, StatusPill } from "./kit";
 import type { Result } from "./section-design";
 
 type TelemetryProps = {
   current: Result | null;
-  result: Result | null;
   pending: boolean;
   sweeping: boolean;
   inBounds: boolean;
@@ -12,14 +10,13 @@ type TelemetryProps = {
   domainLabel: string;
   domainError: string;
   invalid: boolean;
-  re: number;
-  latency: string;
+  interpolatedRe: boolean;
+  onClamp: () => void;
   onDetails: () => void;
 };
 
 export function Telemetry({
   current,
-  result,
   pending,
   sweeping,
   inBounds,
@@ -27,8 +24,8 @@ export function Telemetry({
   domainLabel,
   domainError,
   invalid,
-  re,
-  latency,
+  interpolatedRe,
+  onClamp,
   onDetails,
 }: TelemetryProps) {
   return (
@@ -53,7 +50,6 @@ export function Telemetry({
             <Readout
               id={key}
               value={current?.[key]}
-              previous={result?.[key]}
               pending={pending}
               sweeping={sweeping && inBounds}
               digits={digits}
@@ -64,16 +60,25 @@ export function Telemetry({
       <div className="v2-model">
         <div className="v2-latency">
           <span>Inference</span>
-          <strong data-testid="latency">{latency}</strong>
+          <strong data-testid="latency">
+            {current ? `${current.durationMs.toFixed(2)} ms` : "—"}
+          </strong>
         </div>
         <p role="status" aria-label="Prediction status">
-          {sweeping && inBounds ? "Alpha sweep playing" : statusText}
+          {sweeping && current ? "Alpha sweep playing" : statusText}
         </p>
         <button className="status-button" onClick={onDetails}>
           <StatusPill state={inBounds ? "valid" : "warning"}>{domainLabel}</StatusPill>
         </button>
-        {domainError && !invalid && <p className="v2-warning">{domainError}</p>}
-        {inBounds && !model.domain.sampled_reynolds.includes(re) && (
+        {domainError && !invalid && (
+          <div className="v2-domain-action">
+            <p className="v2-warning">{domainError}</p>
+            <button className="chip micro v2-clamp" onClick={onClamp}>
+              Return to model range
+            </button>
+          </div>
+        )}
+        {inBounds && interpolatedRe && (
           <p className="v2-note">Reynolds interpolation between sampled levels.</p>
         )}
         <button className="chip micro details-button" onClick={onDetails}>
@@ -82,8 +87,7 @@ export function Telemetry({
         <span className="sr-only" data-testid="applicability">
           {domainError ||
             "Finite evidence domain. XFOIL agreement on sampled cases. Continuous-domain and experimental accuracy are not established."}
-          {!model.domain.sampled_reynolds.includes(re) &&
-            " Reynolds interpolation between sampled levels."}
+          {inBounds && interpolatedRe && " Reynolds interpolation between sampled levels."}
         </span>
       </div>
     </aside>

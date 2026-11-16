@@ -12,6 +12,9 @@ import { useSpring } from "motion/react";
 import { generateGeometry, sectionAt, type Point } from "../../lib/geometry/naca4";
 import type { Design } from "../../lib/inference/surrogate";
 import { Callout } from "./kit";
+import { fields } from "./design-fields";
+
+const [camberField, positionField, thicknessField, angleField] = fields;
 
 export type Display = {
   grid: boolean;
@@ -201,13 +204,15 @@ export function Stage({
     const matrix = foilRef.current?.getScreenCTM();
     if (!matrix) return;
     const point = new DOMPoint(event.clientX, event.clientY).matrixTransform(matrix.inverse());
-    if (activeDrag.kind === "camber") queue("m", clamp(((240 - point.y) / 560) * 100, 0, 6));
-    if (activeDrag.kind === "position") queue("p", clamp(((point.x - 120) / 560) * 100, 20, 60));
+    if (activeDrag.kind === "camber")
+      queue("m", clamp(((240 - point.y) / 560) * 100, ...camberField.bounds));
+    if (activeDrag.kind === "position")
+      queue("p", clamp(((point.x - 120) / 560) * 100, ...positionField.bounds));
     if (activeDrag.kind === "thickness") {
       const baseline = sectionAt({ ...design, t: 1 / 10 }, thickX);
       const camber = baseline.camber;
       const desired = (240 - point.y) / 560 - camber;
-      queue("t", clamp((desired / (baseline.upper[1] - camber)) * 10, 8, 18));
+      queue("t", clamp((desired / (baseline.upper[1] - camber)) * 10, ...thicknessField.bounds));
     }
     if (activeDrag.kind === "rotation") {
       const stageMatrix =
@@ -218,7 +223,10 @@ export function Stage({
       const target = new DOMPoint(event.clientX, event.clientY).matrixTransform(
         stageMatrix.inverse(),
       );
-      queue("alpha", clamp((Math.atan2(target.y - 240, target.x - 260) * 180) / Math.PI, -4, 12));
+      queue(
+        "alpha",
+        clamp((Math.atan2(target.y - 240, target.x - 260) * 180) / Math.PI, ...angleField.bounds),
+      );
     }
   }
   function end(event: ReactPointerEvent<SVGSVGElement>) {
@@ -239,14 +247,14 @@ export function Stage({
     const delta = ["ArrowUp", "ArrowRight"].includes(event.key) ? 1 : -1;
     const coarse = event.shiftKey ? 5 : 1;
     const mapping = {
-      camber: ["m", design.m * 100, 0, 6, 0.1],
-      position: ["p", (design.p || 0.4) * 100, 20, 60, 1],
-      thickness: ["t", design.t * 100, 8, 18, 0.1],
-      rotation: ["alpha", design.alpha, -4, 12, 0.1],
+      camber: [camberField, design.m * 100],
+      position: [positionField, (design.p || 0.4) * 100],
+      thickness: [thicknessField, design.t * 100],
+      rotation: [angleField, design.alpha],
     } as const;
-    const [field, value, min, max, step] = mapping[kind];
-    const next = clamp(value + delta * coarse * step, min, max);
-    onChange(field, String(Number(next.toFixed(3))));
+    const [field, value] = mapping[kind];
+    const next = clamp(value + delta * coarse * field.step, ...field.bounds);
+    onChange(field.key, String(Number(next.toFixed(3))));
   }
   const handles: {
     kind: Handle;
@@ -261,32 +269,32 @@ export function Stage({
       point: camberPoint,
       label: "Drag maximum camber",
       value: design.m * 100,
-      min: 0,
-      max: 6,
+      min: camberField.bounds[0],
+      max: camberField.bounds[1],
     },
     {
       kind: "position",
       point: xy([visual.p || 0.4, -0.085]),
       label: "Drag camber position",
       value: design.p * 100,
-      min: 20,
-      max: 60,
+      min: positionField.bounds[0],
+      max: positionField.bounds[1],
     },
     {
       kind: "thickness",
       point: thicknessPoint,
       label: "Drag thickness",
       value: design.t * 100,
-      min: 8,
-      max: 18,
+      min: thicknessField.bounds[0],
+      max: thicknessField.bounds[1],
     },
     {
       kind: "rotation",
       point: [710, 240],
       label: "Drag angle of attack",
       value: design.alpha,
-      min: -4,
-      max: 12,
+      min: angleField.bounds[0],
+      max: angleField.bounds[1],
     },
   ];
   return (

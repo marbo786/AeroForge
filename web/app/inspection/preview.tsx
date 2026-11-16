@@ -120,7 +120,7 @@ export function VehicleViewport({
         data-triangles={stats?.triangles}
         data-draw-calls={stats?.calls}
       >
-        {initialized && status !== "ready" && !wing?.selected && (
+        {initialized && status !== "ready" && (
           <Image
             className="inspection-poster"
             src={vehiclePath + "poster.webp"}

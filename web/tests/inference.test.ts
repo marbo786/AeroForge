@@ -1,6 +1,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { features } from "../lib/inference/surrogate.ts";
+import {
+  assessDomain,
+  clampToModel,
+  domainMessage,
+  model,
+  modelBounds,
+} from "../lib/inference/domain.ts";
 
 test("browser feature contract preserves raw ratios, degrees and log Reynolds without double scaling", () => {
   assert.deepEqual(
@@ -31,4 +38,35 @@ test("browser rejects extrapolation and invalid inputs before loading the runtim
     { p: 0.1 },
   ])
     assert.throws(() => features({ ...valid, ...override }));
+});
+
+test("nominal domain, polar eligibility and clamp use the frozen metadata", () => {
+  assert.deepEqual(modelBounds.m, model.domain.m);
+  assert.deepEqual(modelBounds.p, model.domain.cambered_p);
+  assert.deepEqual(modelBounds.t, model.domain.t);
+  assert.deepEqual(modelBounds.alpha, model.domain.alpha_deg);
+  assert.deepEqual(modelBounds.re, [
+    Math.min(...model.domain.sampled_reynolds),
+    Math.max(...model.domain.sampled_reynolds),
+  ]);
+  const boundary = { m: 0, p: 0, t: 0.12, alpha: 8, re: 500000 };
+  assert.deepEqual(assessDomain(boundary), {
+    outside: [],
+    sweepSupported: true,
+    interpolatedRe: false,
+  });
+  const alphaOnly = { ...boundary, alpha: 8.01, re: 300000 };
+  assert.deepEqual(assessDomain(alphaOnly), {
+    outside: ["alpha"],
+    sweepSupported: true,
+    interpolatedRe: true,
+  });
+  const beyond = { ...alphaOnly, re: 500001 };
+  assert.deepEqual(assessDomain(beyond), {
+    outside: ["alpha", "re"],
+    sweepSupported: false,
+    interpolatedRe: false,
+  });
+  assert.deepEqual(clampToModel(beyond), boundary);
+  assert.match(domainMessage(assessDomain(beyond).outside), /8°.*500,000/);
 });

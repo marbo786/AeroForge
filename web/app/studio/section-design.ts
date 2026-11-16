@@ -1,6 +1,6 @@
 import type { Design, predict } from "../../lib/inference/surrogate";
 
-export type Result = Awaited<ReturnType<typeof predict>> & { key: string; alpha: number };
+export type Result = Awaited<ReturnType<typeof predict>>;
 export type SavedDesign = { design: Design; result: Result | null };
 
 export function nameOf(design: Design) {

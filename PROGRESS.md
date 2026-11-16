@@ -7,7 +7,16 @@ Last updated 2026-11-17 (Asia/Karachi).
 - The v2 Studio is live on Cloudflare Pages. The local `main` and cached `origin/main` both pointed to Cleanup Phase F at `28741d8` when `codex/aeroforge-v3` branched. The exact Pages deployment identity remains pending. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md)
 - The accepted ONNX model predicts isolated 2D sections. The AF–02 car and front-wing motion are illustrative. [Model evidence](docs/ML.md) · [Phase D demo](docs/media/aeroforge-demo.gif)
 
-## Latest work · Phase V3.0
+## Latest work · Phase V3.1
+
+- The selected wing's representative NACA section appears beside the bay on desktop and below it on compact screens. It stays visible in the compact edit sheet. The same design, current prediction, saved comparison and wing inspection carry across Studio, Airfoil and Analysis. [Browser architecture](docs/ARCHITECTURE.md#browser-workspace)
+- Angle and Reynolds controls mark their model bounds and allow exploration past them. The return action clamps only out-of-bounds fields. All coefficient and latency readouts clear while a new sample is pending, or when the draft is invalid or outside the model bounds. Lift and drag sweeps use their own supported angles.
+- Formatting, lint, TypeScript, 24 Node tests, 63 Playwright tests and 104 Python tests passed. Playwright skipped 11 profile-specific cases. The export passed the Pages guard with 109 files and 21,830,728 bytes. The model and preprocessing hashes matched the accepted artifacts.
+- Reviewed the Studio, wing, Airfoil, Analysis and compact parameter sheet at 1920 × 1080, 1440 × 900, 768 × 1024 and 390 × 844. Axe 4.14.0 found zero WCAG A/AA rule violations and no reviewed state had horizontal page overflow. The Chrome captures and audit outputs are local under `web/.wrangler/v31-audit/`. Mobile verification used touch emulation.
+- Compared local static exports in Chrome 157 on a Ryzen 7 5800U. The direct 2D shell transferred 203.1 KiB gzip, up 0.9 KiB, with zero vehicle requests. Desktop deferred JavaScript was 264.9 KiB gzip. Across five fresh contexts and 30 warm edits per build, cold edit-to-result median moved from 532.1 to 529.9 ms and warm median from 96.9 to 97.4 ms. Warm chart p95 fell from 198.7 to 98.4 ms. Warm session-call median in Analysis moved from 0.7 to 2.4 ms while the chart batch and current prediction shared the session. The served coefficient graph weighed 39,908 gzip bytes and the existing WASM binary weighed 3,836,894 gzip bytes.
+- Desktop orbit p95 was 17.1 ms on both builds over 294 draw intervals per build, with zero draws in the settled idle sample. Across five fresh Lighthouse 13.6.0 runs per build and profile, V3.1 scored 99–100 desktop and 91–92 mobile for performance and 100 for accessibility, best practices and SEO. Mobile LCP was 3.324–3.345 s, versus 3.477–3.484 s for the baseline. V3.1 desktop blocking time was 0–9.5 ms, and mobile layout shift stayed below 0.005.
+
+## Phase V3.0
 
 - Completed the v3 feasibility review and phase plan on `codex/aeroforge-v3`. The plan reuses the current Studio and ONNX pipeline, proposes applicability warnings and observed errors as the first reliability release, and gates the optimizer and pressure work on measured feasibility. [V3 technical specification](docs/V3_SPEC.md)
 - Verified the local baseline from source. Formatting, lint, TypeScript, 23 Node tests, 59 Playwright tests and 104 Python tests passed. Playwright skipped 10 cases by viewport profile. The production export passed its Pages checks with 109 files and 21,825,346 bytes. The largest asset was the 14,848,852-byte WASM binary. Both frozen hashes matched.
@@ -29,7 +38,7 @@ Last updated 2026-11-17 (Asia/Karachi).
 
 ## Next work
 
-- Await explicit approval for V3.1. Its scope is the Studio section inset, shared inputs and inspection, synchronized telemetry, metadata-driven domain controls and responsive verification. [V3 technical specification](docs/V3_SPEC.md)
+- Await explicit approval for V3.2, which covers frozen-error diagnostics, nearby training coverage and the reliability panel. [V3 technical specification](docs/V3_SPEC.md)
 - Confirm the exact Cloudflare deployment metadata, named preview and rollback target before a release. [Deployment guide](docs/DEPLOYMENT.md)
 
 [Original specification](docs/SPEC.md) · [V2 specification](docs/V2_SPEC.md) · [Completed milestones](docs/history/progress-through-cleanup-d.md)

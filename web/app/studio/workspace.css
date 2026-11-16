@@ -156,6 +156,12 @@
   min-width: 0;
   --edge: var(--line);
 }
+.v2-vehicle-workspace[data-section-open]:not([hidden]) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(210px, 17vw, 280px);
+  align-items: start;
+  gap: 8px;
+}
 .v2-workspace .inspection-toolbar {
   display: flex;
   align-items: center;
@@ -199,7 +205,7 @@
   color: var(--accent);
 }
 .v2-workspace [data-wing-selected] .inspection-bay {
-  height: clamp(310px, calc(100svh - 443px), 685px);
+  height: clamp(350px, calc(100svh - 400px), 680px);
 }
 .v2-workspace
   [data-wing-selected]
@@ -209,52 +215,78 @@
     [data-render-status="failed"],
     [data-render-status="lost"]
   ) {
-  height: auto;
-}
-.v2-workspace
-  [data-wing-selected]
-  .inspection-bay:is(
-    [data-render-status="poster"],
-    [data-render-status="unsupported"],
-    [data-render-status="failed"],
-    [data-render-status="lost"]
-  )
-  .inspection-state {
-  position: relative;
-  inset: auto;
-  padding: 6px;
+  height: clamp(158px, 32svh, 310px);
 }
 .v2-wing-study {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
-  align-items: center;
-  gap: 16px;
+  min-width: 0;
+  align-content: start;
+  gap: 12px;
   padding: 12px;
   background: var(--surface);
   border: 1px solid var(--line);
 }
 .v2-wing-study .v2-section-preview {
   width: 100%;
+  margin: 0;
 }
 .v2-wing-study .v2-section-preview svg {
   max-height: 118px;
 }
-.v2-wing-copy {
-  display: grid;
-  justify-items: start;
-  gap: 6px;
+.v2-wing-study > button {
+  justify-self: start;
 }
-.v2-wing-copy .micro {
-  color: var(--accent);
+.v2-wing-heading p {
+  color: var(--muted);
+  font-size: 12px;
 }
-.v2-wing-copy h2 {
+.v2-wing-heading h2 {
   font:
-    625 23px/1.1 var(--font-geist),
+    625 21px/1.2 var(--font-geist),
     sans-serif;
   letter-spacing: -0.04em;
 }
-.v2-wing-copy > p {
+.parameter-track {
+  position: relative;
+}
+.parameter-model-track {
+  position: absolute;
+  inset: 0 7px;
+  pointer-events: none;
+}
+.parameter-model-track i {
+  position: absolute;
+  inset: 50% auto auto var(--bound);
+  width: 1px;
+  height: 14px;
+  transform: translateY(-50%);
+  background: var(--accent);
+}
+.parameter-model-hint {
   color: var(--muted);
+  font-size: 11px;
+}
+.v2-domain-action {
+  display: grid;
+  grid-column: 1 / -1;
+  justify-items: start;
+  gap: 6px;
+}
+.v2-control-sheet .drawer-header {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  background: var(--surface);
+}
+.v2-sheet-section {
+  padding: 0 0 8px;
+}
+.v2-sheet-section .v2-section-preview {
+  width: min(100%, 270px);
+  margin: 0 auto;
+}
+.v2-sheet-section svg {
+  max-height: 62px;
 }
 .v2-workspace .stage-viewport {
   margin: 0;
@@ -543,6 +575,31 @@
 }
 
 @media (max-width: 1120px) {
+  .v2-vehicle-workspace[data-section-open]:not([hidden]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .v2-wing-study {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    align-items: center;
+  }
+  .v2-wing-study .v2-section-preview {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  .v2-view-heading .v2-edit,
+  .v2-wing-study > button,
+  .v2-workspace .vehicle-viewport .inspection-button,
+  .v2-workspace .v2-clamp,
+  .v2-control-sheet .drawer-heading button {
+    min-height: 44px;
+  }
+  .v2-workspace .vehicle-viewport .zoom {
+    width: 44px;
+  }
+  .v2-workspace .v2-control-sheet input[type="range"],
+  .v2-workspace .v2-control-sheet .inline-number input {
+    height: 44px;
+  }
   .v2-layout {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -601,6 +658,10 @@
   }
   .v2-control-sheet .drawer-heading h2 {
     font-size: 28px;
+  }
+  .v2-control-sheet .drawer-heading {
+    padding-bottom: 8px;
+    margin-bottom: 8px;
   }
   .v2-control-sheet .drawer-heading button {
     white-space: nowrap;
@@ -687,8 +748,17 @@
     grid-template-columns: minmax(0, 1fr);
     gap: 10px;
   }
+  .v2-wing-study .v2-section-preview {
+    grid-column: auto;
+    grid-row: auto;
+  }
   .v2-wing-study .v2-section-preview svg {
     max-height: 96px;
+  }
+  .v2-workspace
+    [data-wing-selected]
+    .inspection-bay:not([data-render-status="ready"], [data-render-status="loading"]) {
+    height: 164px;
   }
   .v2-analysis-summary {
     display: grid;

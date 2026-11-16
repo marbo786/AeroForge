@@ -1,31 +1,40 @@
 "use client";
 
-import { model } from "../../lib/inference/surrogate";
+import { formatRe, model, modelBounds, type Bounds } from "../../lib/inference/domain";
 import { Module } from "./kit";
 
 export function ModelDetails() {
+  const percent = ([min, max]: Bounds) => `${min * 100}–${max * 100}%`;
+  const [minAlpha, maxAlpha] = modelBounds.alpha;
+  const [minRe, maxRe] = modelBounds.re.map(formatRe);
   return (
     <div className="model-details">
       <Module number="01" title="Prediction bounds">
         <div className="detail-grid">
           <span>Camber / position / thickness</span>
-          <strong>0–6% / 20–60% / 8–18% chord</strong>
+          <strong>
+            {[modelBounds.m, modelBounds.p, modelBounds.t].map(percent).join(" / ")} chord
+          </strong>
           <span>Angle of attack</span>
-          <strong>−4° to 8°</strong>
+          <strong>
+            {minAlpha}° to {maxAlpha}°
+          </strong>
           <span>Reynolds number</span>
-          <strong>100,000–500,000</strong>
+          <strong>
+            {minRe}–{maxRe}
+          </strong>
           <span>Sampled Reynolds numbers</span>
-          <strong>100,000 / 250,000 / 500,000</strong>
+          <strong>{model.domain.sampled_reynolds.map(formatRe).join(" / ")}</strong>
         </div>
         <p>
           Symmetric sections use canonical camber position zero. Intermediate Reynolds numbers are
-          interpolations. The “In domain” status checks input bounds. Evaluation covers a finite
+          interpolations. The “Within bounds” status checks input bounds. Evaluation covers a finite
           panel of conditions.
         </p>
       </Module>
       <Module number="02" title="Scientific limitations">
         <p>
-          The model’s Reynolds number range of 100,000 to 500,000 is below typical full-scale
+          The model’s Reynolds number range of {minRe} to {maxRe} is below typical full-scale
           Formula 1 front-wing conditions, so its predictions apply only to isolated airfoil
           sections.
         </p>
