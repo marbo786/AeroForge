@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import {
   Color, Material, Mesh, Object3D, OrthographicCamera, PerspectiveCamera,
   PMREMGenerator, Quaternion, Vector3, MathUtils,
@@ -10,10 +10,11 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { useReducedPreference } from "../studio/use-reduced-preference";
-import { vehiclePath, type CameraCommand, type RenderStats, type View } from "./preview";
+import { vehiclePath, type CameraCommand, type CameraPose, type RenderStats, type View } from "./camera";
 
 type SceneProps = {
   command:CameraCommand;
+  pose:RefObject<CameraPose|null>;
   onProgress:(value:number|null)=>void;
   onFailure:(kind:"failed"|"lost")=>void;
   onReady:(stats:RenderStats)=>void;
@@ -42,7 +43,7 @@ function fitPerspective(direction:Vector3, slope:number, aspect:number) {
   }));
 }
 
-function Rig({command}:{ command:CameraCommand }) {
+function Rig({command, pose}:Pick<SceneProps,"command"|"pose">) {
   const { camera, gl, set, invalidate, size } = useThree();
   const [perspective] = useState(() => camera as PerspectiveCamera);
   const [orthographic] = useState(() => Object.assign(
@@ -93,6 +94,25 @@ function Rig({command}:{ command:CameraCommand }) {
     if ("zoom" in command && lastCommand.current === command) return;
     lastCommand.current = command;
     const aspect = size.width/size.height;
+    if (first.current && pose.current) {
+      const saved = pose.current;
+      const restored = saved.orthographic ? orthographic : perspective;
+      restored.position.fromArray(saved.position);
+      if (restored instanceof OrthographicCamera) {
+        restored.top = saved.halfHeight;
+        restored.bottom = -saved.halfHeight;
+        restored.right = saved.halfHeight * aspect;
+        restored.left = -restored.right;
+        restored.zoom = saved.zoom;
+        restored.updateProjectionMatrix();
+      }
+      restored.lookAt(target);
+      orbit.object = restored;
+      set({camera:restored});
+      first.current = false;
+      invalidate();
+      return;
+    }
     const slope = Math.tan(MathUtils.degToRad(perspective.fov/2));
     const view = "view" in command ? command.view : undefined;
     const spec = view && views[view];
@@ -149,12 +169,17 @@ function Rig({command}:{ command:CameraCommand }) {
       };
       invalidate();
     }
-  }, [command,size.width,size.height,reduced,perspective,orthographic,set,invalidate]);
+  }, [command,size.width,size.height,reduced,perspective,orthographic,pose,set,invalidate]);
 
   useFrame(()=>{
     move.current?.(performance.now());
     if (move.current) invalidate();
     else controls.current?.update();
+    const camera = controls.current?.object;
+    if (camera) {
+      const ortho = camera instanceof OrthographicCamera;
+      pose.current = {position:camera.position.toArray(), orthographic:ortho, halfHeight:ortho ? camera.top : 0, zoom:ortho ? camera.zoom : 1};
+    }
   });
   return null;
 }
@@ -255,7 +280,7 @@ async function loadVehicle(signal:AbortSignal, progress:SceneProps["onProgress"]
   return new GLTFLoader().parseAsync(await new Blob(chunks).arrayBuffer(),vehiclePath);
 }
 
-function Vehicle({onProgress,onFailure,onReady}:Omit<SceneProps,"command">) {
+function Vehicle({onProgress,onFailure,onReady}:Omit<SceneProps,"command"|"pose">) {
   const {gl,invalidate}=useThree();
   const [model,setModel]=useState<Object3D>();
   const callbacks=useRef({onProgress,onFailure,onReady});
@@ -297,7 +322,7 @@ function Vehicle({onProgress,onFailure,onReady}:Omit<SceneProps,"command">) {
   return model ? <primitive object={model} dispose={null}/> : null;
 }
 
-export default function Scene({command,...callbacks}:SceneProps) {
+export default function Scene({command,pose,...callbacks}:SceneProps) {
   const compact=typeof window!=="undefined"&&matchMedia("(max-width: 740px)").matches;
   return <div className="inspection-render" role="img" aria-label="Interactive illustrative AF–02 racing car">
     <Canvas frameloop="demand" dpr={[1,compact?1.25:1.5]}
@@ -307,7 +332,7 @@ export default function Scene({command,...callbacks}:SceneProps) {
       <Lighting/>
       <Floor/>
       <Vehicle {...callbacks}/>
-      <Rig command={command}/>
+      <Rig command={command} pose={pose}/>
     </Canvas>
   </div>;
 }

@@ -27,8 +27,8 @@ try {
     runtimePaths.add(url.pathname);
   });
   for (const [path, pattern] of [
-    ['/', /NACA 2412/],
-    ['/studio/?m=.04&p=.4&t=.12&aoa=4&re=250000', /NACA 4412/],
+    ['/', /AF–02/],
+    ['/studio/?view=airfoil&m=.04&p=.4&t=.12&aoa=4&re=250000', /NACA 4412/],
     ['/model/', /Model evidence/i],
     ['/spike/', /inference/i],
   ]) {

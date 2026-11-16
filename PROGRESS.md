@@ -4,7 +4,14 @@ Last updated: 2026-11-16 (Asia/Karachi).
 
 ## Current phase and session rule
 
-Phase V2.1 is complete on `codex/aeroforge-v2`. The standalone `/inspection/` preview is ready for review. Approval is pending for V2.2, the workspace layout. The public v1 baseline is `e8e0ea0`. [Public v1](https://aeroforge-9tf.pages.dev/)
+Phase V2.2 is complete on `codex/aeroforge-v2`. The Studio-first workspace is available in the local production export. Approval is pending for V2.3, front-wing inspection. The public v1 baseline is `e8e0ea0`. [Public v1](https://aeroforge-9tf.pages.dev/)
+
+## Phase V2.2 Studio workspace
+
+- The root and `/studio/` open in Studio with the original AF–02 car, parameter controls, section telemetry and a collapsed analysis dock. Airfoil mode opens the accurate NACA editor and Analysis opens the ONNX-backed lift and drag charts and saved-design comparison. All three use the same design inputs and comparison. On phones, parameter controls open in a bottom sheet and the car starts with a still image and a 3D opt-in.
+- Sharing preserves the selected view and all five design inputs. Legacy links restore their design and open Studio. Direct Airfoil and Analysis links defer all vehicle assets. Switching away from Studio releases the canvas and switching back restores the live camera pose.
+- Reviewed the final four viewport sizes, the Airfoil and Analysis views, and the phone controls sheet in Playwright Chrome. The visual refinement brought the collapsed dock within both desktop viewports and removed unavailable camera controls from the phone still-image view. [Screenshots and verification](docs/v2-2/README.md)
+- The local production export passed lint, TypeScript, 23 Node tests, the Pages asset guard, and 55 Playwright tests with five profile-specific skips. The production model hash is unchanged. The V2.2 commit remains local to the v2 branch.
 
 ## Phase V2.1 vehicle inspection
 

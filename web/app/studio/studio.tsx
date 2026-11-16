@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { normalizeGeometry, parseNaca } from "../../lib/geometry/naca4";
 import { features, predict, type Design } from "../../lib/inference/surrogate";
 import Instrument from "./instrument";
-import { readSharedDesign } from "./shared-design";
+import { readSharedDesign, readWorkspaceView, type WorkspaceView } from "./shared-design";
 
 const initial = { m: "2", p: "40", t: "12", alpha: "4", re: "250000" };
 export type Field = keyof typeof initial;
@@ -39,7 +39,7 @@ export default function Studio() {
   const [draft, setDraft] = useState<Draft>(initial);
   const [design, setDesign] = useState<Design>(validate(initial).design!);
   const [preset, setPreset] = useState("2412");
-  const [expanded, setExpanded] = useState(false);
+  const [view, setView] = useState<WorkspaceView>("studio");
   const [retry, setRetry] = useState(0);
   const [result, setResult] = useState<(Awaited<ReturnType<typeof predict>> & { key: string; alpha: number }) | null>(null);
   const [status, setStatus] = useState("Loading model");
@@ -47,6 +47,7 @@ export default function Studio() {
   const [urlReady, setUrlReady] = useState(false);
   const [linkError, setLinkError] = useState(false);
   useEffect(() => {
+    setView(readWorkspaceView(window.location.search));
     try {
       const shared = readSharedDesign(window.location.search);
       if (shared) {
@@ -92,11 +93,18 @@ export default function Studio() {
     update({ ...draft, m: String(p.m * 100), p: String(p.m === 0 ? 40 : p.p * 100), t: String(p.t * 100) });
     setPreset(code);
   }
-  return <Instrument draft={draft} design={design} preset={preset} expanded={expanded} invalid={invalid}
+  function selectView(next: WorkspaceView) {
+    const url = new URL(window.location.href);
+    if (next === "studio") url.searchParams.delete("view");
+    else url.searchParams.set("view", next);
+    window.history.replaceState(null, "", url);
+    setView(next);
+  }
+  return <Instrument draft={draft} design={design} preset={preset} view={view} onView={selectView} invalid={invalid}
     urlReady={urlReady} linkError={linkError} onDismissLinkError={() => setLinkError(false)}
     domainError={domainError} errors={validation.errors} current={current} result={result} status={status} failure={failure}
     onChange={(field, value) => { update({ ...draft, [field]: value }); if (["m", "p", "t"].includes(field)) setPreset(""); }}
-    onReset={reset} onPreset={selectPreset} onExpanded={setExpanded}
+    onReset={reset} onPreset={selectPreset}
     onRestore={(saved) => { setDraft(designDraft(saved)); setDesign(saved); setPreset(""); }}
     onRetry={() => { setResult(null); setRetry(retry + 1); }}/>
 }

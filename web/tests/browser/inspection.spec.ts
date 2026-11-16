@@ -61,7 +61,7 @@ test("falls back after an asset failure and allows a retry", async ({page},info)
   await page.route(model,route=>route.fulfill({status:404,body:"missing"}),{times:1});
   await page.goto(path);
   await expect(status(page)).toHaveAttribute("data-render-status","failed");
-  await expect(page.getByRole("link",{name:"Continue in 2D"})).toHaveAttribute("href","/studio/");
+  await expect(page.getByRole("link",{name:"Continue in 2D"})).toHaveAttribute("href","/studio/?view=airfoil");
   await page.getByRole("button",{name:"Retry 3D"}).click();
   await expect(status(page)).toHaveAttribute("data-render-status","ready");
 });
