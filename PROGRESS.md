@@ -6,11 +6,17 @@ Last updated: 2026-11-17 (Asia/Karachi).
 
 GitHub `main` contains the V2.5 implementation through PR #1 at merge `075bf74`. The v2 Studio is live and passed the public HTTPS smoke test on 2026-11-16. The previous v1 source baseline is `e8e0ea0`. V2.6 remains pending for deployment metadata and separate preview and rollback checks. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release evidence](docs/RELEASE_CHECKLIST.md)
 
+## Cleanup Phase D README and demo
+
+- Reordered the README to show the live link, honest limits, the AF–02 demo and the frozen accuracy table before setup. Checked the table against the frozen evaluation and verified the README links.
+- Recorded real desktop Playwright interactions and inspected the decoded GIF. It shows the Studio overview, a dragged camber handle, front-wing inspection and the switch to Analysis. Pillow encoded the 960 × 576 clip at 11.57 seconds and 1,379,007 bytes. [Demo](docs/media/aeroforge-demo.gif)
+- Verified lint, strict TypeScript, the production export, 23 Node tests, 59 Playwright tests with ten profile-specific skips, and 104 Python tests. Phase E awaits approval.
+
 ## Cleanup Phase C illustrative wing pitch
 
 - The Studio angle-of-attack control now pitches the AF–02 front-wing assembly around its inspection anchor. The visual rotation is capped at ±7°, eases during normal motion and snaps under reduced motion. The car caption identifies the effect as illustrative. The existing angle and prediction bounds still govern the isolated 2D section and ONNX results.
 - Extended the existing wing browser tests to check the rendered pose on desktop and phone, clamping on phone, and the disclosure when WebGL is disabled. Reviewed both signs and the prior layout at 1440 and 390 px. [Screenshots and verification](docs/cleanup-c/README.md)
-- Lint, strict TypeScript, the production export and its asset checks passed alongside 23 Node tests, 59 Playwright tests with ten profile-specific skips, and 104 Python tests. Phase D awaits approval.
+- Lint, strict TypeScript, the production export and its asset checks passed alongside 23 Node tests, 59 Playwright tests with ten profile-specific skips, and 104 Python tests.
 
 ## Cleanup Phase B Reynolds disclosure
 

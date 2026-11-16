@@ -1,12 +1,25 @@
 # AeroForge
 
-AeroForge pairs an interactive 3D inspection bay for the illustrative AF–02 car with a NACA four-digit airfoil editor and browser-based ONNX predictions for an isolated 2D section.
+AeroForge is an airfoil design studio with a 3D inspection bay for the illustrative AF–02 car, an interactive NACA editor, and live ONNX predictions for an isolated 2D section.
 
 [Open the live studio](https://aeroforge-9tf.pages.dev/) · [Architecture](docs/ARCHITECTURE.md) · [Release checklist](docs/RELEASE_CHECKLIST.md)
 
-![AeroForge Studio showing the AF–02 car and the live NACA 2412 section results](docs/v2-5/after/1440-studio.png)
+## Honest limits
 
-[Visual review at four screen sizes](docs/v2-5/README.md) · [Mobile Analysis](docs/v2-5/after/390-analysis.png)
+The car and wing pitch are illustrative. Predictions describe isolated NACA sections within **−4° to 8°** and **Re 100,000 to 500,000**, below typical full-scale Formula 1 front-wing conditions. [Formula 1 front-wing study](https://link.springer.com/article/10.1007/s00348-026-04191-5)
+
+![AeroForge demo showing a dragged airfoil handle, AF–02 front-wing inspection, and a switch to live lift and drag charts](docs/media/aeroforge-demo.gif)
+
+[Still view of Studio](docs/cleanup-c/after-1440.png) · [Mobile Analysis](docs/v2-5/after/390-analysis.png)
+
+## Model accuracy
+
+The frozen final test measures agreement with XFOIL on 165 eligible cases from eight unseen geometries. [Frozen evaluation](artifacts/recovery-v1-complete/final-evaluation.json)
+
+| Coefficient | MAE | MAE target | RMSE | R² |
+| --- | ---: | ---: | ---: | ---: |
+| Lift (CL) | **0.01484** | 0.05000 | 0.02553 | 0.99733 |
+| Drag (CD) | **0.000683** | 0.001500 | 0.001165 | 0.98260 |
 
 ## Run locally
 
@@ -25,16 +38,9 @@ Run `npm run verify` from `web` for lint, strict TypeScript, the static export c
 
 ## Model and evidence
 
-The model uses two independently fitted neural networks for lift and drag. Training used eligible viscous XFOIL 6.99 runs. The recovery dataset contains 1,046 eligible cases across 52 geometries, including 165 final-test cases from eight unseen geometries. The 49,781-byte ONNX graph embeds the fitted transforms and accepts `[m, canonical_p, t, alpha_deg, log10(Re)]`.
+The model uses two independently fitted neural networks for lift and drag. The recovery dataset contains 1,046 eligible cases across 52 geometries from viscous XFOIL 6.99 runs. The 49,781-byte ONNX graph embeds the fitted transforms and accepts `[m, canonical_p, t, alpha_deg, log10(Re)]`.
 
-| Frozen final test | MAE | Acceptance limit (MAE) | RMSE | R² |
-| --- | ---: | ---: | ---: | ---: |
-| Lift coefficient (CL) | **0.01484** | 0.05000 | 0.02553 | 0.99733 |
-| Drag coefficient (CD) | **0.000683** | 0.001500 | 0.001165 | 0.98260 |
-
-Predictions are available from **−4° to 8°** and **Re 100,000 to 500,000** within the geometry envelope. The evidence comes from a finite solver panel. Intermediate Reynolds values are interpolations, and low-Re drag and high-camber cases are harder to predict. Experimental accuracy, post-stall behavior and calibrated uncertainty remain unverified.
-
-The model’s Reynolds number range of 100,000 to 500,000 is below typical full-scale Formula 1 front-wing conditions, so its predictions apply only to isolated airfoil sections. [Formula 1 front-wing study](https://link.springer.com/article/10.1007/s00348-026-04191-5)
+Prediction bounds also depend on the section geometry. Intermediate Reynolds values are interpolations, and low-Re drag and high-camber cases are harder to predict. Experimental accuracy, post-stall behavior and calibrated uncertainty remain unverified.
 
 See [model training, evaluation and reproduction](docs/ML.md), [XFOIL data generation](docs/DATA.md), [the recovery dataset](data/recovery-v1/README.md), and [the geometry and units contract](docs/PHYSICS.md). To rerun the Python evidence audit, install the pinned requirements documented there, then run `python -m pytest -q` from the repository root. Existing evidence can be audited without running XFOIL.
 
