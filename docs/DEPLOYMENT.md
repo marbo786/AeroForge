@@ -28,7 +28,7 @@ cd web
 npm run smoke:pages -- http://127.0.0.1:4177/
 ```
 
-The same smoke command accepts the real HTTPS URL after publishing. It opens the studio, a shared design, the evidence page and the inference fixture. It checks prediction and mobile layout, same-origin runtime requests, MIME types, the downloaded model hash, versioned caching, and a 404 for missing WASM.
+The same smoke command accepts the real HTTPS URL after publishing. It opens the studio, a shared design, the evidence page and the inference fixture. It checks prediction and mobile layout, same-origin runtime requests, MIME types, the downloaded model and preprocessing hashes, manifest equality, versioned caching, and a 404 for missing WASM.
 
 ## Free project settings
 

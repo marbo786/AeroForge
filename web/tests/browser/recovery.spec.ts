@@ -16,11 +16,16 @@ test("recovered model passes frozen accuracy metadata and production browser num
     const ort = await import(url);
     ort.env.wasm.numThreads = 1; ort.env.wasm.proxy = false;
     ort.env.wasm.wasmPaths = location.origin + "/runtime/1.31.1/";
+    const start = performance.now();
     const session = await ort.InferenceSession.create(root + "selected.onnx", { executionProviders: ["wasm"] });
+    const sessionInitMs = performance.now() - start;
     const x = golden.features as number[][];
-    const results = await session.run({ features: new ort.Tensor("float32", Float32Array.from(x.flat()), [x.length, 5]) });
+    const feeds = { features: new ort.Tensor("float32", Float32Array.from(x.flat()), [x.length, 5]) };
+    const results = await session.run(feeds);
     const expected = (golden.expected.selected as number[][]).flat();
     const actual = Array.from(results.coefficients.data as Float32Array);
+    const repeated = (await session.run(feeds)).coefficients.data as Float32Array;
+    const repeatMatches = actual.length === repeated.length && actual.every((value, i) => value === repeated[i]);
     const maxError = Math.max(...actual.map((value, i) => Math.abs(value - expected[i])));
     const timings: Record<string, { p50_ms: number; p95_ms: number }> = {};
     for (const [name, count] of [["single", 1], ["batch17", 17]] as const) {
@@ -34,12 +39,13 @@ test("recovered model passes frozen accuracy metadata and production browser num
       timings[name] = { p50_ms: times[49], p95_ms: times[94] };
     }
     await session.release();
-    return { maxError, shape: results.coefficients.dims, cases: x.length, timings, isolated: crossOriginIsolated,
+    return { maxError, shape: results.coefficients.dims, cases: x.length, timings, sessionInitMs, repeatMatches, isolated: crossOriginIsolated,
       positiveDrag: actual.filter((_, i) => i % 2 === 1).every((value) => value > 0) };
   }, { root, golden });
   expect(result.maxError).toBeLessThan(1e-5);
   expect(result.shape).toEqual([golden.features.length, 2]);
   expect(result.positiveDrag).toBe(true);
+  expect(result.repeatMatches).toBe(true);
   expect(result.isolated).toBe(false);
   expect(errors).toEqual([]);
   const evidence = { ...result, errors, browser: page.context().browser()?.version() };

@@ -1,0 +1,32 @@
+[
+  {
+    "profile": "desktop",
+    "lighthouse": "13.6.0",
+    "chrome": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+    "scores": {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "lcpMs": 258.0,
+    "tbtMs": 0.0,
+    "cls": 0.0194,
+    "transferredBytes": 4301510
+  },
+  {
+    "profile": "mobile",
+    "lighthouse": "13.6.0",
+    "chrome": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+    "scores": {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "lcpMs": 919.0,
+    "tbtMs": 79.0,
+    "cls": 0.0083,
+    "transferredBytes": 4301510
+  }
+]

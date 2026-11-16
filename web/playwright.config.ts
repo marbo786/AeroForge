@@ -1,12 +1,14 @@
 import { defineConfig } from "@playwright/test";
 
+const externalOrigin = process.env.AEROFORGE_TEST_ORIGIN;
+
 export default defineConfig({
   testDir: "./tests/browser",
   fullyParallel: false,
   workers: 1,
   timeout: 60_000,
   use: {
-    baseURL: "http://127.0.0.1:4173",
+    baseURL: externalOrigin ?? "http://127.0.0.1:4173",
     trace: "retain-on-failure",
     // Use the installed Chrome on Windows; CI installs Playwright Chromium.
     ...(process.platform === "win32" ? { channel: "chrome" } : {}),
@@ -16,7 +18,7 @@ export default defineConfig({
     { name: "tablet", testMatch: "**/studio.spec.ts", use: { viewport: { width: 1024, height: 768 } } },
     { name: "mobile", use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
   ],
-  webServer: {
+  webServer: externalOrigin ? undefined : {
     command: "npm run serve",
     url: "http://127.0.0.1:4173",
     reuseExistingServer: false,

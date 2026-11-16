@@ -4,7 +4,16 @@ Last updated: 2026-11-16 (Asia/Karachi).
 
 ## Current phase and session rule
 
-Phase 7 is complete. The [public Cloudflare Pages deployment](https://aeroforge-9tf.pages.dev/) passed the HTTPS smoke test on 2026-11-16.
+Phase 7 is complete. The existing [public Cloudflare Pages deployment](https://aeroforge-9tf.pages.dev/) passed the HTTPS smoke test again during the final launch audit. The dark workstation candidate passed local production verification and is ready for rollout and a public smoke test.
+
+## Final v1 launch audit
+
+- Refined the workstation with dark slate panels, cyan geometry and charts, and a shorter stage on tablet and phone. Reviewed before and after Chrome captures at 1440 × 900, 1920 × 1080, 768 × 1024 and 390 × 844. [Visual audit](docs/ui-launch/README.md)
+- Removed interpolated telemetry, synchronized lift and drag inspection, fixed coalesced keyboard steps, reused geometry on flow edits, and aligned SVG and PNG exports with the displayed viewport. Removing the evidence panel fade restored contrast at first paint.
+- Passed lint, TypeScript, 23 Node tests, a fresh Pages-compatible export, 41 Playwright tests and 104 Python tests. Axe found zero violations across eight desktop and mobile states. Browser predictions repeated identically across 881 vectors with reference error at most 1.49 × 10⁻⁷. Frozen final-panel MAE is 0.01484 for CL and 0.000683 for CD.
+- Lighthouse scored 100 for performance, accessibility, best practices and SEO in both local desktop and simulated mobile runs. The modeled mobile blocking time was 79 ms. Four cold local runs became prediction-ready in 1.08–1.69 seconds. [Lighthouse results](docs/ui-launch/lighthouse.json)
+- Verified routing and assets in the local Pages emulator and in the existing public release. The public check matched the model checksum, preprocessing checksum and manifest, with zero browser errors. The private project dashboard and live rollout of this candidate remain open.
+- Updated the README, deployment guide, engineering case study and release checklist with benchmarks, architecture, limitations and the remaining rollout steps. [Release checklist](docs/RELEASE_CHECKLIST.md) · [Case study](docs/CASE_STUDY.md)
 
 ## Phase 7 release preparation
 

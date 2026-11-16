@@ -2,9 +2,11 @@
 
 AeroForge is an interactive airfoil design studio. Edit a NACA four-digit section, predict lift and drag in the browser, and compare the result against a saved design. It runs as a static site with a local ONNX model.
 
-![AeroForge showing lift and drag sweeps for two NACA airfoils](docs/phase-6/final/desktop-charts.png)
+[Open the live studio](https://aeroforge-9tf.pages.dev/) · [Engineering case study and architecture diagram](docs/CASE_STUDY.md) · [Launch checklist](docs/RELEASE_CHECKLIST.md)
 
-[Mobile studio](docs/phase-6/final/mobile-overlay.png) · [Architecture](docs/ARCHITECTURE.md) · [Release audit](docs/RELEASE.md)
+![AeroForge launch candidate showing NACA 2412 with live lift, drag, and efficiency](docs/ui-launch/after/1440x900.png)
+
+[Before and after at four screen sizes](docs/ui-launch/README.md) · [Mobile charts](docs/ui-launch/after/390x844-charts.png)
 
 ## Run locally
 
@@ -23,7 +25,12 @@ Run `npm run verify` from `web` for lint, TypeScript, Node tests, static export 
 
 ## Model and evidence
 
-The model uses two independently fitted neural networks for lift and drag. Training used eligible viscous XFOIL 6.99 runs. The recovery dataset contains 1,046 eligible cases across 52 geometries, including 165 final-test cases from eight unseen geometries. The final test yielded mean absolute errors of **0.01484 for CL** and **0.000683 for CD**. The 49,781-byte ONNX graph embeds the fitted transforms and accepts `[m, canonical_p, t, alpha_deg, log10(Re)]`.
+The model uses two independently fitted neural networks for lift and drag. Training used eligible viscous XFOIL 6.99 runs. The recovery dataset contains 1,046 eligible cases across 52 geometries, including 165 final-test cases from eight unseen geometries. The 49,781-byte ONNX graph embeds the fitted transforms and accepts `[m, canonical_p, t, alpha_deg, log10(Re)]`.
+
+| Frozen final test | MAE | Acceptance limit (MAE) | RMSE | R² |
+| --- | ---: | ---: | ---: | ---: |
+| Lift coefficient (CL) | **0.01484** | 0.05000 | 0.02553 | 0.99733 |
+| Drag coefficient (CD) | **0.000683** | 0.001500 | 0.001165 | 0.98260 |
 
 Predictions are available from **−4° to 8°** and **Re 100,000 to 500,000** within the geometry envelope. The evidence comes from a finite solver panel. Intermediate Reynolds values are interpolations, and low-Re drag and high-camber cases are harder to predict. Experimental accuracy, post-stall behavior and calibrated uncertainty remain unverified.
 
@@ -33,6 +40,8 @@ To reproduce training, create a fresh recovery plan with `scripts/plan_recovery.
 
 ## Hosting and license
 
-The production export is live on [Cloudflare Pages](https://aeroforge-9tf.pages.dev/). The public HTTPS smoke test passed on 2026-11-16. See the [deployment and verification guide](docs/DEPLOYMENT.md) and [progress record](PROGRESS.md).
+The existing v1 release is live on [Cloudflare Pages](https://aeroforge-9tf.pages.dev/). The dark studio pictured above is the separately tested launch candidate. To deploy it, use `web` as the Pages build root, run `npm run build`, and publish `out`. See the [deployment and verification guide](docs/DEPLOYMENT.md) for pinned tool versions, cache headers, and the public smoke check. No inference API or paid infrastructure is required for the static design.
+
+The [engineering case study](docs/CASE_STUDY.md#limits-and-roadmap) describes future validation work. See the [progress record](PROGRESS.md) for completed milestones.
 
 Original application code and documentation use the [MIT License](LICENSE). The browser export includes third-party notices for the runtime, framework, animation packages and fonts. XFOIL uses its upstream license and runs offline. The binary is excluded from this distribution.

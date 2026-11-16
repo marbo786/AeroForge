@@ -1,0 +1,18 @@
+{
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "browser": "157.0.8103.51",
+  "samples": 179,
+  "medianMs": 16.699999999999818,
+  "p95Ms": 16.800000000000182,
+  "meanMs": 16.759217877094972,
+  "framesOver25Ms": 1,
+  "dragCommits": 268,
+  "chartPathReadyMs": 179,
+  "heapBefore": 5476300,
+  "heapAfter": 6046896,
+  "chartCycles": 12,
+  "scope": "Local Chrome drag frame intervals and root commit count. Chart timing ends at DOM insertion. Heap is the page isolate after forced GC."
+}

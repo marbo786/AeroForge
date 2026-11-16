@@ -1,0 +1,297 @@
+{
+  "browser": "157.0.8103.51",
+  "results": [
+    {
+      "width": 1440,
+      "height": 900,
+      "readyMs": 1809,
+      "jsDecodedBytes": 634134,
+      "heapBytes": 6425260,
+      "overflow": false,
+      "firstSessionRunMs": 53.2,
+      "downloads": [
+        {
+          "path": "/_next/static/chunks/webpack-88b3be45e6cf221b.js",
+          "encodedBytes": 1720,
+          "elapsedMs": 36
+        },
+        {
+          "path": "/_next/static/chunks/4bd1b696-c7408084347438ae.js",
+          "encodedBytes": 64057,
+          "elapsedMs": 38
+        },
+        {
+          "path": "/_next/static/chunks/794-8d371aeb1948ae36.js",
+          "encodedBytes": 67462,
+          "elapsedMs": 50
+        },
+        {
+          "path": "/_next/static/chunks/main-app-98edfe7b0d3a1f19.js",
+          "encodedBytes": 513,
+          "elapsedMs": 59
+        },
+        {
+          "path": "/_next/static/chunks/app/page-9e5111edf5cffade.js",
+          "encodedBytes": 1480,
+          "elapsedMs": 63
+        },
+        {
+          "path": "/_next/static/chunks/535-2e0206f93e9e0ca7.js",
+          "encodedBytes": 14492,
+          "elapsedMs": 64
+        },
+        {
+          "path": "/_next/static/chunks/477-ea80161f2d3d3c5f.js",
+          "encodedBytes": 46781,
+          "elapsedMs": 60
+        },
+        {
+          "path": "/runtime/1.31.1/ort.wasm.min.mjs",
+          "encodedBytes": 17226,
+          "elapsedMs": 16
+        },
+        {
+          "path": "/models/recovery-v1-complete/selected.onnx",
+          "encodedBytes": 39908,
+          "elapsedMs": 8
+        },
+        {
+          "path": "/runtime/1.31.1/ort.wasm.min.mjs",
+          "encodedBytes": -247,
+          "elapsedMs": 13
+        },
+        {
+          "path": "/runtime/1.31.1/ort-wasm-simd-threaded.mjs",
+          "encodedBytes": 9223,
+          "elapsedMs": 6
+        },
+        {
+          "path": "/runtime/1.31.1/ort-wasm-simd-threaded.wasm",
+          "encodedBytes": 3836894,
+          "elapsedMs": 623
+        }
+      ],
+      "errors": [],
+      "external": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "readyMs": 1706,
+      "jsDecodedBytes": 634134,
+      "heapBytes": 7581972,
+      "overflow": false,
+      "firstSessionRunMs": 52.8,
+      "downloads": [
+        {
+          "path": "/_next/static/chunks/webpack-88b3be45e6cf221b.js",
+          "encodedBytes": 1720,
+          "elapsedMs": 30
+        },
+        {
+          "path": "/_next/static/chunks/main-app-98edfe7b0d3a1f19.js",
+          "encodedBytes": 513,
+          "elapsedMs": 45
+        },
+        {
+          "path": "/_next/static/chunks/794-8d371aeb1948ae36.js",
+          "encodedBytes": 67462,
+          "elapsedMs": 46
+        },
+        {
+          "path": "/_next/static/chunks/4bd1b696-c7408084347438ae.js",
+          "encodedBytes": 64057,
+          "elapsedMs": 46
+        },
+        {
+          "path": "/_next/static/chunks/app/page-9e5111edf5cffade.js",
+          "encodedBytes": 1480,
+          "elapsedMs": 57
+        },
+        {
+          "path": "/_next/static/chunks/535-2e0206f93e9e0ca7.js",
+          "encodedBytes": 14492,
+          "elapsedMs": 58
+        },
+        {
+          "path": "/_next/static/chunks/477-ea80161f2d3d3c5f.js",
+          "encodedBytes": 46781,
+          "elapsedMs": 55
+        },
+        {
+          "path": "/runtime/1.31.1/ort.wasm.min.mjs",
+          "encodedBytes": 17226,
+          "elapsedMs": 7
+        },
+        {
+          "path": "/models/recovery-v1-complete/selected.onnx",
+          "encodedBytes": 39908,
+          "elapsedMs": 8
+        },
+        {
+          "path": "/runtime/1.31.1/ort.wasm.min.mjs",
+          "encodedBytes": -247,
+          "elapsedMs": 11
+        },
+        {
+          "path": "/runtime/1.31.1/ort-wasm-simd-threaded.mjs",
+          "encodedBytes": 9223,
+          "elapsedMs": 6
+        },
+        {
+          "path": "/runtime/1.31.1/ort-wasm-simd-threaded.wasm",
+          "encodedBytes": 3836894,
+          "elapsedMs": 772
+        }
+      ],
+      "errors": [],
+      "external": []
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "readyMs": 1700,
+      "jsDecodedBytes": 634134,
+      "heapBytes": 7549450,
+      "overflow": false,
+      "firstSessionRunMs": 54.5,
+      "downloads": [
+        {
+          "path": "/_next/static/chunks/webpack-88b3be45e6cf221b.js",
+          "encodedBytes": 1720,
+          "elapsedMs": 38
+        },
+        {
+          "path": "/_next/static/chunks/4bd1b696-c7408084347438ae.js",
+          "encodedBytes": 64057,
+          "elapsedMs": 51
+        },
+        {
+          "path": "/_next/static/chunks/794-8d371aeb1948ae36.js",
+          "encodedBytes": 67462,
+          "elapsedMs": 55
+        },
+        {
+          "path": "/_next/static/chunks/main-app-98edfe7b0d3a1f19.js",
+          "encodedBytes": 513,
+          "elapsedMs": 63
+        },
+        {
+          "path": "/_next/static/chunks/app/page-9e5111edf5cffade.js",
+          "encodedBytes": 1480,
+          "elapsedMs": 66
+        },
+        {
+          "path": "/_next/static/chunks/535-2e0206f93e9e0ca7.js",
+          "encodedBytes": 14492,
+          "elapsedMs": 66
+        },
+        {
+          "path": "/_next/static/chunks/477-ea80161f2d3d3c5f.js",
+          "encodedBytes": 46781,
+          "elapsedMs": 64
+        },
+        {
+          "path": "/runtime/1.31.1/ort.wasm.min.mjs",
+          "encodedBytes": 17226,
+          "elapsedMs": 8
+        },
+        {
+          "path": "/models/recovery-v1-complete/selected.onnx",
+          "encodedBytes": 39908,
+          "elapsedMs": 8
+        },
+        {
+          "path": "/runtime/1.31.1/ort.wasm.min.mjs",
+          "encodedBytes": -247,
+          "elapsedMs": 10
+        },
+        {
+          "path": "/runtime/1.31.1/ort-wasm-simd-threaded.mjs",
+          "encodedBytes": 9223,
+          "elapsedMs": 6
+        },
+        {
+          "path": "/runtime/1.31.1/ort-wasm-simd-threaded.wasm",
+          "encodedBytes": 3836894,
+          "elapsedMs": 737
+        }
+      ],
+      "errors": [],
+      "external": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "readyMs": 1668,
+      "jsDecodedBytes": 634134,
+      "heapBytes": 6414720,
+      "overflow": false,
+      "firstSessionRunMs": 56.9,
+      "downloads": [
+        {
+          "path": "/_next/static/chunks/webpack-88b3be45e6cf221b.js",
+          "encodedBytes": 1720,
+          "elapsedMs": 20
+        },
+        {
+          "path": "/_next/static/chunks/4bd1b696-c7408084347438ae.js",
+          "encodedBytes": 64057,
+          "elapsedMs": 47
+        },
+        {
+          "path": "/_next/static/chunks/main-app-98edfe7b0d3a1f19.js",
+          "encodedBytes": 513,
+          "elapsedMs": 55
+        },
+        {
+          "path": "/_next/static/chunks/794-8d371aeb1948ae36.js",
+          "encodedBytes": 67462,
+          "elapsedMs": 47
+        },
+        {
+          "path": "/_next/static/chunks/app/page-9e5111edf5cffade.js",
+          "encodedBytes": 1480,
+          "elapsedMs": 58
+        },
+        {
+          "path": "/_next/static/chunks/535-2e0206f93e9e0ca7.js",
+          "encodedBytes": 14492,
+          "elapsedMs": 58
+        },
+        {
+          "path": "/_next/static/chunks/477-ea80161f2d3d3c5f.js",
+          "encodedBytes": 46781,
+          "elapsedMs": 56
+        },
+        {
+          "path": "/runtime/1.31.1/ort.wasm.min.mjs",
+          "encodedBytes": 17226,
+          "elapsedMs": 8
+        },
+        {
+          "path": "/models/recovery-v1-complete/selected.onnx",
+          "encodedBytes": 39908,
+          "elapsedMs": 8
+        },
+        {
+          "path": "/runtime/1.31.1/ort.wasm.min.mjs",
+          "encodedBytes": -247,
+          "elapsedMs": 10
+        },
+        {
+          "path": "/runtime/1.31.1/ort-wasm-simd-threaded.mjs",
+          "encodedBytes": 9223,
+          "elapsedMs": 6
+        },
+        {
+          "path": "/runtime/1.31.1/ort-wasm-simd-threaded.wasm",
+          "encodedBytes": 3836894,
+          "elapsedMs": 762
+        }
+      ],
+      "errors": [],
+      "external": []
+    }
+  ]
+}

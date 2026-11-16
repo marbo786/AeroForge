@@ -1,0 +1,54 @@
+{
+  "browser": "157.0.8103.51",
+  "axeVersion": "4.14.0",
+  "results": [
+    {
+      "width": 1440,
+      "height": 900,
+      "state": "Studio",
+      "violations": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "state": "Charts",
+      "violations": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "state": "Share",
+      "violations": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "state": "Model",
+      "violations": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "state": "Studio",
+      "violations": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "state": "Charts",
+      "violations": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "state": "Share",
+      "violations": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "state": "Model",
+      "violations": []
+    }
+  ]
+}

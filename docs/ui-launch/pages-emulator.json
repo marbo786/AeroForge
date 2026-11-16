@@ -1,0 +1,10 @@
+{
+  "origin": "http://127.0.0.1:4177",
+  "browser": "157.0.8103.51",
+  "routes": 4,
+  "sameOriginInference": true,
+  "modelAndPreprocessingVerified": true,
+  "headers": "MIME, nosniff, immutable",
+  "missingAssetStatus": 404,
+  "browserErrors": 0
+}

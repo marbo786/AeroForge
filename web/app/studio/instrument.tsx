@@ -76,14 +76,24 @@ function Comparison({ design, current, saved, onRestore, onClear }: {
 function download(blob:Blob,name:string) {
   const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
+const imageWidth = 1600;
+const imageHeight = 700;
+
 function svgSnapshot() {
   const original=document.querySelector<SVGSVGElement>(".airfoil-svg");
   if(!original)throw new Error("Section drawing unavailable.");
   const clone=original.cloneNode(true) as SVGSVGElement;
   const source=[original,...original.querySelectorAll("*")]; const copy=[clone,...clone.querySelectorAll("*")];
-  source.forEach((node,i)=>{const style=getComputedStyle(node);copy[i].setAttribute("style",["fill","stroke","stroke-width","stroke-dasharray","opacity","font-family","font-size","font-weight","letter-spacing"].map(key=>`${key}:${style.getPropertyValue(key)}`).join(";"));});
+  source.forEach((node,i)=>{const style=getComputedStyle(node);copy[i].setAttribute("style",["display","fill","stroke","stroke-width","stroke-dasharray","opacity","font-family","font-size","font-weight","letter-spacing"].map(key=>`${key}:${style.getPropertyValue(key)}`).join(";"));});
   clone.querySelectorAll(".geometry-handle,.exact-contour").forEach(node=>node.remove());
-  clone.setAttribute("xmlns","http://www.w3.org/2000/svg");clone.setAttribute("width","1600");clone.setAttribute("height","960");
+  const background = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  const bounds = original.viewBox.baseVal;
+  for (const key of ["x", "y", "width", "height"] as const) background.setAttribute(key, String(bounds[key]));
+  background.setAttribute("fill", getComputedStyle(original).getPropertyValue("--workspace").trim());
+  clone.prepend(background);
+  clone.setAttribute("xmlns","http://www.w3.org/2000/svg");
+  clone.setAttribute("width", String(imageWidth));
+  clone.setAttribute("height", String(imageHeight));
   return new XMLSerializer().serializeToString(clone);
 }
 function ExportMenu({design,current,points}:{design:Design;current:Result|null;points:SweepPoint[]}) {
@@ -96,7 +106,20 @@ function ExportMenu({design,current,points}:{design:Design;current:Result|null;p
       if(format==="svg")download(new Blob([svgSnapshot()],{type:"image/svg+xml"}),`${name}.svg`);
       if(format==="png") {
         const url=URL.createObjectURL(new Blob([svgSnapshot()],{type:"image/svg+xml"}));
-        try { const image=new Image();image.src=url;await image.decode();const canvas=document.createElement("canvas");canvas.width=1600;canvas.height=960;const context=canvas.getContext("2d");if(!context)throw new Error();context.fillStyle="#ecebe7";context.fillRect(0,0,1600,960);context.drawImage(image,0,0,1600,960);const blob=await new Promise<Blob|null>(resolve=>canvas.toBlob(resolve,"image/png"));if(!blob)throw new Error();download(blob,`${name}.png`); }
+        try {
+          const image = new Image();
+          image.src = url;
+          await image.decode();
+          const canvas = document.createElement("canvas");
+          canvas.width = imageWidth;
+          canvas.height = imageHeight;
+          const context = canvas.getContext("2d");
+          if (!context) throw new Error("Canvas unavailable");
+          context.drawImage(image, 0, 0);
+          const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, "image/png"));
+          if (!blob) throw new Error("Image encoding failed");
+          download(blob, `${name}.png`);
+        }
         finally {URL.revokeObjectURL(url);}
       }
       setOpen(false);
@@ -176,7 +199,7 @@ export default function Instrument(props:InstrumentProps) {
   },[playing,reduced]);
   useEffect(()=>{
     const key=(event:globalThis.KeyboardEvent)=>{
-      if(event.code!=="Space"||reduced||document.querySelector("dialog[open]")||(event.target instanceof HTMLElement&&event.target.closest("input,button,select,textarea,[contenteditable=true]")))return;
+      if(event.code!=="Space"||reduced||document.querySelector("dialog[open]")||(event.target instanceof Element&&event.target.closest("input,button,a,select,textarea,[contenteditable=true],[role=slider]")))return;
       event.preventDefault();setPlaying(value=>!value);
     };window.addEventListener("keydown",key);return()=>window.removeEventListener("keydown",key);
   },[reduced]);
@@ -232,7 +255,7 @@ export default function Instrument(props:InstrumentProps) {
     <Drawer open={drawer === "Charts"} onClose={() => setDrawer(null)} title="Charts">
       {saved && <Comparison design={design} current={current} saved={saved}
         onRestore={() => props.onRestore(saved.design)} onClear={() => setSaved(null)}/>}
-      <ChartPanel sweep={failure ? { ...sweep, error: failure } : sweep} comparison={comparison} comparing={!!saved}/>
+      <ChartPanel sweep={failure ? { ...sweep, error: failure } : sweep} comparison={comparison} comparing={!!saved} alpha={design.alpha}/>
     </Drawer>
     <Drawer open={drawer === "Share design"} onClose={() => setDrawer(null)} title="Share design">
       <ShareDesign url={shareUrl}/>

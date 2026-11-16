@@ -53,10 +53,16 @@ try {
   }
   const missing = await page.request.get(new URL(`/runtime/${version}/missing.wasm`, host).href);
   assert.equal(missing.status(), 404, 'Missing runtime files must return HTTP 404');
+  const serverManifest = await page.request.get(new URL(`/models/${manifest.version}/model.json`, host).href);
+  assert.equal(serverManifest.status(), 200);
+  assert.deepEqual(await serverManifest.json(), manifest, 'Published model manifest differs from the accepted manifest');
+  const preprocessing = await page.request.get(new URL(`/models/${manifest.version}/preprocessing.json`, host).href);
+  assert.equal(preprocessing.status(), 200);
+  assert.equal(createHash('sha256').update(await preprocessing.body()).digest('hex'), manifest.preprocessing_sha256);
   assert.deepEqual(errors, []);
   assert.deepEqual(external, []);
   console.log(JSON.stringify({ origin: host.origin, browser: browser.version(), routes: 4, sameOriginInference: true,
-    headers: 'MIME, nosniff, immutable', missingAssetStatus: 404, browserErrors: errors.length }, null, 2));
+    modelAndPreprocessingVerified: true, headers: 'MIME, nosniff, immutable', missingAssetStatus: 404, browserErrors: errors.length }, null, 2));
 } finally {
   await browser.close();
 }

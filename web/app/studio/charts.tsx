@@ -49,7 +49,8 @@ export function Sparkline({ points, field, current }: { points:SweepPoint[];fiel
 
 type Sweep = ReturnType<typeof useSweep>;
 
-export function ChartPanel({ sweep, comparison, comparing }: { sweep: Sweep; comparison: Sweep; comparing: boolean }) {
+export function ChartPanel({ sweep, comparison, comparing, alpha }: { sweep: Sweep; comparison: Sweep; comparing: boolean; alpha: number }) {
+  const [selected, setSelected] = useState(() => Math.round(alpha * 2) / 2);
   const allPoints = [...sweep.points, ...comparison.points];
   return <>
     <div className="chart-legend micro">
@@ -65,17 +66,17 @@ export function ChartPanel({ sweep, comparison, comparing }: { sweep: Sweep; com
     {!allPoints.length && !sweep.loading && !comparison.loading && !sweep.error &&
       <p className="chart-message">Enter valid geometry and a Reynolds number from 100,000 to 500,000 to view the sweep.</p>}
     {!!allPoints.length && <div className="full-charts">
-      <SweepChart title="Lift / angle of attack" field="cl" current={sweep.points} saved={comparison.points} />
-      <SweepChart title="Drag / angle of attack" field="cd" current={sweep.points} saved={comparison.points} />
+      <SweepChart title="Lift / angle of attack" field="cl" current={sweep.points} saved={comparison.points} selected={selected} onInspect={setSelected} />
+      <SweepChart title="Drag / angle of attack" field="cd" current={sweep.points} saved={comparison.points} selected={selected} onInspect={setSelected} />
     </div>}
     <p className="drawer-caveat">The model samples every 0.5° from −4° to 8°, at each design’s Reynolds number. Missing values leave gaps. Select an angle on a chart to inspect its coefficients.</p>
   </>;
 }
 
-function SweepChart({ title, field, current, saved }: {
+function SweepChart({ title, field, current, saved, selected, onInspect }: {
   title: string; field: "cl" | "cd"; current: SweepPoint[]; saved: SweepPoint[];
+  selected: number; onInspect: (alpha: number) => void;
 }) {
-  const [selected, setSelected] = useState(4);
   const label = field.toUpperCase();
   const values = [...current, ...saved].map(point => point[field]);
   const min = Math.min(0, ...values);
@@ -90,7 +91,7 @@ function SweepChart({ title, field, current, saved }: {
     if (!matrix) return;
     const point = new DOMPoint(clientX, clientY).matrixTransform(matrix.inverse());
     const alpha = Math.round(((point.x - 51) / 289 * 16 - 4) * 2) / 2;
-    setSelected(Math.max(-4, Math.min(12, alpha)));
+    onInspect(Math.max(-4, Math.min(12, alpha)));
   }
   return <section className="plot">
     <h3 className="micro">{title}</h3>
@@ -117,7 +118,7 @@ function SweepChart({ title, field, current, saved }: {
       <label>Inspect angle <input type="number" min="-4" max="12" step=".5" value={selected}
         aria-label={`Inspect ${label} angle`} onChange={event => {
           const value = event.currentTarget.valueAsNumber;
-          if (Number.isFinite(value)) setSelected(Math.max(-4, Math.min(12, value)));
+          if (Number.isFinite(value)) onInspect(Math.max(-4, Math.min(12, value)));
         }}/></label>
       <output data-testid={`inspect-${field}`}>
         Current {selectedCurrent?.[field].toFixed(digits) ?? "—"}

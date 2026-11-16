@@ -1,6 +1,6 @@
 "use client";
 import { useReducedPreference } from "./use-reduced-preference";
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type KeyboardEvent } from "react";
 import { useSpring } from "motion/react";
 import { generateGeometry, sectionAt, type Point } from "../../lib/geometry/naca4";
 import type { Design } from "../../lib/inference/surrogate";
@@ -10,6 +10,11 @@ export type Display = { grid: boolean; camber: boolean; chord: boolean; labels: 
 type HandleField = "m" | "p" | "t" | "alpha";
 type Handle = "camber" | "position" | "thickness" | "rotation";
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const xy = ([x, y]: Point): Point => [120 + 560 * x, 240 - 560 * y];
+
+function contourPath(contour: readonly Point[]) {
+  return `M${contour.map(point => xy(point).map(value => value.toFixed(4)).join(",")).join(" L")} Z`;
+}
 
 // Presentation-only interpolation: generate true NACA coordinates on every frame.
 function useGeometryMotion(design: Design) {
@@ -70,15 +75,23 @@ export function Stage({ design, display, onChange, invalid, saved }: {
       frame.current=requestAnimationFrame(flush);
     }
   }
-  const geometry = generateGeometry(visual);
-  const xy = ([x,y]: Point): Point => [120 + 560*x, 240 - 560*y];
-  const path = `M${geometry.contour.map((pt) => xy(pt).map((v) => v.toFixed(4)).join(",")).join(" L")} Z`;
-  const exact = generateGeometry(design);
-  const exactPath = `M${exact.contour.map((pt) => xy(pt).map((v) => v.toFixed(4)).join(",")).join(" L")} Z`;
-  const savedPath = saved ? `M${generateGeometry(saved).contour.map(point => xy(point).join(",")).join(" L")} Z` : null;
+  const { path, thickX, thicknessPoint, camberLine } = useMemo(() => {
+    const shape = { m: visual.m, p: visual.p, t: visual.t };
+    const geometry = generateGeometry(shape);
+    const stations = geometry.x.map(x => ({ x, station: sectionAt(shape, x) }));
+    const thick = stations.reduce((best, item) => item.station.halfThickness > best.station.halfThickness ? item : best,
+      { x: .3, station: sectionAt(shape, .3) });
+    return {
+      path: contourPath(geometry.contour),
+      thickX: thick.x,
+      thicknessPoint: xy(thick.station.upper),
+      camberLine: stations.map(({ x, station }) => xy([x, station.camber]).join(",")).join(" "),
+    };
+  }, [visual.m, visual.p, visual.t]);
+  const exactPath = useMemo(() => contourPath(generateGeometry({ m: design.m, p: design.p, t: design.t }).contour),
+    [design.m, design.p, design.t]);
+  const savedPath = useMemo(() => saved ? contourPath(generateGeometry(saved).contour) : null, [saved]);
   const camberPoint = xy([visual.p || .4, visual.m]);
-  const thickX = geometry.x.reduce((best,x) => sectionAt(visual,x).halfThickness > sectionAt(visual,best).halfThickness ? x : best, .3);
-  const thicknessPoint = xy(sectionAt(visual, thickX).upper);
   const rotate = ([x,y]: Point): Point => {
     const angle = visual.alpha * Math.PI / 180;
     return [260 + (x-260)*Math.cos(angle) - (y-240)*Math.sin(angle), 240 + (x-260)*Math.sin(angle) + (y-240)*Math.cos(angle)];
@@ -129,13 +142,15 @@ export function Stage({ design, display, onChange, invalid, saved }: {
     updates.forEach(value=>changeRef.current(value.field,value.value));
   }
   function keyboard(event: KeyboardEvent<SVGGElement>, kind: Handle) {
+    if (kind === "position" && design.m === 0) return;
     if (!["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(event.key)) return;
     event.preventDefault();
     const delta = ["ArrowUp","ArrowRight"].includes(event.key) ? 1 : -1;
     const coarse = event.shiftKey ? 5 : 1;
     const mapping = { camber: ["m",design.m*100,0,6,.1], position: ["p",(design.p||.4)*100,20,60,1], thickness: ["t",design.t*100,8,18,.1], rotation: ["alpha",design.alpha,-4,12,.1] } as const;
     const [field,value,min,max,step] = mapping[kind];
-    queue(field,clamp(value+delta*coarse*step,min,max));
+    const next = clamp(value + delta * coarse * step, min, max);
+    onChange(field, String(Number(next.toFixed(3))));
   }
   const handles: { kind: Handle; point: Point; label: string; value: number; min: number; max: number }[] = [
     { kind:"camber",point:camberPoint,label:"Drag maximum camber",value:design.m*100,min:0,max:6 },
@@ -148,7 +163,7 @@ export function Stage({ design, display, onChange, invalid, saved }: {
     <svg ref={svgRef} className="airfoil-svg" viewBox="0 55 800 350" role="group" aria-labelledby="foil-title" aria-describedby="foil-description" onPointerMove={move} onPointerUp={end} onPointerCancel={end}
       onPointerDown={(e) => { pointers.current.set(e.pointerId,[e.clientX,e.clientY]); if(pointers.current.size===2) { const [a,b]=[...pointers.current.values()]; pinch.current={distance:Math.hypot(a[0]-b[0],a[1]-b[1]),scale:view.scale}; } start(e,"pan"); }}>
       <title id="foil-title">{`Airfoil at ${design.alpha} degrees`}</title><desc id="foil-description">{`Accurate NACA upper and lower surfaces with equal horizontal and vertical scale. Positive angle rotates the leading edge upward. ${invalid ? "Showing last valid geometry." : "Drag the handles to edit geometry or incidence."}`}</desc>
-      <defs><pattern id="paper-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#d9d7d0" strokeWidth=".6"/></pattern><pattern id="surface-hatch" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M0 7L7 0" stroke="#c5c2b9" strokeWidth=".5"/></pattern></defs>
+      <defs><pattern id="paper-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" className="section-grid-stroke" strokeWidth=".6"/></pattern><pattern id="surface-hatch" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M0 7L7 0" className="surface-hatch-stroke" strokeWidth=".5"/></pattern></defs>
       {display.grid && <rect width="800" height="480" fill="url(#paper-grid)"/>}
       <g className="orbit-guides" aria-hidden="true"><ellipse cx="400" cy="300" rx="378" ry="155"/><ellipse cx="400" cy="300" rx="295" ry="120"/><path d="M0 300H800M400 80V470"/></g>
       <g transform={`translate(${view.x} ${view.y}) translate(400 240) scale(${view.scale}) translate(-400 -240)`}>
@@ -157,7 +172,7 @@ export function Stage({ design, display, onChange, invalid, saved }: {
           <path d={path} className="foil-surface"/>
           <path d={path} fill="url(#surface-hatch)" opacity=".4"/>
           <path d={exactPath} data-testid="foil-path" className="exact-contour" aria-hidden="true"/>
-          {display.camber && <polyline className="camber-line" points={geometry.x.map((x) => xy([x,sectionAt(visual,x).camber]).join(",")).join(" ")}/>}
+          {display.camber && <polyline className="camber-line" points={camberLine}/>}
           {display.chord && <path d="M120 240H680" className="chord-line"/>}
           <path d={`M${120+560*(visual.p||.4)} 240V287.6`} className="handle-stem"/>
           {display.flow && <g className="conceptual-flow" aria-label="Conceptual airflow, not a simulation"><path d="M30 170Q280 90 760 178M30 285Q350 350 760 275"/><text x="440" y="380">CONCEPTUAL / NOT SIMULATED</text></g>}

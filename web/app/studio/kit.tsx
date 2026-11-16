@@ -1,29 +1,19 @@
 "use client";
 import { useReducedPreference } from "./use-reduced-preference";
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { motion, useMotionValueEvent, useSpring } from "motion/react";
+import { useEffect, useRef, type ReactNode } from "react";
+import { motion } from "motion/react";
 
 export function Module({ number, title, children, className = "" }: { number: string; title: string; children: ReactNode; className?: string }) {
-  const reduced = useReducedPreference();
-  return <motion.section className={`module ${className}`} initial={reduced ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .25, delay: Number(number) * .025 }} aria-label={title}>
+  return <section className={`module ${className}`} aria-label={title}>
     <h2 className="module-title micro"><span>{title}</span><span className="muted">{number}</span></h2>{children}
-  </motion.section>;
-}
-
-function SpringNumber({ value, digits }: { value: number; digits: number }) {
-  const reduced = useReducedPreference();
-  const spring = useSpring(value, { stiffness: 190, damping: 30, restDelta: 10 ** (-digits - 2) });
-  const [display, setDisplay] = useState(value);
-  useMotionValueEvent(spring, "change", setDisplay);
-  useEffect(() => { if (reduced) spring.jump(value); else spring.set(value); }, [value, spring, reduced]);
-  return <span aria-hidden="true" title={`Animated transition to ${value.toFixed(digits)}`}>{(reduced ? value : display).toFixed(digits)}</span>;
+  </section>;
 }
 
 export function Readout({ id, value, previous, digits, pending, children }: { id: string; value?: number; previous?: number; digits: number; pending: boolean; children?: ReactNode }) {
   const shown = value ?? (pending ? previous : undefined);
   return <div className={`readout ${pending ? "is-pending" : ""}`}>
     <span className="sr-only" data-testid={id}>{value === undefined ? "—" : value.toFixed(digits)}</span>
-    <div className="readout-number" aria-hidden="true">{shown === undefined ? "—" : <SpringNumber value={shown} digits={digits}/>}</div>
+    <div className="readout-number" aria-hidden="true">{shown === undefined ? "—" : shown.toFixed(digits)}</div>
     <div className="readout-caption micro">{pending ? "Previous / updating" : "Dimensionless"}{pending && <i className="loading-tick"/>}</div>{children}
   </div>;
 }

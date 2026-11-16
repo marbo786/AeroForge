@@ -1,0 +1,10 @@
+{
+  "origin": "https://aeroforge-9tf.pages.dev",
+  "browser": "157.0.8103.51",
+  "routes": 4,
+  "sameOriginInference": true,
+  "modelAndPreprocessingVerified": true,
+  "headers": "MIME, nosniff, immutable",
+  "missingAssetStatus": 404,
+  "browserErrors": 0
+}
