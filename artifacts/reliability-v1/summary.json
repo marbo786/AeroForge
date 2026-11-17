@@ -1,0 +1,22 @@
+{
+  "model_sha256": "b30fa4b09cbaa62c8616d28dd10fedbdf1029337c1fe4eba0f0fdd1448a46ba8",
+  "coverage_file": "coverage-v1.json",
+  "coverage_sha256": "ef41962d3f4de7df5a65d1e2ca6612dd701bf461b7eccf16387984326d10e976",
+  "training_sha256": "02c9209eb2e644798749a97e6b296244acd608d11db28065778e81de33686076",
+  "training_geometries": 33,
+  "training_rows": 657,
+  "final": {
+    "attempted": 168,
+    "eligible": 165,
+    "geometries": 8,
+    "mae": {
+      "cl": 0.014843172393739223,
+      "cd": 0.0006829147459939122
+    },
+    "cd_mae_by_re": {
+      "100000": 0.001292677,
+      "250000": 0.000530959,
+      "500000": 0.000244174
+    }
+  }
+}

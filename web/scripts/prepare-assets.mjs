@@ -131,3 +131,9 @@ await mkdir(recoveryTarget, { recursive: true });
 for (const name of ["model.json", "preprocessing.json", "golden.json", "selected.onnx"]) {
   await copyFile(new URL(name, recovery), new URL(name, recoveryTarget));
 }
+const reliability = new URL("../../artifacts/reliability-v1/", import.meta.url);
+const evidence = JSON.parse(await readFile(new URL("summary.json", reliability)));
+await copyFile(
+  new URL(evidence.coverage_file, reliability),
+  new URL(evidence.coverage_file, recoveryTarget),
+);

@@ -1,5 +1,7 @@
 # Phase 4 recovery: accepted independent evaluation
 
+The V3.2 reliability audit extends the frozen benchmark with error slices, a geometry-level bootstrap and a training-only coverage indicator. [Reliability diagnostics](v3-2/README.md)
+
 The recovery meets the original engineering objectives on a fresh geometry-disjoint final panel: **CL MAE 0.01484 <= 0.05; CD MAE 0.000683 <= 0.0015**. The final model also passes source/ONNX/browser parity and static production verification. Phase 4 can close; Phase 5 has not started. The original failed experiment and its numerical results are preserved later in this document and in their original artifact directory.
 
 ## Root cause and quality investigation

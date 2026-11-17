@@ -1,5 +1,6 @@
 import { Readout, StatusPill } from "./kit";
 import type { Result } from "./section-design";
+import { coverageLabels, type TrainingCoverage } from "./use-training-coverage";
 
 type TelemetryProps = {
   current: Result | null;
@@ -11,6 +12,7 @@ type TelemetryProps = {
   domainError: string;
   invalid: boolean;
   interpolatedRe: boolean;
+  coverage: TrainingCoverage;
   onClamp: () => void;
   onDetails: () => void;
 };
@@ -25,6 +27,7 @@ export function Telemetry({
   domainError,
   invalid,
   interpolatedRe,
+  coverage,
   onClamp,
   onDetails,
 }: TelemetryProps) {
@@ -81,6 +84,15 @@ export function Telemetry({
         {inBounds && interpolatedRe && (
           <p className="v2-note">Reynolds interpolation between sampled levels.</p>
         )}
+        {(coverage.status === "limited" || coverage.status === "unavailable") && (
+          <p
+            className={coverage.status === "limited" ? "v2-warning" : "v2-note"}
+            role="status"
+            aria-label="Training coverage status"
+          >
+            {coverageLabels[coverage.status]}
+          </p>
+        )}
         <button className="chip micro details-button" onClick={onDetails}>
           Details / evidence
         </button>
@@ -88,6 +100,7 @@ export function Telemetry({
           {domainError ||
             "Finite evidence domain. XFOIL agreement on sampled cases. Continuous-domain and experimental accuracy are not established."}
           {inBounds && interpolatedRe && " Reynolds interpolation between sampled levels."}
+          {inBounds && ` ${coverageLabels[coverage.status]}.`}
         </span>
       </div>
     </aside>

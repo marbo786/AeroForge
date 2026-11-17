@@ -17,6 +17,7 @@ import { Comparison } from "./comparison";
 import { ModelDetails } from "./model-details";
 import { DesignParameters } from "./design-parameters";
 import { Telemetry } from "./telemetry";
+import { useTrainingCoverage } from "./use-training-coverage";
 import "./tokens.css";
 import "./instrument.css";
 import "../inspection/inspection.css";
@@ -131,6 +132,11 @@ export default function Instrument(props: InstrumentProps) {
     chartsVisible && !!saved && !savedUnavailable,
   );
   const inBounds = !invalid && !domainError;
+  const coverage = useTrainingCoverage(
+    design,
+    invalid ? "invalid" : domainError ? "outside" : "nominal",
+    current !== null || !!failure,
+  );
   const pending = inBounds && !current && !failure;
   const domainLabel = invalid ? "Invalid input" : domainError ? "Out of bounds" : "Within bounds";
   const statusText = invalid ? "Check parameters" : domainError ? "Outside model bounds" : status;
@@ -237,6 +243,7 @@ export default function Instrument(props: InstrumentProps) {
       domainError={domainError}
       invalid={invalid}
       interpolatedRe={domain.interpolatedRe}
+      coverage={coverage}
       onClamp={returnToModelRange}
       onDetails={() => openDrawer("Details")}
     />
@@ -448,7 +455,7 @@ export default function Instrument(props: InstrumentProps) {
       </Drawer>
       <Drawer open={drawer === "Details"} onClose={() => setDrawer(null)} title="Details">
         {domainError && !invalid && <p className="chart-message">{domainError}</p>}
-        <ModelDetails />
+        <ModelDetails coverage={coverage} interpolatedRe={inBounds && domain.interpolatedRe} />
       </Drawer>
       <Drawer open={drawer === "Charts"} onClose={() => setDrawer(null)} title="Charts">
         {saved && comparisonPanel}

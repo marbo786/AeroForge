@@ -30,6 +30,10 @@ const lock = JSON.parse(await readFile(new URL("../package-lock.json", import.me
 const runtime = `runtime/${lock.packages["node_modules/onnxruntime-web"].version}`;
 const model = `models/${manifest.version}/${manifest.model_file}`;
 const preprocessing = `models/${manifest.version}/preprocessing.json`;
+const evidence = JSON.parse(
+  await readFile(new URL("../../artifacts/reliability-v1/summary.json", import.meta.url)),
+);
+const coverage = `models/${manifest.version}/${evidence.coverage_file}`;
 const roomLighting = "vehicle/lighting-v1/room.rgba16f.gz";
 for (const name of [
   "index.html",
@@ -41,6 +45,7 @@ for (const name of [
   "_headers",
   model,
   preprocessing,
+  coverage,
   `${runtime}/ort.wasm.min.mjs`,
   `${runtime}/ort-wasm-simd-threaded.mjs`,
   `${runtime}/ort-wasm-simd-threaded.wasm`,
@@ -88,6 +93,13 @@ assert.equal(
   manifest.preprocessing_sha256,
   "Exported preprocessing hash differs from the accepted model",
 );
+const coverageBytes = await readFile(join(root, coverage));
+assert(coverageBytes.byteLength <= 16 * 1024, "Training coverage index exceeds 16 KiB");
+assert.equal(createHash("sha256").update(coverageBytes).digest("hex"), evidence.coverage_sha256);
+const coverageIndex = JSON.parse(coverageBytes);
+assert.equal(evidence.model_sha256, manifest.model_sha256);
+assert.equal(coverageIndex.model_sha256, manifest.model_sha256);
+assert.equal(coverageIndex.training_sha256, evidence.training_sha256);
 const totalBytes = files.reduce((sum, file) => sum + file.bytes, 0);
 console.log(
   JSON.stringify(

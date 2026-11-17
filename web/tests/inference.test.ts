@@ -1,6 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { features } from "../lib/inference/surrogate.ts";
+import { measureCoverage, type CoverageIndex } from "../lib/inference/coverage.ts";
+import index from "../../artifacts/reliability-v1/coverage-v1.json" with { type: "json" };
 import {
   assessDomain,
   clampToModel,
@@ -69,4 +71,29 @@ test("nominal domain, polar eligibility and clamp use the frozen metadata", () =
   });
   assert.deepEqual(clampToModel(beyond), boundary);
   assert.match(domainMessage(assessDomain(beyond).outside), /8°.*500,000/);
+});
+
+test("coverage measures nearest eligible rows with range-normalized geometry and flow", () => {
+  const coverage = index as unknown as CoverageIndex;
+  const design = { m: 0.025, p: 0.41, t: 0.121, alpha: 4, re: 300000 };
+  const nearby = measureCoverage(design, coverage);
+  assert.ok(nearby);
+  assert.equal(nearby?.status, "nearby");
+  assert.ok(Math.abs(nearby.distance - 0.14318668398937756) < 1e-12);
+  assert.deepEqual(measureCoverage(design, coverage), nearby);
+  const sparse = measureCoverage({ m: 0.06, p: 0.6, t: 0.18, alpha: 8, re: 160000 }, coverage);
+  assert.ok(sparse);
+  assert.equal(sparse?.status, "limited");
+  assert.ok(Math.abs(sparse.distance - 0.43359306350533006) < 1e-12);
+  assert.equal(measureCoverage({ ...design, alpha: 8.01 }, coverage), null);
+  assert.equal(measureCoverage({ ...design, re: 500001 }, coverage), null);
+  assert.equal(measureCoverage({ ...design, alpha: 8, re: 500000 }, coverage)?.status, "nearby");
+  assert.equal(measureCoverage(design, { ...coverage, groups: [] }), null);
+
+  const symmetric = { m: 0, p: 0, t: 0.08, alpha: -4, re: 100000 };
+  assert.equal(measureCoverage(symmetric, coverage)?.distance, 0);
+  assert.deepEqual(
+    measureCoverage({ ...symmetric, p: 0.6 }, coverage),
+    measureCoverage(symmetric, coverage),
+  );
 });

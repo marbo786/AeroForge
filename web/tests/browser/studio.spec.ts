@@ -343,6 +343,67 @@ test("a boundary edit clears every live readout and the return action clamps onl
   await expect(page.locator(".chart-line")).toHaveCount(2);
 });
 
+test("reliability separates model bounds, nearby training coverage and the frozen evidence", async ({
+  page,
+}) => {
+  const indexRequests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().endsWith("/coverage-v1.json")) indexRequests.push(request.url());
+  });
+  await page.goto("/studio/?view=airfoil&m=.06&p=.6&t=.18&aoa=8&re=160000");
+  const banner = page.getByRole("status", { name: "Training coverage status" });
+  await expect(banner).toHaveText("Limited nearby training coverage");
+  await expect(page.getByTestId("cl")).toHaveText(/^-?\d+\.\d{4}$/);
+  await expect(page.getByTestId("applicability")).toContainText("interpolation");
+  await page.getByRole("button", { name: "Details / evidence" }).click();
+  const details = page.getByRole("dialog", { name: "Details" });
+  const coverage = details.getByRole("status", { name: "Current design coverage" });
+  await expect(coverage).toHaveText("Limited nearby training coverage");
+  await expect(details.getByText("0.434", { exact: true })).toBeVisible();
+  await expect(details.getByText("0.333", { exact: true })).toBeVisible();
+  await expect(details.getByText(/165 eligible cases \/ 8 unseen geometries/)).toBeVisible();
+  await expect(details.getByText(/0\.01484 \/ 0\.000683/)).toBeVisible();
+  await details.getByRole("button", { name: "Close Details" }).click();
+  await openControls(page);
+  const angle = page.getByLabel("Angle of attack", { exact: true });
+  await angle.fill("8.01");
+  await expect(banner).toHaveCount(0);
+  await expect(page.getByTestId("cl")).toHaveText("—");
+  const sheet = page.getByRole("dialog", { name: "Design parameters" });
+  if (await sheet.isVisible())
+    await sheet.getByRole("button", { name: "Close Design parameters" }).click();
+  await page.getByRole("button", { name: "Details / evidence" }).click();
+  await expect(coverage).toHaveText("Outside model bounds");
+  await expect(details.getByText("0.434", { exact: true })).toHaveCount(0);
+  await details.getByRole("button", { name: "Close Details" }).click();
+  await openControls(page);
+  await page.getByRole("button", { name: "Reset", exact: true }).click();
+  if (await sheet.isVisible())
+    await sheet.getByRole("button", { name: "Close Design parameters" }).click();
+  await page.getByRole("button", { name: "Details / evidence" }).click();
+  await expect(coverage).toHaveText("Nearby training examples");
+  expect(indexRequests).toHaveLength(1);
+});
+
+for (const fault of ["missing", "tampered"]) {
+  test(`model predictions remain usable when the coverage index is ${fault}`, async ({
+    page,
+  }, info) => {
+    test.skip(info.project.name !== "desktop");
+    await page.route("**/coverage-v1.json", (route) =>
+      route.fulfill(fault === "missing" ? { status: 404 } : { json: { threshold: 1 } }),
+    );
+    await page.goto("/studio/?view=airfoil");
+    await expect(page.getByRole("status", { name: "Training coverage status" })).toHaveText(
+      "Training coverage unavailable",
+    );
+    await expect(page.getByRole("status", { name: "Prediction status" })).toHaveText(
+      "Prediction ready",
+    );
+    await expect(page.getByTestId("cl")).toHaveText("0.6972");
+  });
+}
+
 test("loading state withholds telemetry; failed model and corrupt model can be retried", async ({
   page,
 }) => {
