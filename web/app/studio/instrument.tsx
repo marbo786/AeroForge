@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import dynamic from "next/dynamic";
 
 import { assessDomain, domainMessage, type Design } from "../../lib/inference/domain";
 import { Drawer } from "./kit";
@@ -23,7 +24,9 @@ import "./instrument.css";
 import "../inspection/inspection.css";
 import "./workspace.css";
 
-type StudioDrawer = "Details" | "Charts" | "Share design" | "Design parameters";
+const Optimizer = dynamic(() => import("./optimizer"), { ssr: false });
+type StudioDrawer =
+  "Details" | "Charts" | "Share design" | "Design parameters" | "Design optimization";
 type Dock = "section" | "curves" | "comparison";
 const viewLabels: Record<WorkspaceView, string> = {
   studio: "Studio",
@@ -91,6 +94,7 @@ export default function Instrument(props: InstrumentProps) {
     flow: false,
   });
   const [drawer, setDrawer] = useState<StudioDrawer | null>(null);
+  const [optimizerOpened, setOptimizerOpened] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const [saved, setSaved] = useState<SavedDesign | null>(null);
   const [inspectionAngle, setInspectionAngle] = useState<number | null>(null);
@@ -272,6 +276,17 @@ export default function Instrument(props: InstrumentProps) {
           ))}
         </nav>
         <div className="v2-header-actions">
+          <button
+            className="chip micro"
+            aria-haspopup="dialog"
+            disabled={!props.urlReady || invalid}
+            onClick={() => {
+              setOptimizerOpened(true);
+              openDrawer("Design optimization");
+            }}
+          >
+            Optimize
+          </button>
           <a href="/model/" className="chip micro">
             Model evidence
           </a>
@@ -464,6 +479,17 @@ export default function Instrument(props: InstrumentProps) {
       <Drawer open={drawer === "Share design"} onClose={() => setDrawer(null)} title="Share design">
         <ShareDesign url={shareUrl} />
       </Drawer>
+      {optimizerOpened && (
+        <Optimizer
+          open={drawer === "Design optimization"}
+          design={design}
+          onClose={() => setDrawer(null)}
+          onApply={(candidate) => {
+            props.onRestore(candidate);
+            changeMode("studio");
+          }}
+        />
+      )}
       {props.linkError && (
         <aside className="link-notice" aria-label="Invalid design link">
           <p role="alert">

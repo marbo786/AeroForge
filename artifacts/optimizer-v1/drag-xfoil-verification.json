@@ -1,0 +1,212 @@
+{
+  "schema": "aeroforge-xfoil-verification-v1",
+  "shortlist_sha256": "291261a120749a6e95dac9aaa5f9ec69a5abebd19ebb57ba31bbb7ec23fa296b",
+  "config_sha256": "b23455c935964edb05d3c3f8e0f4038e20012d3469d04c30b961037214cd4163",
+  "solver_sha256": "c17342f84ae260c2b11a74cd0e2fb8189a5f8954c6bb7a8467a0f27055c7faea",
+  "model": {
+    "version": "recovery-v1-complete",
+    "sha256": "b30fa4b09cbaa62c8616d28dd10fedbdf1029337c1fe4eba0f0fdd1448a46ba8"
+  },
+  "coverage": {
+    "version": "coverage-v1",
+    "sha256": "ef41962d3f4de7df5a65d1e2ca6612dd701bf461b7eccf16387984326d10e976"
+  },
+  "policy": "optimizer-v1",
+  "settings": {
+    "objective": "drag",
+    "algorithm": "differential-evolution",
+    "re": 350000,
+    "ranges": {
+      "m": [
+        0,
+        0.06
+      ],
+      "p": [
+        0.2,
+        0.6
+      ],
+      "t": [
+        0.08,
+        0.18
+      ],
+      "alpha": [
+        0,
+        8
+      ]
+    },
+    "minimumLift": 0.8,
+    "evaluations": 512,
+    "seed": 42
+  },
+  "results": [
+    {
+      "id": "baseline",
+      "design": {
+        "m": 0.02,
+        "p": 0.4,
+        "t": 0.12,
+        "alpha": 4,
+        "re": 350000
+      },
+      "predicted": {
+        "cl": 0.6993376612663269,
+        "cd": 0.009241257794201374,
+        "ratio": 75.67559274292093
+      },
+      "predicted_score": null,
+      "solver": {
+        "cl": 0.7068,
+        "cd": 0.00927
+      },
+      "solver_score": null,
+      "residual_predicted_minus_xfoil": {
+        "cl": -0.0074623387336730795,
+        "cd": -2.8742205798626408e-05
+      },
+      "status": "accepted",
+      "converged": true,
+      "eligible": true,
+      "reasons": [],
+      "warnings": [],
+      "elapsed_seconds": 0.15313999995123595,
+      "panel_count": 160,
+      "geometry_sha256": "b820f5dcdd424a803c536c62a115f285832e40762f6e88b45c834a0bb0c9bd34",
+      "raw_sha256": {
+        "commands.in": "2f8a458f1604833f8f0cadb1e47d8716e3e2702a065653aed5ca0ac3e0b36eb5",
+        "panels.dat": "53f502959ea294c68903e912ab0a2008685e8ab656879731ebe87c77957776b1",
+        "polar.txt": "6aef8c8e502a1f1637dc52ebb61ccd09e383733057b8f82c6ad490cdbe1e6cf8",
+        "stderr.txt.gz": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+        "stdout.txt.gz": "40ea590be2a28828dbfa57f8c125fa44267e3135ba8ff0547464353be6f14a34"
+      }
+    },
+    {
+      "id": "candidate-1",
+      "design": {
+        "m": 0.03561899904441697,
+        "p": 0.5772426512091636,
+        "t": 0.08242024449018501,
+        "alpha": 2.899871762481676,
+        "re": 350000
+      },
+      "predicted": {
+        "cl": 0.8162412047386169,
+        "cd": 0.007069754414260387,
+        "ratio": 115.45538315902154
+      },
+      "predicted_score": -0.007069754414260387,
+      "solver": {
+        "cl": 0.8149,
+        "cd": 0.00735
+      },
+      "solver_score": -0.00735,
+      "residual_predicted_minus_xfoil": {
+        "cl": 0.0013412047386169856,
+        "cd": -0.00028024558573961234
+      },
+      "status": "accepted",
+      "converged": true,
+      "eligible": true,
+      "reasons": [],
+      "warnings": [],
+      "elapsed_seconds": 0.16113010002300143,
+      "panel_count": 160,
+      "geometry_sha256": "72875f39faedafac0805642f30f0729a0ccca13e8a777ad4ef7dc0a9c947b226",
+      "raw_sha256": {
+        "commands.in": "2f248d695f610d0fa94d551f455616e5dd816afac97c44b6650a21de0a9c81a0",
+        "panels.dat": "47cf3219030538b71269d83e795eaadfe9437d5377ebc35c29065185c3c1c312",
+        "polar.txt": "2f8c4374e97e6b035bbc4ca8cf5b4faf47606791017550f3df48064b4386d3a6",
+        "stderr.txt.gz": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+        "stdout.txt.gz": "cdd889ffb991315201fa09830722744b0051847973fb43b1eae19981fde60d65"
+      },
+      "predicted_rank": 1,
+      "solver_rank": 1,
+      "rank_change": 0
+    },
+    {
+      "id": "candidate-2",
+      "design": {
+        "m": 0.032399959625825134,
+        "p": 0.6,
+        "t": 0.09240299175918554,
+        "alpha": 3.041929026103901,
+        "re": 350000
+      },
+      "predicted": {
+        "cl": 0.804287850856781,
+        "cd": 0.007297285832464695,
+        "ratio": 110.21739716958966
+      },
+      "predicted_score": -0.007297285832464695,
+      "solver": {
+        "cl": 0.7987,
+        "cd": 0.00738
+      },
+      "solver_score": null,
+      "residual_predicted_minus_xfoil": {
+        "cl": 0.00558785085678104,
+        "cd": -8.27141675353053e-05
+      },
+      "status": "accepted",
+      "converged": true,
+      "eligible": true,
+      "reasons": [],
+      "warnings": [],
+      "elapsed_seconds": 0.1846151000354439,
+      "panel_count": 160,
+      "geometry_sha256": "1a135ae86c27fce14fd1ac9273e4a13a40f59879ba15158454e82da1ae78926b",
+      "raw_sha256": {
+        "commands.in": "98631ffad645ac6c9c614fed832b5b67237f3ed5fb667c16ada3692305f93cc1",
+        "panels.dat": "f8acc8eab65bd35b49aa9510497232776423bf70b49649414e120ba3e2472100",
+        "polar.txt": "d367343f8c6318e870584a84b3712899acdd7beb3f8d72c72e8fb3bbe5086762",
+        "stderr.txt.gz": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+        "stdout.txt.gz": "9085b8e74dab3ad87c5b97c0ec2e7077ce6b61544e84fee9290ea08207497255"
+      },
+      "predicted_rank": 2,
+      "solver_rank": null,
+      "rank_change": null
+    },
+    {
+      "id": "candidate-3",
+      "design": {
+        "m": 0.04201139321968355,
+        "p": 0.5648068768251859,
+        "t": 0.08,
+        "alpha": 2.7889980723766925,
+        "re": 350000
+      },
+      "predicted": {
+        "cl": 0.8784124255180359,
+        "cd": 0.0074203950352966785,
+        "ratio": 118.37812156087128
+      },
+      "predicted_score": -0.0074203950352966785,
+      "solver": {
+        "cl": 0.8813,
+        "cd": 0.00774
+      },
+      "solver_score": -0.00774,
+      "residual_predicted_minus_xfoil": {
+        "cl": -0.0028875744819640836,
+        "cd": -0.0003196049647033218
+      },
+      "status": "accepted",
+      "converged": true,
+      "eligible": true,
+      "reasons": [],
+      "warnings": [],
+      "elapsed_seconds": 0.15737450000597164,
+      "panel_count": 160,
+      "geometry_sha256": "759f343fd0ce3467f4538cb7fd1e9cc8d57f2534fd7970958c4dd2552d4b63af",
+      "raw_sha256": {
+        "commands.in": "50270a29fe2a1ce6b130a04fd312f25c2a87e910e3dbadff0d8a555bb7e9eff7",
+        "panels.dat": "fc8c555b9449070d2e702e21473a439cb6c587ba6ce5d7ba50265a0dba981bad",
+        "polar.txt": "ec4a3a01ebab45ee9558ee957e9d51ce77488b184b6dbb1edb871abbffb26f60",
+        "stderr.txt.gz": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+        "stdout.txt.gz": "5c54253c894392b2917c49af2855631482ee4c58b79ab25436420d123fe189ff"
+      },
+      "predicted_rank": 3,
+      "solver_rank": 2,
+      "rank_change": -1
+    }
+  ]
+}

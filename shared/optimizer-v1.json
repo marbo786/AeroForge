@@ -1,0 +1,12 @@
+{
+  "version": "optimizer-v1",
+  "model_sha256": "b30fa4b09cbaa62c8616d28dd10fedbdf1029337c1fe4eba0f0fdd1448a46ba8",
+  "coverage_version": "coverage-v1",
+  "cl": [-0.8, 1.7],
+  "cd": [0.004, 0.065],
+  "default_evaluations": 512,
+  "max_evaluations": 4096,
+  "batch_size": 16,
+  "shortlist_size": 3,
+  "minimum_separation": 0.08
+}

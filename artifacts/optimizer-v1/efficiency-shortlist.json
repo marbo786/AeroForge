@@ -1,0 +1,201 @@
+{
+  "schema": "aeroforge-optimizer-v1",
+  "model": {
+    "version": "recovery-v1-complete",
+    "sha256": "b30fa4b09cbaa62c8616d28dd10fedbdf1029337c1fe4eba0f0fdd1448a46ba8"
+  },
+  "coverage": {
+    "version": "coverage-v1",
+    "sha256": "ef41962d3f4de7df5a65d1e2ca6612dd701bf461b7eccf16387984326d10e976"
+  },
+  "policy": "optimizer-v1",
+  "settings": {
+    "objective": "efficiency",
+    "algorithm": "differential-evolution",
+    "re": 250000,
+    "ranges": {
+      "m": [
+        0,
+        0.06
+      ],
+      "p": [
+        0.2,
+        0.6
+      ],
+      "t": [
+        0.08,
+        0.18
+      ],
+      "alpha": [
+        4,
+        4
+      ]
+    },
+    "minimumLift": 0.7,
+    "evaluations": 512,
+    "seed": 42
+  },
+  "original": {
+    "m": 0.02,
+    "p": 0.4,
+    "t": 0.12,
+    "alpha": 4,
+    "re": 250000
+  },
+  "status": "finished",
+  "result": {
+    "baseline": {
+      "design": {
+        "m": 0.02,
+        "p": 0.4,
+        "t": 0.12,
+        "alpha": 4,
+        "re": 250000
+      },
+      "prediction": {
+        "cl": 0.6972105503082275,
+        "cd": 0.010517535731196404,
+        "ratio": 66.29029538166519
+      },
+      "score": 66.29029538166519
+    },
+    "shortlist": [
+      {
+        "design": {
+          "m": 0.05726426338803729,
+          "p": 0.49201832483511837,
+          "t": 0.08099315992302551,
+          "alpha": 4,
+          "re": 250000
+        },
+        "prediction": {
+          "cl": 1.1256784200668335,
+          "cd": 0.010407684370875359,
+          "ratio": 108.1583933518303
+        },
+        "score": 108.1583933518303,
+        "distance": 0.3332869937635725
+      },
+      {
+        "design": {
+          "m": 0.052384989050756975,
+          "p": 0.511073391842364,
+          "t": 0.08104116710208932,
+          "alpha": 4,
+          "re": 250000
+        },
+        "prediction": {
+          "cl": 1.080884575843811,
+          "cd": 0.010070268996059895,
+          "ratio": 107.33423072081979
+        },
+        "score": 107.33423072081979,
+        "distance": 0.3185533806513719
+      },
+      {
+        "design": {
+          "m": 0.05981977301095971,
+          "p": 0.4847658501831607,
+          "t": 0.08775026248467864,
+          "alpha": 4,
+          "re": 250000
+        },
+        "prediction": {
+          "cl": 1.1579675674438477,
+          "cd": 0.010843407362699509,
+          "ratio": 106.79000877779133
+        },
+        "score": 106.79000877779133,
+        "distance": 0.31306199491107894
+      }
+    ],
+    "history": [
+      {
+        "evaluated": 1,
+        "score": 35.09864914381682
+      },
+      {
+        "evaluated": 2,
+        "score": 59.305673666896446
+      },
+      {
+        "evaluated": 3,
+        "score": 88.80615387298973
+      },
+      {
+        "evaluated": 5,
+        "score": 98.30130354698198
+      },
+      {
+        "evaluated": 12,
+        "score": 99.27044936391063
+      },
+      {
+        "evaluated": 38,
+        "score": 103.0064903465116
+      },
+      {
+        "evaluated": 39,
+        "score": 103.02668120130204
+      },
+      {
+        "evaluated": 128,
+        "score": 105.59731624009177
+      },
+      {
+        "evaluated": 129,
+        "score": 106.3089850195202
+      },
+      {
+        "evaluated": 147,
+        "score": 106.44108179759249
+      },
+      {
+        "evaluated": 176,
+        "score": 107.14253980268764
+      },
+      {
+        "evaluated": 235,
+        "score": 107.31399402405981
+      },
+      {
+        "evaluated": 255,
+        "score": 107.75740242080279
+      },
+      {
+        "evaluated": 302,
+        "score": 107.78668967325761
+      },
+      {
+        "evaluated": 359,
+        "score": 108.0223257573122
+      },
+      {
+        "evaluated": 368,
+        "score": 108.03932231226341
+      },
+      {
+        "evaluated": 454,
+        "score": 108.04589026373046
+      },
+      {
+        "evaluated": 482,
+        "score": 108.0705046765573
+      },
+      {
+        "evaluated": 483,
+        "score": 108.1583933518303
+      }
+    ],
+    "counts": {
+      "attempted": 599,
+      "duplicate": 35,
+      "sparse": 52,
+      "submitted": 512,
+      "completed": 512,
+      "rejected": 0,
+      "feasible": 512,
+      "baselineRows": 1
+    }
+  }
+}

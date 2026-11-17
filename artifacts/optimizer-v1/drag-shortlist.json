@@ -1,0 +1,153 @@
+{
+  "schema": "aeroforge-optimizer-v1",
+  "model": {
+    "version": "recovery-v1-complete",
+    "sha256": "b30fa4b09cbaa62c8616d28dd10fedbdf1029337c1fe4eba0f0fdd1448a46ba8"
+  },
+  "coverage": {
+    "version": "coverage-v1",
+    "sha256": "ef41962d3f4de7df5a65d1e2ca6612dd701bf461b7eccf16387984326d10e976"
+  },
+  "policy": "optimizer-v1",
+  "settings": {
+    "objective": "drag",
+    "algorithm": "differential-evolution",
+    "re": 350000,
+    "ranges": {
+      "m": [
+        0,
+        0.06
+      ],
+      "p": [
+        0.2,
+        0.6
+      ],
+      "t": [
+        0.08,
+        0.18
+      ],
+      "alpha": [
+        0,
+        8
+      ]
+    },
+    "minimumLift": 0.8,
+    "evaluations": 512,
+    "seed": 42
+  },
+  "original": {
+    "m": 0.02,
+    "p": 0.4,
+    "t": 0.12,
+    "alpha": 4,
+    "re": 250000
+  },
+  "status": "finished",
+  "result": {
+    "baseline": {
+      "design": {
+        "m": 0.02,
+        "p": 0.4,
+        "t": 0.12,
+        "alpha": 4,
+        "re": 350000
+      },
+      "prediction": {
+        "cl": 0.6993376612663269,
+        "cd": 0.009241257794201374,
+        "ratio": 75.67559274292093
+      },
+      "score": null
+    },
+    "shortlist": [
+      {
+        "design": {
+          "m": 0.03561899904441697,
+          "p": 0.5772426512091636,
+          "t": 0.08242024449018501,
+          "alpha": 2.899871762481676,
+          "re": 350000
+        },
+        "prediction": {
+          "cl": 0.8162412047386169,
+          "cd": 0.007069754414260387,
+          "ratio": 115.45538315902154
+        },
+        "score": -0.007069754414260387,
+        "distance": 0.29799894347972056
+      },
+      {
+        "design": {
+          "m": 0.032399959625825134,
+          "p": 0.6,
+          "t": 0.09240299175918554,
+          "alpha": 3.041929026103901,
+          "re": 350000
+        },
+        "prediction": {
+          "cl": 0.804287850856781,
+          "cd": 0.007297285832464695,
+          "ratio": 110.21739716958966
+        },
+        "score": -0.007297285832464695,
+        "distance": 0.26813667206752795
+      },
+      {
+        "design": {
+          "m": 0.04201139321968355,
+          "p": 0.5648068768251859,
+          "t": 0.08,
+          "alpha": 2.7889980723766925,
+          "re": 350000
+        },
+        "prediction": {
+          "cl": 0.8784124255180359,
+          "cd": 0.0074203950352966785,
+          "ratio": 118.37812156087128
+        },
+        "score": -0.0074203950352966785,
+        "distance": 0.311279172527876
+      }
+    ],
+    "history": [
+      {
+        "evaluated": 3,
+        "score": -0.013250898569822311
+      },
+      {
+        "evaluated": 4,
+        "score": -0.010540655814111233
+      },
+      {
+        "evaluated": 5,
+        "score": -0.00812798086553812
+      },
+      {
+        "evaluated": 162,
+        "score": -0.00790942832827568
+      },
+      {
+        "evaluated": 249,
+        "score": -0.007272157818078995
+      },
+      {
+        "evaluated": 299,
+        "score": -0.007248028181493282
+      },
+      {
+        "evaluated": 471,
+        "score": -0.007069754414260387
+      }
+    ],
+    "counts": {
+      "attempted": 606,
+      "duplicate": 15,
+      "sparse": 79,
+      "submitted": 512,
+      "completed": 512,
+      "rejected": 181,
+      "feasible": 331,
+      "baselineRows": 1
+    }
+  }
+}

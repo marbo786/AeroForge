@@ -4,6 +4,8 @@ artifacts/pilot-surrogate-v1/** -text
 data/recovery-v1/** -text -whitespace
 artifacts/recovery*/** -text
 artifacts/reliability-v1/*.json text eol=lf
+# The XFOIL replay records the exact bytes of each browser export.
+artifacts/optimizer-v1/*-shortlist.json text eol=lf
 configs/recovery-v1/plan.json -text whitespace=cr-at-eol
 artifacts/recovery-diagnosis/*.csv whitespace=cr-at-eol
 

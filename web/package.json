@@ -14,7 +14,7 @@
     "build": "npm run assets && next build --webpack",
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint app lib tests scripts *.ts *.mjs",
-    "test": "node --experimental-strip-types --test tests/assets.test.mjs tests/geometry.test.ts tests/inference.test.ts",
+    "test": "node --experimental-strip-types --test tests/assets.test.mjs tests/geometry.test.ts tests/inference.test.ts tests/optimization.test.ts",
     "serve": "node scripts/serve-static.mjs",
     "smoke": "playwright test",
     "check:pages": "node scripts/check-pages.mjs",

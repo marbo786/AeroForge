@@ -1,0 +1,189 @@
+{
+  "schema": "aeroforge-optimizer-v1",
+  "model": {
+    "version": "recovery-v1-complete",
+    "sha256": "b30fa4b09cbaa62c8616d28dd10fedbdf1029337c1fe4eba0f0fdd1448a46ba8"
+  },
+  "coverage": {
+    "version": "coverage-v1",
+    "sha256": "ef41962d3f4de7df5a65d1e2ca6612dd701bf461b7eccf16387984326d10e976"
+  },
+  "policy": "optimizer-v1",
+  "settings": {
+    "objective": "lift",
+    "algorithm": "differential-evolution",
+    "re": 100000,
+    "ranges": {
+      "m": [
+        0,
+        0.06
+      ],
+      "p": [
+        0.2,
+        0.6
+      ],
+      "t": [
+        0.12,
+        0.16
+      ],
+      "alpha": [
+        0,
+        8
+      ]
+    },
+    "minimumLift": 0.8,
+    "evaluations": 512,
+    "seed": 42
+  },
+  "original": {
+    "m": 0.02,
+    "p": 0.4,
+    "t": 0.12,
+    "alpha": 4,
+    "re": 250000
+  },
+  "status": "finished",
+  "result": {
+    "baseline": {
+      "design": {
+        "m": 0.02,
+        "p": 0.4,
+        "t": 0.12,
+        "alpha": 4,
+        "re": 100000
+      },
+      "prediction": {
+        "cl": 0.7112290263175964,
+        "cd": 0.01617998071014881,
+        "ratio": 43.957346986914615
+      },
+      "score": 0.7112290263175964
+    },
+    "shortlist": [
+      {
+        "design": {
+          "m": 0.06,
+          "p": 0.35650077284938714,
+          "t": 0.12,
+          "alpha": 8,
+          "re": 100000
+        },
+        "prediction": {
+          "cl": 1.4543484449386597,
+          "cd": 0.035017117857933044,
+          "ratio": 41.53249992872216
+        },
+        "score": 1.4543484449386597,
+        "distance": 0.10874806787653223
+      },
+      {
+        "design": {
+          "m": 0.06,
+          "p": 0.39107142430533326,
+          "t": 0.12007612674356186,
+          "alpha": 8,
+          "re": 100000
+        },
+        "prediction": {
+          "cl": 1.4501750469207764,
+          "cd": 0.03136172518134117,
+          "ratio": 46.240282973449624
+        },
+        "score": 1.4501750469207764,
+        "distance": 0.022334416887502265
+      },
+      {
+        "design": {
+          "m": 0.06,
+          "p": 0.3205748144944912,
+          "t": 0.12,
+          "alpha": 8,
+          "re": 100000
+        },
+        "prediction": {
+          "cl": 1.449262022972107,
+          "cd": 0.03849182277917862,
+          "ratio": 37.65116636035371
+        },
+        "score": 1.449262022972107,
+        "distance": 0.19856296376377205
+      }
+    ],
+    "history": [
+      {
+        "evaluated": 1,
+        "score": 0.7207497358322144
+      },
+      {
+        "evaluated": 3,
+        "score": 1.3067362308502197
+      },
+      {
+        "evaluated": 26,
+        "score": 1.3940402269363403
+      },
+      {
+        "evaluated": 60,
+        "score": 1.4366905689239502
+      },
+      {
+        "evaluated": 141,
+        "score": 1.4449678659439087
+      },
+      {
+        "evaluated": 186,
+        "score": 1.4485186338424683
+      },
+      {
+        "evaluated": 215,
+        "score": 1.44911789894104
+      },
+      {
+        "evaluated": 250,
+        "score": 1.4512804746627808
+      },
+      {
+        "evaluated": 309,
+        "score": 1.452249526977539
+      },
+      {
+        "evaluated": 319,
+        "score": 1.454035758972168
+      },
+      {
+        "evaluated": 342,
+        "score": 1.454198956489563
+      },
+      {
+        "evaluated": 359,
+        "score": 1.4543099403381348
+      },
+      {
+        "evaluated": 437,
+        "score": 1.4543377161026
+      },
+      {
+        "evaluated": 466,
+        "score": 1.4543416500091553
+      },
+      {
+        "evaluated": 473,
+        "score": 1.4543483257293701
+      },
+      {
+        "evaluated": 487,
+        "score": 1.4543484449386597
+      }
+    ],
+    "counts": {
+      "attempted": 571,
+      "duplicate": 57,
+      "sparse": 2,
+      "submitted": 512,
+      "completed": 512,
+      "rejected": 0,
+      "feasible": 512,
+      "baselineRows": 1
+    }
+  }
+}

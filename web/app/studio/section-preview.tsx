@@ -35,7 +35,11 @@ export function SectionPreview({
     <figure className="v2-section-preview">
       <svg
         role="img"
-        aria-label="Representative NACA section"
+        aria-label={
+          saved
+            ? "Representative NACA section with comparison outline"
+            : "Representative NACA section"
+        }
         viewBox={wing ? "-.06 -.17 1.12 .36" : "-.06 -.24 1.12 .48"}
       >
         <g transform={`rotate(${design.alpha} .25 0)`}>
@@ -47,12 +51,12 @@ export function SectionPreview({
             className="v2-saved-outline"
             transform={`rotate(${saved.alpha} .25 0)`}
             points={overlay}
-            aria-label="Saved section outline"
           />
         )}
       </svg>
       <figcaption>
-        {nameOf(design)} · {design.alpha}° · Re {design.re.toLocaleString("en-US")}
+        {nameOf(design)} · {design.alpha.toLocaleString("en-US", { maximumFractionDigits: 3 })}° ·
+        Re {design.re.toLocaleString("en-US")}
         {invalid ? " · Last valid geometry" : ""}
       </figcaption>
     </figure>

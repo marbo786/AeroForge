@@ -34,6 +34,11 @@ const evidence = JSON.parse(
   await readFile(new URL("../../artifacts/reliability-v1/summary.json", import.meta.url)),
 );
 const coverage = `models/${manifest.version}/${evidence.coverage_file}`;
+const searchWorkers = files.filter((entry) =>
+  /^_next\/static\/chunks\/optimizer-worker\.[^/]+\.js$/.test(entry.name),
+);
+assert.equal(searchWorkers.length, 1, "Expected one standalone optimizer worker");
+assert(searchWorkers[0].bytes <= 16 * 1024, "Optimizer worker exceeds 16 KiB");
 const roomLighting = "vehicle/lighting-v1/room.rgba16f.gz";
 for (const name of [
   "index.html",

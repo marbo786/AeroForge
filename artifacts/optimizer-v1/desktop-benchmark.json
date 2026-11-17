@@ -1,0 +1,928 @@
+{
+  "browser": "157.0.8103.51",
+  "profile": "desktop",
+  "initialRequests": 23,
+  "modelRequests": 1,
+  "wasmRequests": 1,
+  "optimizerWorkers": 18,
+  "rows": [
+    {
+      "objective": "efficiency",
+      "seed": 42,
+      "algorithm": "differential-evolution",
+      "timing": {
+        "elapsed": 172.5,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 599,
+        "duplicate": 35,
+        "sparse": 52,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 0,
+        "feasible": 512,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 250000
+        },
+        "prediction": {
+          "cl": 0.6972105503082275,
+          "cd": 0.010517535731196404,
+          "ratio": 66.29029538166519
+        },
+        "score": 66.29029538166519
+      },
+      "best": {
+        "design": {
+          "m": 0.05726426338803729,
+          "p": 0.49201832483511837,
+          "t": 0.08099315992302551,
+          "alpha": 4,
+          "re": 250000
+        },
+        "prediction": {
+          "cl": 1.1256784200668335,
+          "cd": 0.010407684370875359,
+          "ratio": 108.1583933518303
+        },
+        "score": 108.1583933518303,
+        "distance": 0.3332869937635725
+      }
+    },
+    {
+      "objective": "efficiency",
+      "seed": 42,
+      "algorithm": "random",
+      "timing": {
+        "elapsed": 120.39999997615814,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 520,
+        "duplicate": 0,
+        "sparse": 8,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 0,
+        "feasible": 512,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 250000
+        },
+        "prediction": {
+          "cl": 0.6972105503082275,
+          "cd": 0.010517535731196404,
+          "ratio": 66.29029538166519
+        },
+        "score": 66.29029538166519
+      },
+      "best": {
+        "design": {
+          "m": 0.0476142867654562,
+          "p": 0.513916399050504,
+          "t": 0.09959251081570983,
+          "alpha": 4,
+          "re": 250000
+        },
+        "prediction": {
+          "cl": 1.048097014427185,
+          "cd": 0.010030247271060944,
+          "ratio": 104.49363670735539
+        },
+        "score": 104.49363670735539,
+        "distance": 0.24987265253915714
+      }
+    },
+    {
+      "objective": "efficiency",
+      "seed": 137,
+      "algorithm": "differential-evolution",
+      "timing": {
+        "elapsed": 133.10000002384186,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 610,
+        "duplicate": 46,
+        "sparse": 52,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 0,
+        "feasible": 512,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 250000
+        },
+        "prediction": {
+          "cl": 0.6972105503082275,
+          "cd": 0.010517535731196404,
+          "ratio": 66.29029538166519
+        },
+        "score": 66.29029538166519
+      },
+      "best": {
+        "design": {
+          "m": 0.05769888085539507,
+          "p": 0.4957479299850442,
+          "t": 0.08,
+          "alpha": 4,
+          "re": 250000
+        },
+        "prediction": {
+          "cl": 1.1315950155258179,
+          "cd": 0.01047045923769474,
+          "ratio": 108.07501274174855
+        },
+        "score": 108.07501274174855,
+        "distance": 0.3307551404747679
+      }
+    },
+    {
+      "objective": "efficiency",
+      "seed": 137,
+      "algorithm": "random",
+      "timing": {
+        "elapsed": 90.10000002384186,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 526,
+        "duplicate": 0,
+        "sparse": 14,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 0,
+        "feasible": 512,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 250000
+        },
+        "prediction": {
+          "cl": 0.6972105503082275,
+          "cd": 0.010517535731196404,
+          "ratio": 66.29029538166519
+        },
+        "score": 66.29029538166519
+      },
+      "best": {
+        "design": {
+          "m": 0.05237055364530533,
+          "p": 0.47821922684088347,
+          "t": 0.08469870059750974,
+          "alpha": 4,
+          "re": 250000
+        },
+        "prediction": {
+          "cl": 1.065946340560913,
+          "cd": 0.009969879873096943,
+          "ratio": 106.91666841817205
+        },
+        "score": 106.91666841817205,
+        "distance": 0.3227390930628564
+      }
+    },
+    {
+      "objective": "efficiency",
+      "seed": 2026,
+      "algorithm": "differential-evolution",
+      "timing": {
+        "elapsed": 123.40000003576279,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 654,
+        "duplicate": 74,
+        "sparse": 68,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 0,
+        "feasible": 512,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 250000
+        },
+        "prediction": {
+          "cl": 0.6972105503082275,
+          "cd": 0.010517535731196404,
+          "ratio": 66.29029538166519
+        },
+        "score": 66.29029538166519
+      },
+      "best": {
+        "design": {
+          "m": 0.05728833393215497,
+          "p": 0.4950113551258033,
+          "t": 0.08,
+          "alpha": 4,
+          "re": 250000
+        },
+        "prediction": {
+          "cl": 1.1265201568603516,
+          "cd": 0.010415558703243732,
+          "ratio": 108.15743916929947
+        },
+        "score": 108.15743916929947,
+        "distance": 0.3330673867399502
+      }
+    },
+    {
+      "objective": "efficiency",
+      "seed": 2026,
+      "algorithm": "random",
+      "timing": {
+        "elapsed": 82.30000001192093,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 524,
+        "duplicate": 0,
+        "sparse": 12,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 0,
+        "feasible": 512,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 250000
+        },
+        "prediction": {
+          "cl": 0.6972105503082275,
+          "cd": 0.010517535731196404,
+          "ratio": 66.29029538166519
+        },
+        "score": 66.29029538166519
+      },
+      "best": {
+        "design": {
+          "m": 0.05104815391357988,
+          "p": 0.5202096491120756,
+          "t": 0.08298087305855006,
+          "alpha": 4,
+          "re": 250000
+        },
+        "prediction": {
+          "cl": 1.0727219581604004,
+          "cd": 0.010056180879473686,
+          "ratio": 106.67289809295313
+        },
+        "score": 106.67289809295313,
+        "distance": 0.30168786571649675
+      }
+    },
+    {
+      "objective": "drag",
+      "seed": 42,
+      "algorithm": "differential-evolution",
+      "timing": {
+        "elapsed": 99.30000001192093,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 606,
+        "duplicate": 15,
+        "sparse": 79,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 181,
+        "feasible": 331,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 350000
+        },
+        "prediction": {
+          "cl": 0.6993376612663269,
+          "cd": 0.009241257794201374,
+          "ratio": 75.67559274292093
+        },
+        "score": null
+      },
+      "best": {
+        "design": {
+          "m": 0.03561899904441697,
+          "p": 0.5772426512091636,
+          "t": 0.08242024449018501,
+          "alpha": 2.899871762481676,
+          "re": 350000
+        },
+        "prediction": {
+          "cl": 0.8162412047386169,
+          "cd": 0.007069754414260387,
+          "ratio": 115.45538315902154
+        },
+        "score": -0.007069754414260387,
+        "distance": 0.29799894347972056
+      }
+    },
+    {
+      "objective": "drag",
+      "seed": 42,
+      "algorithm": "random",
+      "timing": {
+        "elapsed": 89.60000002384186,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 616,
+        "duplicate": 0,
+        "sparse": 104,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 289,
+        "feasible": 223,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 350000
+        },
+        "prediction": {
+          "cl": 0.6993376612663269,
+          "cd": 0.009241257794201374,
+          "ratio": 75.67559274292093
+        },
+        "score": null
+      },
+      "best": {
+        "design": {
+          "m": 0.03366008298005908,
+          "p": 0.5906584898941218,
+          "t": 0.08221328677143902,
+          "alpha": 3.1741103269159794,
+          "re": 350000
+        },
+        "prediction": {
+          "cl": 0.820401132106781,
+          "cd": 0.007135430350899696,
+          "ratio": 114.9757045842845
+        },
+        "score": -0.007135430350899696,
+        "distance": 0.3029701816774737
+      }
+    },
+    {
+      "objective": "drag",
+      "seed": 137,
+      "algorithm": "differential-evolution",
+      "timing": {
+        "elapsed": 91.09999996423721,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 604,
+        "duplicate": 7,
+        "sparse": 85,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 207,
+        "feasible": 305,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 350000
+        },
+        "prediction": {
+          "cl": 0.6993376612663269,
+          "cd": 0.009241257794201374,
+          "ratio": 75.67559274292093
+        },
+        "score": null
+      },
+      "best": {
+        "design": {
+          "m": 0.035648818782244136,
+          "p": 0.5436360516881943,
+          "t": 0.08649030288757176,
+          "alpha": 2.997184518480389,
+          "re": 350000
+        },
+        "prediction": {
+          "cl": 0.8159778118133545,
+          "cd": 0.007092427462339401,
+          "ratio": 115.04915857739465
+        },
+        "score": -0.007092427462339401,
+        "distance": 0.3065586158458589
+      }
+    },
+    {
+      "objective": "drag",
+      "seed": 137,
+      "algorithm": "random",
+      "timing": {
+        "elapsed": 90.5,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 639,
+        "duplicate": 0,
+        "sparse": 127,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 317,
+        "feasible": 195,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 350000
+        },
+        "prediction": {
+          "cl": 0.6993376612663269,
+          "cd": 0.009241257794201374,
+          "ratio": 75.67559274292093
+        },
+        "score": null
+      },
+      "best": {
+        "design": {
+          "m": 0.038178155198693275,
+          "p": 0.5533071945421397,
+          "t": 0.09852811318822205,
+          "alpha": 2.7947120536118746,
+          "re": 350000
+        },
+        "prediction": {
+          "cl": 0.8372101783752441,
+          "cd": 0.007437192834913731,
+          "ratio": 112.57072351882289
+        },
+        "score": -0.007437192834913731,
+        "distance": 0.25071451930637323
+      }
+    },
+    {
+      "objective": "drag",
+      "seed": 2026,
+      "algorithm": "differential-evolution",
+      "timing": {
+        "elapsed": 157.89999997615814,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 620,
+        "duplicate": 11,
+        "sparse": 97,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 152,
+        "feasible": 360,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 350000
+        },
+        "prediction": {
+          "cl": 0.6993376612663269,
+          "cd": 0.009241257794201374,
+          "ratio": 75.67559274292093
+        },
+        "score": null
+      },
+      "best": {
+        "design": {
+          "m": 0.038637047131377,
+          "p": 0.5175357933346343,
+          "t": 0.08511145000027871,
+          "alpha": 3.567608562747194,
+          "re": 350000
+        },
+        "prediction": {
+          "cl": 0.8919956684112549,
+          "cd": 0.007601557299494743,
+          "ratio": 117.34380644220673
+        },
+        "score": -0.007601557299494743,
+        "distance": 0.3319492623331931
+      }
+    },
+    {
+      "objective": "drag",
+      "seed": 2026,
+      "algorithm": "random",
+      "timing": {
+        "elapsed": 117.29999995231628,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 637,
+        "duplicate": 0,
+        "sparse": 125,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 287,
+        "feasible": 225,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 350000
+        },
+        "prediction": {
+          "cl": 0.6993376612663269,
+          "cd": 0.009241257794201374,
+          "ratio": 75.67559274292093
+        },
+        "score": null
+      },
+      "best": {
+        "design": {
+          "m": 0.045440493151545525,
+          "p": 0.42185148047283294,
+          "t": 0.08033436610829085,
+          "alpha": 3.303094122558832,
+          "re": 350000
+        },
+        "prediction": {
+          "cl": 0.8902143836021423,
+          "cd": 0.007867510430514812,
+          "ratio": 113.15070904124508
+        },
+        "score": -0.007867510430514812,
+        "distance": 0.3113833796915796
+      }
+    },
+    {
+      "objective": "lift",
+      "seed": 42,
+      "algorithm": "differential-evolution",
+      "timing": {
+        "elapsed": 89.59999996423721,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 571,
+        "duplicate": 57,
+        "sparse": 2,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 0,
+        "feasible": 512,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 100000
+        },
+        "prediction": {
+          "cl": 0.7112290263175964,
+          "cd": 0.01617998071014881,
+          "ratio": 43.957346986914615
+        },
+        "score": 0.7112290263175964
+      },
+      "best": {
+        "design": {
+          "m": 0.06,
+          "p": 0.35650077284938714,
+          "t": 0.12,
+          "alpha": 8,
+          "re": 100000
+        },
+        "prediction": {
+          "cl": 1.4543484449386597,
+          "cd": 0.035017117857933044,
+          "ratio": 41.53249992872216
+        },
+        "score": 1.4543484449386597,
+        "distance": 0.10874806787653223
+      }
+    },
+    {
+      "objective": "lift",
+      "seed": 42,
+      "algorithm": "random",
+      "timing": {
+        "elapsed": 82.5,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 538,
+        "duplicate": 0,
+        "sparse": 26,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 0,
+        "feasible": 512,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 100000
+        },
+        "prediction": {
+          "cl": 0.7112290263175964,
+          "cd": 0.01617998071014881,
+          "ratio": 43.957346986914615
+        },
+        "score": 0.7112290263175964
+      },
+      "best": {
+        "design": {
+          "m": 0.052659076983109114,
+          "p": 0.31445797393098474,
+          "t": 0.1315073638781905,
+          "alpha": 7.970960913226008,
+          "re": 100000
+        },
+        "prediction": {
+          "cl": 1.3858145475387573,
+          "cd": 0.036261387169361115,
+          "ratio": 38.21736165431903
+        },
+        "score": 1.3858145475387573,
+        "distance": 0.27193932377094066
+      }
+    },
+    {
+      "objective": "lift",
+      "seed": 137,
+      "algorithm": "differential-evolution",
+      "timing": {
+        "elapsed": 86.69999998807907,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 636,
+        "duplicate": 119,
+        "sparse": 5,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 0,
+        "feasible": 512,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 100000
+        },
+        "prediction": {
+          "cl": 0.7112290263175964,
+          "cd": 0.01617998071014881,
+          "ratio": 43.957346986914615
+        },
+        "score": 0.7112290263175964
+      },
+      "best": {
+        "design": {
+          "m": 0.06,
+          "p": 0.35713265776290537,
+          "t": 0.12,
+          "alpha": 8,
+          "re": 100000
+        },
+        "prediction": {
+          "cl": 1.454350233078003,
+          "cd": 0.034948669373989105,
+          "ratio": 41.61389429494039
+        },
+        "score": 1.454350233078003,
+        "distance": 0.10716835559273664
+      }
+    },
+    {
+      "objective": "lift",
+      "seed": 137,
+      "algorithm": "random",
+      "timing": {
+        "elapsed": 71.19999998807907,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 540,
+        "duplicate": 0,
+        "sparse": 28,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 0,
+        "feasible": 512,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 100000
+        },
+        "prediction": {
+          "cl": 0.7112290263175964,
+          "cd": 0.01617998071014881,
+          "ratio": 43.957346986914615
+        },
+        "score": 0.7112290263175964
+      },
+      "best": {
+        "design": {
+          "m": 0.05714986512903124,
+          "p": 0.36499185087159275,
+          "t": 0.1308454829081893,
+          "alpha": 7.9841193072497845,
+          "re": 100000
+        },
+        "prediction": {
+          "cl": 1.412630319595337,
+          "cd": 0.035184744745492935,
+          "ratio": 40.14894323700589
+        },
+        "score": 1.412630319595337,
+        "distance": 0.14724293030420965
+      }
+    },
+    {
+      "objective": "lift",
+      "seed": 2026,
+      "algorithm": "differential-evolution",
+      "timing": {
+        "elapsed": 108.80000001192093,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 659,
+        "duplicate": 127,
+        "sparse": 20,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 0,
+        "feasible": 512,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 100000
+        },
+        "prediction": {
+          "cl": 0.7112290263175964,
+          "cd": 0.01617998071014881,
+          "ratio": 43.957346986914615
+        },
+        "score": 0.7112290263175964
+      },
+      "best": {
+        "design": {
+          "m": 0.06,
+          "p": 0.3570572530993248,
+          "t": 0.12,
+          "alpha": 8,
+          "re": 100000
+        },
+        "prediction": {
+          "cl": 1.4543501138687134,
+          "cd": 0.03495684266090393,
+          "ratio": 41.604161107355175
+        },
+        "score": 1.4543501138687134,
+        "distance": 0.1073568672516881
+      }
+    },
+    {
+      "objective": "lift",
+      "seed": 2026,
+      "algorithm": "random",
+      "timing": {
+        "elapsed": 85.5,
+        "tasks": []
+      },
+      "status": "Search complete",
+      "counts": {
+        "attempted": 534,
+        "duplicate": 0,
+        "sparse": 22,
+        "submitted": 512,
+        "completed": 512,
+        "rejected": 0,
+        "feasible": 512,
+        "baselineRows": 1
+      },
+      "baseline": {
+        "design": {
+          "m": 0.02,
+          "p": 0.4,
+          "t": 0.12,
+          "alpha": 4,
+          "re": 100000
+        },
+        "prediction": {
+          "cl": 0.7112290263175964,
+          "cd": 0.01617998071014881,
+          "ratio": 43.957346986914615
+        },
+        "score": 0.7112290263175964
+      },
+      "best": {
+        "design": {
+          "m": 0.0594611897226423,
+          "p": 0.42435425277799366,
+          "t": 0.13238372749648988,
+          "alpha": 7.696138896048069,
+          "re": 100000
+        },
+        "prediction": {
+          "cl": 1.3823137283325195,
+          "cd": 0.031173404306173325,
+          "ratio": 44.34272608650501
+        },
+        "score": 1.3823137283325195,
+        "distance": 0.1405865064158974
+      }
+    }
+  ]
+}

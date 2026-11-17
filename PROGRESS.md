@@ -7,7 +7,17 @@ Last updated 2026-11-17 (Asia/Karachi).
 - The v2 Studio is live on Cloudflare Pages. The local `main` and cached `origin/main` both pointed to Cleanup Phase F at `28741d8` when `codex/aeroforge-v3` branched. The exact Pages deployment identity remains pending. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md)
 - The accepted ONNX model predicts isolated 2D sections. The AF–02 car and front-wing motion are illustrative. [Model evidence](docs/ML.md) · [Phase D demo](docs/media/aeroforge-demo.gif)
 
-## Latest work · Phase V3.2
+## Latest work · Phase V3.3
+
+- Added a cancellable worker-based optimizer for CL/CD, minimum drag at required lift, and maximum lift. It screens the model domain and training coverage, displays a ranked shortlist and objective history, and preserves the original section for comparison and revert. The verifier replays exported shortlists offline with the pinned XFOIL 6.99 setup. [Optimizer documentation](docs/v3-3/README.md)
+- The 36 benchmark searches each completed 512 candidate evaluations, with one ONNX and one WASM download per profile. Differential evolution improved the surrogate objective in all nine matched desktop case/seed pairs. Chrome click-to-completion p95 was 172.5 ms desktop and 148.6 ms with phone emulation. Native ONNX replay of all 36 best designs agreed with browser CL and CD within `1.2e-7` and `7.5e-9`, respectively. Physical phone timing and WebKit remain unverified.
+- All 12 bounded XFOIL replays gave eligible polars. XFOIL changed the top-ranked candidate for efficiency and lift. One minimum-drag candidate fell below the requested CL of 0.8, returning 0.7987 against a prediction of 0.80429. Review constraint margins and broaden independent shortlist verification before general availability. The raw replay files are local under `web/.wrangler/v33-audit/xfoil/`. [Solver comparison and data](docs/v3-3/README.md#bounded-xfoil-replay)
+- Formatting, lint, TypeScript, 28 Node tests, 72 Playwright tests and 109 Python tests passed. Playwright skipped 17 profile-specific cases. The static export passed with 113 files and 21,867,739 bytes, including one 5,839-byte optimizer worker. The two frozen coefficient artifact hashes matched.
+- Reviewed the optimizer settings and result at 1920 × 1080, 1440 × 900, 768 × 1024 and 390 × 844. The final axe 4.14.0 audit found zero WCAG A/AA rule violations across eight states, and none had horizontal page or drawer overflow. Captures and reports are local under `web/.wrangler/v33-audit/`.
+- Compared matched static exports in Chrome 157. Initial 2D JavaScript was 205.3 KiB gzip versus 204.5 KiB in V3.2, with zero vehicle requests. Desktop deferred JavaScript stayed at 264.9 KiB gzip. V3.3 cold and warm edit-to-result medians were 529.7 and 97.4 ms over five fresh contexts and 30 warm edits, versus 541.5 and 97.2 ms for V3.2. Warm chart p95 was 98.5 ms. Desktop orbit p95 was 17.0 ms over 294 draw intervals, with zero draws at rest.
+- All five Lighthouse 13.6.0 runs per profile scored 100 desktop and 92 mobile for performance, and 100 for accessibility, best practices and SEO. Desktop blocking time ranged from 0 to 27.5 ms. Mobile LCP was 3.321–3.340 s and layout shift stayed below 0.007.
+
+## Phase V3.2
 
 - Replayed the accepted ONNX graph read-only against 165 eligible frozen XFOIL points. Reproduced both published MAEs within `1e-6` and published residual diagnostics and plots across eight input and coefficient axes, with geometry-grouped resampling and 168-attempt accounting. Drag MAE was 0.001293 at Re 100k and 0.000244 at 500k. [Reliability report and plots](docs/v3-2/README.md)
 - Added a model-bound coverage index with 657 eligible training rows across 33 geometries. The limited-coverage threshold is the 90th percentile of the leave-one-geometry-out distances. The geometry-plus-flow score flagged one of 163 development rows, which did not have unusually large error. The UI shows nearby coverage and the final-panel error statistics separately. The benchmark has no fresh calibration and independent evaluation pair for prediction intervals.
@@ -48,7 +58,7 @@ Last updated 2026-11-17 (Asia/Karachi).
 
 ## Next work
 
-- Await explicit approval for V3.3. Its first gate is a browser worker feasibility benchmark using the frozen coefficient model and the versioned training-coverage safeguard. [V3 technical specification](docs/V3_SPEC.md)
+- Await explicit approval for V3.4, the bounded XFOIL pressure-data feasibility pilot. [V3 technical specification](docs/V3_SPEC.md)
 - Confirm the exact Cloudflare deployment metadata, named preview and rollback target before a release. [Deployment guide](docs/DEPLOYMENT.md)
 
 [Original specification](docs/SPEC.md) · [V2 specification](docs/V2_SPEC.md) · [Completed milestones](docs/history/progress-through-cleanup-d.md)
