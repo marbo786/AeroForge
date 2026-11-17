@@ -1,0 +1,9 @@
+{
+  "version": "pressure-pilot-v1",
+  "solver_sha256": "c17342f84ae260c2b11a74cd0e2fb8189a5f8954c6bb7a8467a0f27055c7faea",
+  "solver_source_archive_sha256": "940bdb5be4d0345a5062cfb430c90d1d9411f4db00ca283a48e5a1de940d08c7",
+  "plan_sha256": "61d6f05589d3c7256a22898d4cbfa9fe4efa3f53ac3fb3b022f3fda965981ccd",
+  "solver_config_sha256": "b23455c935964edb05d3c3f8e0f4038e20012d3469d04c30b961037214cd4163",
+  "python": "3.10.10",
+  "numpy": "2.2.6"
+}

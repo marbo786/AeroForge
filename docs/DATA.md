@@ -1,5 +1,7 @@
 # XFOIL pilot data pipeline
 
+The separate V3.4 pilot captures and audits surface pressure from the pinned XFOIL build. Its raw attempts and paired arrays are under `data/pressure-pilot-v1/`. [Pressure feasibility report](v3-4/README.md)
+
 Phase 3 establishes a real label source and a bounded pilot. It does not train a model, implement inference integration or establish experimental aerodynamic accuracy.
 
 ## Source and acquisition

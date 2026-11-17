@@ -7,7 +7,14 @@ Last updated 2026-11-17 (Asia/Karachi).
 - The v2 Studio is live on Cloudflare Pages. The local `main` and cached `origin/main` both pointed to Cleanup Phase F at `28741d8` when `codex/aeroforge-v3` branched. The exact Pages deployment identity remains pending. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md)
 - The accepted ONNX model predicts isolated 2D sections. The AF–02 car and front-wing motion are illustrative. [Model evidence](docs/ML.md) · [Phase D demo](docs/media/aeroforge-demo.gif)
 
-## Latest work · Phase V3.3
+## Latest work · Phase V3.4
+
+- Ran exactly 24 primary, three repeat and three refined XFOIL solves for surface pressure. All 30 CPWR files uniquely matched their PSAV panels. Twenty-two primary cases met the pressure and polar gates, including at least one result for every geometry/Reynolds pair. All three repeats matched at printed precision. Both primary exclusions occurred at Re 100k. [Pressure pilot](docs/v3-4/README.md)
+- Selected 257 arc-length stations per branch for proposed model evaluation. The worst whole-branch reconstruction MAE was 0.00151 Cp. The largest local 320-versus-160 difference reached 0.02604 Cp on the NACA 6618 lower trailing edge. [Panel sensitivity plot](docs/v3-4/panel-sensitivity.png)
+- Preserved commands, pressure files, panel coordinates, polars, compressed logs, hashes and the paired eligible array. The report proposes a geometry-disjoint 2,016-attempt data cap and pressure error budgets for approval, plus the Level 1 geometry UI path.
+- Replayed the saved evidence in regression tests without launching XFOIL. All 115 Python tests, 28 Node tests and 72 Playwright tests passed, with 17 profile-specific browser skips. Formatting, lint, TypeScript and the static Pages export guard passed.
+
+## Phase V3.3
 
 - Added a cancellable worker-based optimizer for CL/CD, minimum drag at required lift, and maximum lift. It screens the model domain and training coverage, displays a ranked shortlist and objective history, and preserves the original section for comparison and revert. The verifier replays exported shortlists offline with the pinned XFOIL 6.99 setup. [Optimizer documentation](docs/v3-3/README.md)
 - The 36 benchmark searches each completed 512 candidate evaluations, with one ONNX and one WASM download per profile. Differential evolution improved the surrogate objective in all nine matched desktop case/seed pairs. Chrome click-to-completion p95 was 172.5 ms desktop and 148.6 ms with phone emulation. Native ONNX replay of all 36 best designs agreed with browser CL and CD within `1.2e-7` and `7.5e-9`, respectively. Physical phone timing and WebKit remain unverified.
@@ -58,7 +65,7 @@ Last updated 2026-11-17 (Asia/Karachi).
 
 ## Next work
 
-- Await explicit approval for V3.4, the bounded XFOIL pressure-data feasibility pilot. [V3 technical specification](docs/V3_SPEC.md)
+- Await explicit approval for V3.5 and its proposed dataset cap, splits, and Cp validation limits. [Proposed V3.5 gate](docs/v3-4/README.md#proposed-v35-gate-for-approval)
 - Confirm the exact Cloudflare deployment metadata, named preview and rollback target before a release. [Deployment guide](docs/DEPLOYMENT.md)
 
 [Original specification](docs/SPEC.md) · [V2 specification](docs/V2_SPEC.md) · [Completed milestones](docs/history/progress-through-cleanup-d.md)

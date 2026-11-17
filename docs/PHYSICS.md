@@ -1,5 +1,7 @@
 # NACA four-digit geometry contract
 
+The V3.4 pressure pilot derives its branch split from the ordered analytic contour, then resamples real paired XFOIL panel pressures along each surface. The dataset retains x/c and y/c alongside Cp. [Pressure pairing and geometry details](v3-4/README.md)
+
 Phase 2 implements geometry only. Geometry validity does not imply that XFOIL converges, that a trained surrogate exists, or that an aerodynamic prediction is validated.
 
 ## Units, normalization and supported candidate geometry

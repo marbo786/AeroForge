@@ -2,6 +2,8 @@
 data/pilot-v1/** -text -whitespace
 artifacts/pilot-surrogate-v1/** -text
 data/recovery-v1/** -text -whitespace
+data/pressure-pilot-v1/** -text -whitespace
+configs/pressure-pilot-v1.json text eol=lf
 artifacts/recovery*/** -text
 artifacts/reliability-v1/*.json text eol=lf
 # The XFOIL replay records the exact bytes of each browser export.

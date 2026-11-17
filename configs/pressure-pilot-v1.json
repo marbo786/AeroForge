@@ -1,0 +1,21 @@
+{
+  "version": "pressure-pilot-v1",
+  "geometry_codes": ["0012", "2412", "4415", "6618"],
+  "operating_points": {
+    "100000": [-4, 6],
+    "250000": [-2, 4],
+    "500000": [0, 8]
+  },
+  "diagnostic_cases": [
+    ["0012", 100000, -4],
+    ["2412", 250000, 4],
+    ["6618", 500000, 8]
+  ],
+  "primary_panels": 160,
+  "diagnostic_panels": 320,
+  "minimum_eligible_primary": 20,
+  "paired_coordinate_tolerance": 0.00000551,
+  "geometry_projection_tolerance": 0.0004,
+  "force_tolerance": 0.0003,
+  "station_counts": [65, 129, 257]
+}
