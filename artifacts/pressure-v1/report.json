@@ -1,0 +1,2696 @@
+{
+  "provenance": {
+    "version": "pressure-v1",
+    "label_source": "XFOIL 6.99 viscous CPWR and PSAV",
+    "solver_sha256": "c17342f84ae260c2b11a74cd0e2fb8189a5f8954c6bb7a8467a0f27055c7faea",
+    "solver_source_archive_sha256": "940bdb5be4d0345a5062cfb430c90d1d9411f4db00ca283a48e5a1de940d08c7",
+    "plan_sha256": "843b929814a227770d39fd66ee19a1233d39ed22b41677e1ea0bec04f98afe6e",
+    "solver_config_sha256": "b23455c935964edb05d3c3f8e0f4038e20012d3469d04c30b961037214cd4163",
+    "generator_sha256": "6d6ab26d79604cb48ec1131145ca05a7f61e377612fa3254a68776b059261fea",
+    "paired_evaluator_sha256": "6d16b912921304449f1eeb1d8586cbdfb36cfec643b9f8767b396825753729c5",
+    "python": "3.10.10",
+    "numpy": "2.2.6"
+  },
+  "splits": {
+    "train": {
+      "attempted": 1344,
+      "eligible": 1278,
+      "geometries": 64,
+      "geometry_re": {
+        "0009/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0009/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0009/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0011/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0011/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0011/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0013/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0013/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0013/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0017/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0017/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0017/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1211/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1211/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1211/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1218/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1218/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1218/500000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "1309/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1309/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1309/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1314/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1314/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1314/500000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "1318/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1318/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1318/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1408/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1408/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "1408/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1410/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1410/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1410/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1418/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "1418/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1418/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1515/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "1515/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1515/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1612/100000": {
+          "attempted": 7,
+          "eligible": 5,
+          "eligible_fraction": 0.7142857142857143,
+          "eligible_geometries": 1
+        },
+        "1612/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1612/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1615/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "1615/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1615/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2209/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2209/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2209/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2218/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2218/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2218/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2309/100000": {
+          "attempted": 7,
+          "eligible": 5,
+          "eligible_fraction": 0.7142857142857143,
+          "eligible_geometries": 1
+        },
+        "2309/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "2309/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2311/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "2311/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2311/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2313/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "2313/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2313/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2409/100000": {
+          "attempted": 7,
+          "eligible": 5,
+          "eligible_fraction": 0.7142857142857143,
+          "eligible_geometries": 1
+        },
+        "2409/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "2409/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2517/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2517/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2517/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2609/100000": {
+          "attempted": 7,
+          "eligible": 4,
+          "eligible_fraction": 0.5714285714285714,
+          "eligible_geometries": 1
+        },
+        "2609/250000": {
+          "attempted": 7,
+          "eligible": 5,
+          "eligible_fraction": 0.7142857142857143,
+          "eligible_geometries": 1
+        },
+        "2609/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2613/100000": {
+          "attempted": 7,
+          "eligible": 5,
+          "eligible_fraction": 0.7142857142857143,
+          "eligible_geometries": 1
+        },
+        "2613/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2613/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3209/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "3209/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "3209/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3211/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "3211/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3211/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3217/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3217/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3217/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3309/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "3309/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3309/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3314/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3314/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3314/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3412/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3412/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "3412/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3414/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3414/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3414/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3415/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3415/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3415/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3609/100000": {
+          "attempted": 7,
+          "eligible": 4,
+          "eligible_fraction": 0.5714285714285714,
+          "eligible_geometries": 1
+        },
+        "3609/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3609/500000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "3616/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "3616/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3616/500000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "4208/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "4208/250000": {
+          "attempted": 7,
+          "eligible": 5,
+          "eligible_fraction": 0.7142857142857143,
+          "eligible_geometries": 1
+        },
+        "4208/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4312/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4312/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4312/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4316/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4316/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4316/500000": {
+          "attempted": 7,
+          "eligible": 5,
+          "eligible_fraction": 0.7142857142857143,
+          "eligible_geometries": 1
+        },
+        "4317/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "4317/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4317/500000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "4318/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "4318/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4318/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4409/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "4409/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4409/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4411/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4411/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4411/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4511/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4511/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4511/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4614/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "4614/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4614/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4618/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4618/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "4618/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5213/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5213/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5213/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5215/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5215/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5215/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5310/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5310/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "5310/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5314/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5314/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5314/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5317/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5317/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5317/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5416/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5416/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5416/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5417/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5417/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5417/500000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "5508/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5508/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5508/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5509/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5509/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5509/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5615/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "5615/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "5615/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6208/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "6208/250000": {
+          "attempted": 7,
+          "eligible": 4,
+          "eligible_fraction": 0.5714285714285714,
+          "eligible_geometries": 1
+        },
+        "6208/500000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "6210/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6210/250000": {
+          "attempted": 7,
+          "eligible": 4,
+          "eligible_fraction": 0.5714285714285714,
+          "eligible_geometries": 1
+        },
+        "6210/500000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "6310/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6310/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6310/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6311/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6311/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6311/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6317/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "6317/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6317/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6408/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6408/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "6408/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6508/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6508/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6508/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6515/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "6515/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6515/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6609/100000": {
+          "attempted": 7,
+          "eligible": 4,
+          "eligible_fraction": 0.5714285714285714,
+          "eligible_geometries": 1
+        },
+        "6609/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6609/500000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "6617/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6617/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "6617/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        }
+      },
+      "reynolds": {
+        "100000": {
+          "attempted": 448,
+          "eligible": 413,
+          "eligible_fraction": 0.921875,
+          "eligible_geometries": 64
+        },
+        "250000": {
+          "attempted": 448,
+          "eligible": 428,
+          "eligible_fraction": 0.9553571428571429,
+          "eligible_geometries": 64
+        },
+        "500000": {
+          "attempted": 448,
+          "eligible": 437,
+          "eligible_fraction": 0.9754464285714286,
+          "eligible_geometries": 64
+        }
+      },
+      "alpha": {
+        "-4": {
+          "attempted": 192,
+          "eligible": 161,
+          "eligible_fraction": 0.8385416666666666,
+          "eligible_geometries": 64
+        },
+        "-2": {
+          "attempted": 192,
+          "eligible": 176,
+          "eligible_fraction": 0.9166666666666666,
+          "eligible_geometries": 64
+        },
+        "0": {
+          "attempted": 192,
+          "eligible": 182,
+          "eligible_fraction": 0.9479166666666666,
+          "eligible_geometries": 64
+        },
+        "2": {
+          "attempted": 192,
+          "eligible": 189,
+          "eligible_fraction": 0.984375,
+          "eligible_geometries": 64
+        },
+        "4": {
+          "attempted": 192,
+          "eligible": 189,
+          "eligible_fraction": 0.984375,
+          "eligible_geometries": 64
+        },
+        "6": {
+          "attempted": 192,
+          "eligible": 190,
+          "eligible_fraction": 0.9895833333333334,
+          "eligible_geometries": 64
+        },
+        "8": {
+          "attempted": 192,
+          "eligible": 191,
+          "eligible_fraction": 0.9947916666666666,
+          "eligible_geometries": 64
+        }
+      },
+      "pressure_rejections": {
+        "ineligible_polar": 66
+      },
+      "polar_rejections": {
+        "viscous_nonconvergence": 36,
+        "missing_or_duplicate_polar_row": 36
+      },
+      "polar_quality_flags": {
+        "invalid_transition_location": 29,
+        "nonphysical_drag": 1
+      },
+      "raw_bytes": 17810615,
+      "solver_seconds_sum": 275.60799550043885,
+      "max_analytic_to_solver_grid_distance_chord_units": {
+        "upper": 6.258722109706949e-05,
+        "lower": 6.0717037824424326e-05
+      },
+      "max_raw_to_grid_cp_error": {
+        "upper": 0.0611598522142307,
+        "lower": 0.05271766735982186
+      },
+      "manifest_sha256": "22f59396e9c76b56f1788d6e34ab2df85de4bdb9b9d72b5a82aef42a32a78258",
+      "partition_hashes": {
+        "attempts.jsonl": "ece1673daca1a3c69fbe578e558b30c20aeddefc2ec2678a240abaceaa03701f",
+        "profiles.npz": "8f0a059dc89b4da1e02b2cfb28388827ed22ba80c26c33cde08ce2f493348a61"
+      },
+      "rejected_ids": [
+        "1218-500000-+8",
+        "1314-500000-+4",
+        "1408-250000--2",
+        "1418-100000-+2",
+        "1515-100000--4",
+        "1612-100000--4",
+        "1612-100000--2",
+        "1615-100000--4",
+        "2309-100000--4",
+        "2309-100000--2",
+        "2309-250000--4",
+        "2311-100000--4",
+        "2313-100000--4",
+        "2409-100000--4",
+        "2409-100000--2",
+        "2409-250000--4",
+        "2609-100000--4",
+        "2609-100000--2",
+        "2609-100000-+0",
+        "2609-250000--4",
+        "2609-250000-+4",
+        "2613-100000--4",
+        "2613-100000--2",
+        "3209-100000--4",
+        "3209-250000--4",
+        "3211-100000--4",
+        "3309-100000--4",
+        "3412-250000-+6",
+        "3609-100000--4",
+        "3609-100000--2",
+        "3609-100000-+0",
+        "3609-500000--2",
+        "3616-100000-+2",
+        "3616-500000-+4",
+        "4208-100000--4",
+        "4208-250000--4",
+        "4208-250000--2",
+        "4316-500000-+0",
+        "4316-500000-+2",
+        "4317-100000--4",
+        "4317-500000--2",
+        "4318-100000--2",
+        "4409-100000--4",
+        "4614-100000--4",
+        "4618-250000--2",
+        "5310-250000--4",
+        "5417-500000-+0",
+        "5615-100000--4",
+        "5615-250000-+0",
+        "6208-100000-+0",
+        "6208-250000--4",
+        "6208-250000--2",
+        "6208-250000-+0",
+        "6208-500000--2",
+        "6210-250000--4",
+        "6210-250000--2",
+        "6210-250000-+0",
+        "6210-500000--4",
+        "6317-100000--4",
+        "6408-250000--4",
+        "6515-100000-+0",
+        "6609-100000--4",
+        "6609-100000--2",
+        "6609-100000-+0",
+        "6609-500000-+6",
+        "6617-250000--4"
+      ]
+    },
+    "validation": {
+      "attempted": 336,
+      "eligible": 314,
+      "geometries": 16,
+      "geometry_re": {
+        "0008/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "0008/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0008/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0018/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0018/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "0018/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1212/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1212/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1212/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1317/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1317/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "1317/500000": {
+          "attempted": 7,
+          "eligible": 5,
+          "eligible_fraction": 0.7142857142857143,
+          "eligible_geometries": 1
+        },
+        "1617/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "1617/250000": {
+          "attempted": 7,
+          "eligible": 5,
+          "eligible_fraction": 0.7142857142857143,
+          "eligible_geometries": 1
+        },
+        "1617/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2212/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "2212/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "2212/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2512/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "2512/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "2512/500000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "3511/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "3511/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3511/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3517/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "3517/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3517/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4209/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "4209/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "4209/500000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "4213/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "4213/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4213/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5216/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5216/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5216/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6309/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "6309/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6309/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6418/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6418/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6418/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6518/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "6518/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6518/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6611/100000": {
+          "attempted": 7,
+          "eligible": 5,
+          "eligible_fraction": 0.7142857142857143,
+          "eligible_geometries": 1
+        },
+        "6611/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "6611/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        }
+      },
+      "reynolds": {
+        "100000": {
+          "attempted": 112,
+          "eligible": 101,
+          "eligible_fraction": 0.9017857142857143,
+          "eligible_geometries": 16
+        },
+        "250000": {
+          "attempted": 112,
+          "eligible": 105,
+          "eligible_fraction": 0.9375,
+          "eligible_geometries": 16
+        },
+        "500000": {
+          "attempted": 112,
+          "eligible": 108,
+          "eligible_fraction": 0.9642857142857143,
+          "eligible_geometries": 16
+        }
+      },
+      "alpha": {
+        "-4": {
+          "attempted": 48,
+          "eligible": 38,
+          "eligible_fraction": 0.7916666666666666,
+          "eligible_geometries": 16
+        },
+        "-2": {
+          "attempted": 48,
+          "eligible": 45,
+          "eligible_fraction": 0.9375,
+          "eligible_geometries": 16
+        },
+        "0": {
+          "attempted": 48,
+          "eligible": 47,
+          "eligible_fraction": 0.9791666666666666,
+          "eligible_geometries": 16
+        },
+        "2": {
+          "attempted": 48,
+          "eligible": 47,
+          "eligible_fraction": 0.9791666666666666,
+          "eligible_geometries": 16
+        },
+        "4": {
+          "attempted": 48,
+          "eligible": 43,
+          "eligible_fraction": 0.8958333333333334,
+          "eligible_geometries": 16
+        },
+        "6": {
+          "attempted": 48,
+          "eligible": 47,
+          "eligible_fraction": 0.9791666666666666,
+          "eligible_geometries": 16
+        },
+        "8": {
+          "attempted": 48,
+          "eligible": 47,
+          "eligible_fraction": 0.9791666666666666,
+          "eligible_geometries": 16
+        }
+      },
+      "pressure_rejections": {
+        "ineligible_polar": 22
+      },
+      "polar_rejections": {
+        "viscous_nonconvergence": 16,
+        "missing_or_duplicate_polar_row": 16
+      },
+      "polar_quality_flags": {
+        "invalid_transition_location": 6
+      },
+      "raw_bytes": 4463329,
+      "solver_seconds_sum": 73.82389759965008,
+      "max_analytic_to_solver_grid_distance_chord_units": {
+        "upper": 5.544302067759828e-05,
+        "lower": 5.233123252824262e-05
+      },
+      "max_raw_to_grid_cp_error": {
+        "upper": 0.037303551920373046,
+        "lower": 0.05007483339200269
+      },
+      "manifest_sha256": "d479baa7276dc95e976a091d65528dc88525bb7425fc022d3094ad80f98c553e",
+      "partition_hashes": {
+        "attempts.jsonl": "04aa0bdb4b5511d70f7e942c58759176288f3618088413ae724326765553f34a",
+        "profiles.npz": "3736b4f0ab29bdeb65d032b8e9e1a6102d8bac803e902d14aa4bb7fe0c57324a"
+      },
+      "rejected_ids": [
+        "0008-100000-+8",
+        "0018-250000-+4",
+        "1317-250000--4",
+        "1317-500000-+0",
+        "1317-500000-+4",
+        "1617-250000--2",
+        "1617-250000-+4",
+        "2212-100000--4",
+        "2212-250000-+4",
+        "2512-100000--4",
+        "2512-250000--4",
+        "2512-500000-+4",
+        "3511-100000--4",
+        "3517-100000--4",
+        "4209-100000--4",
+        "4209-250000-+2",
+        "4209-500000--4",
+        "4213-100000--4",
+        "6309-100000--2",
+        "6518-100000-+6",
+        "6611-100000--4",
+        "6611-100000--2"
+      ]
+    },
+    "test": {
+      "attempted": 336,
+      "eligible": 322,
+      "geometries": 16,
+      "geometry_re": {
+        "0014/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0014/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0014/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0016/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0016/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "0016/500000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "2210/100000": {
+          "attempted": 7,
+          "eligible": 5,
+          "eligible_fraction": 0.7142857142857143,
+          "eligible_geometries": 1
+        },
+        "2210/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2210/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2213/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "2213/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2213/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2411/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "2411/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2411/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2415/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2415/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "2415/500000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "3213/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3213/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3213/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3318/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3318/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3318/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3409/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "3409/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3409/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3608/100000": {
+          "attempted": 7,
+          "eligible": 4,
+          "eligible_fraction": 0.5714285714285714,
+          "eligible_geometries": 1
+        },
+        "3608/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3608/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3614/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "3614/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "3614/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4212/100000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "4212/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "4212/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5214/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5214/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5214/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5308/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5308/250000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "5308/500000": {
+          "attempted": 7,
+          "eligible": 6,
+          "eligible_fraction": 0.8571428571428571,
+          "eligible_geometries": 1
+        },
+        "5418/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5418/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5418/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5511/100000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5511/250000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        },
+        "5511/500000": {
+          "attempted": 7,
+          "eligible": 7,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 1
+        }
+      },
+      "reynolds": {
+        "100000": {
+          "attempted": 112,
+          "eligible": 102,
+          "eligible_fraction": 0.9107142857142857,
+          "eligible_geometries": 16
+        },
+        "250000": {
+          "attempted": 112,
+          "eligible": 111,
+          "eligible_fraction": 0.9910714285714286,
+          "eligible_geometries": 16
+        },
+        "500000": {
+          "attempted": 112,
+          "eligible": 109,
+          "eligible_fraction": 0.9732142857142857,
+          "eligible_geometries": 16
+        }
+      },
+      "alpha": {
+        "-4": {
+          "attempted": 48,
+          "eligible": 40,
+          "eligible_fraction": 0.8333333333333334,
+          "eligible_geometries": 16
+        },
+        "-2": {
+          "attempted": 48,
+          "eligible": 45,
+          "eligible_fraction": 0.9375,
+          "eligible_geometries": 16
+        },
+        "0": {
+          "attempted": 48,
+          "eligible": 46,
+          "eligible_fraction": 0.9583333333333334,
+          "eligible_geometries": 16
+        },
+        "2": {
+          "attempted": 48,
+          "eligible": 48,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 16
+        },
+        "4": {
+          "attempted": 48,
+          "eligible": 48,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 16
+        },
+        "6": {
+          "attempted": 48,
+          "eligible": 48,
+          "eligible_fraction": 1.0,
+          "eligible_geometries": 16
+        },
+        "8": {
+          "attempted": 48,
+          "eligible": 47,
+          "eligible_fraction": 0.9791666666666666,
+          "eligible_geometries": 16
+        }
+      },
+      "pressure_rejections": {
+        "ineligible_polar": 14
+      },
+      "polar_rejections": {
+        "viscous_nonconvergence": 5,
+        "missing_or_duplicate_polar_row": 5
+      },
+      "polar_quality_flags": {
+        "invalid_transition_location": 9
+      },
+      "raw_bytes": 4421565,
+      "solver_seconds_sum": 71.3420543000102,
+      "max_analytic_to_solver_grid_distance_chord_units": {
+        "upper": 5.666868095497881e-05,
+        "lower": 5.202966687588206e-05
+      },
+      "max_raw_to_grid_cp_error": {
+        "upper": 0.07207046757167568,
+        "lower": 0.05281420325768105
+      },
+      "manifest_sha256": "66c8400123bf76643ce44cef3b615a7f068472b7b84dccf220e84c4942da41a6",
+      "partition_hashes": {
+        "attempts.jsonl": "195055bdba486cb38e0589613f923cbab7baa2d76f3dd097b0e788fe1642314b",
+        "profiles.npz": "5fe1a6833837746d5f4e45f86e6a39f22003c23c5a638725aa3f4ed32fbf8571"
+      },
+      "rejected_ids": [
+        "0016-500000-+8",
+        "2210-100000--4",
+        "2210-100000--2",
+        "2213-100000--4",
+        "2411-100000--4",
+        "2415-500000--2",
+        "3409-100000--4",
+        "3608-100000--4",
+        "3608-100000--2",
+        "3608-100000-+0",
+        "3614-100000--4",
+        "4212-100000-+0",
+        "5308-250000--4",
+        "5308-500000--4"
+      ]
+    }
+  },
+  "test_metrics": {
+    "profiles": 322,
+    "geometries": 16,
+    "upper": {
+      "mae": 0.020071316902326556,
+      "p95": 0.06657150212968918,
+      "nose_p95": 0.07225709304436245,
+      "tail_p95": 0.04351427531225882,
+      "minimum_cp_p90": 0.04869515503202693,
+      "minimum_location_p90": 0.0,
+      "max": 0.606406443599004,
+      "nose_max": 0.606406443599004,
+      "tail_max": 0.13453262726034418
+    },
+    "lower": {
+      "mae": 0.0137870500225128,
+      "p95": 0.04487285966302246,
+      "nose_p95": 0.0752416848178441,
+      "tail_p95": 0.0346603819245925,
+      "minimum_cp_p90": 0.0532724393600974,
+      "minimum_location_p90": 0.0,
+      "max": 0.4779230314115548,
+      "nose_max": 0.4779230314115548,
+      "tail_max": 0.12230916744428985
+    }
+  },
+  "test_strata": {
+    "reynolds": {
+      "100000": {
+        "profiles": 102,
+        "geometries": 16,
+        "upper": {
+          "mae": 0.026280147159620206,
+          "p95": 0.08908974099378109,
+          "nose_p95": 0.0977855660674054,
+          "tail_p95": 0.04700634378527104,
+          "minimum_cp_p90": 0.06580840577670677,
+          "minimum_location_p90": 0.0,
+          "max": 0.33391760575126117,
+          "nose_max": 0.33391760575126117,
+          "tail_max": 0.102796734090211
+        },
+        "lower": {
+          "mae": 0.01786269117054466,
+          "p95": 0.05980650900128626,
+          "nose_p95": 0.09311637051724064,
+          "tail_p95": 0.039292441700841826,
+          "minimum_cp_p90": 0.08224043940433057,
+          "minimum_location_p90": 0.0,
+          "max": 0.3791307825912569,
+          "nose_max": 0.31900605888671163,
+          "tail_max": 0.12230916744428985
+        }
+      },
+      "250000": {
+        "profiles": 111,
+        "geometries": 16,
+        "upper": {
+          "mae": 0.01973349498727193,
+          "p95": 0.06344159188617493,
+          "nose_p95": 0.06597179178500667,
+          "tail_p95": 0.047755358499509445,
+          "minimum_cp_p90": 0.04483766891101926,
+          "minimum_location_p90": 0.0,
+          "max": 0.4004129878315106,
+          "nose_max": 0.4004129878315106,
+          "tail_max": 0.1301274302123433
+        },
+        "lower": {
+          "mae": 0.013044161021922773,
+          "p95": 0.04303673839566008,
+          "nose_p95": 0.07305679753370464,
+          "tail_p95": 0.0371986367483063,
+          "minimum_cp_p90": 0.05009817461225485,
+          "minimum_location_p90": 0.0,
+          "max": 0.2778108161342918,
+          "nose_max": 0.2778108161342918,
+          "tail_max": 0.08590383916709374
+        }
+      },
+      "500000": {
+        "profiles": 109,
+        "geometries": 16,
+        "upper": {
+          "mae": 0.01476657445501857,
+          "p95": 0.04512340759566458,
+          "nose_p95": 0.054569656780781794,
+          "tail_p95": 0.027249064854152624,
+          "minimum_cp_p90": 0.03220639074411413,
+          "minimum_location_p90": 0.0,
+          "max": 0.606406443599004,
+          "nose_max": 0.606406443599004,
+          "tail_max": 0.13453262726034418
+        },
+        "lower": {
+          "mae": 0.010578417390926407,
+          "p95": 0.033065823066594335,
+          "nose_p95": 0.052385058969348364,
+          "tail_p95": 0.028498622885499925,
+          "minimum_cp_p90": 0.03644224333686291,
+          "minimum_location_p90": 0.0,
+          "max": 0.4779230314115548,
+          "nose_max": 0.4779230314115548,
+          "tail_max": 0.07538668604035684
+        }
+      }
+    },
+    "alpha": {
+      "-4": {
+        "profiles": 40,
+        "geometries": 16,
+        "upper": {
+          "mae": 0.017503053192979373,
+          "p95": 0.05587997478024795,
+          "nose_p95": 0.08112453495182487,
+          "tail_p95": 0.07223730143894808,
+          "minimum_cp_p90": 0.09364820201159008,
+          "minimum_location_p90": 4.433605641683166e-05,
+          "max": 0.3188153433212182,
+          "nose_max": 0.3188153433212182,
+          "tail_max": 0.12679134207644666
+        },
+        "lower": {
+          "mae": 0.025378203783731818,
+          "p95": 0.09940483655591492,
+          "nose_p95": 0.16212356398574568,
+          "tail_p95": 0.02697959894234863,
+          "minimum_cp_p90": 0.08485020021481726,
+          "minimum_location_p90": 0.0003846981116453726,
+          "max": 0.3791307825912569,
+          "nose_max": 0.31900605888671163,
+          "tail_max": 0.04624017193985866
+        }
+      },
+      "-2": {
+        "profiles": 45,
+        "geometries": 16,
+        "upper": {
+          "mae": 0.01611827952543434,
+          "p95": 0.04921150611475278,
+          "nose_p95": 0.05653392646260241,
+          "tail_p95": 0.06037436078466482,
+          "minimum_cp_p90": 0.02807890127956192,
+          "minimum_location_p90": 0.0,
+          "max": 0.19111238639436057,
+          "nose_max": 0.19111238639436057,
+          "tail_max": 0.13453262726034418
+        },
+        "lower": {
+          "mae": 0.01756927317238147,
+          "p95": 0.06225461094295437,
+          "nose_p95": 0.0913089384628063,
+          "tail_p95": 0.02395276445067046,
+          "minimum_cp_p90": 0.04199028279584138,
+          "minimum_location_p90": 0.000815453173510579,
+          "max": 0.27135738338662296,
+          "nose_max": 0.27135738338662296,
+          "tail_max": 0.06662343237017894
+        }
+      },
+      "0": {
+        "profiles": 46,
+        "geometries": 16,
+        "upper": {
+          "mae": 0.01674606037615283,
+          "p95": 0.0516811439144188,
+          "nose_p95": 0.04279256766374172,
+          "tail_p95": 0.044555914616225156,
+          "minimum_cp_p90": 0.02562109612566199,
+          "minimum_location_p90": 0.0,
+          "max": 0.1397042688536636,
+          "nose_max": 0.1397042688536636,
+          "tail_max": 0.13190641376079365
+        },
+        "lower": {
+          "mae": 0.015163013524597011,
+          "p95": 0.04629685085660146,
+          "nose_p95": 0.0653639056280092,
+          "tail_p95": 0.045052612919595766,
+          "minimum_cp_p90": 0.03797838968393474,
+          "minimum_location_p90": 0.0,
+          "max": 0.16856445819441598,
+          "nose_max": 0.16127377871031795,
+          "tail_max": 0.10280167947815372
+        }
+      },
+      "2": {
+        "profiles": 48,
+        "geometries": 16,
+        "upper": {
+          "mae": 0.018406757193692003,
+          "p95": 0.057141785115702115,
+          "nose_p95": 0.05216788901200772,
+          "tail_p95": 0.0406070460999443,
+          "minimum_cp_p90": 0.03237278180553482,
+          "minimum_location_p90": 0.0,
+          "max": 0.16619917691091735,
+          "nose_max": 0.08855758798092894,
+          "tail_max": 0.1283125856189793
+        },
+        "lower": {
+          "mae": 0.011970407154896015,
+          "p95": 0.036041955920473726,
+          "nose_p95": 0.05031411967037558,
+          "tail_p95": 0.04861440908219788,
+          "minimum_cp_p90": 0.027358082255071442,
+          "minimum_location_p90": 0.0,
+          "max": 0.12230916744428985,
+          "nose_max": 0.12181827486727315,
+          "tail_max": 0.12230916744428985
+        }
+      },
+      "4": {
+        "profiles": 48,
+        "geometries": 16,
+        "upper": {
+          "mae": 0.019304635526457153,
+          "p95": 0.07087149635079404,
+          "nose_p95": 0.06094643722745141,
+          "tail_p95": 0.02433036743980494,
+          "minimum_cp_p90": 0.043785940368871845,
+          "minimum_location_p90": 0.0,
+          "max": 0.19864326848742297,
+          "nose_max": 0.15100666725224876,
+          "tail_max": 0.06351836325629939
+        },
+        "lower": {
+          "mae": 0.009273081758281863,
+          "p95": 0.0263686743913414,
+          "nose_p95": 0.0331557982615065,
+          "tail_p95": 0.03372836915923087,
+          "minimum_cp_p90": 0.0217606042329903,
+          "minimum_location_p90": 0.0,
+          "max": 0.12973287144017664,
+          "nose_max": 0.12973287144017664,
+          "tail_max": 0.0847967510786665
+        }
+      },
+      "6": {
+        "profiles": 48,
+        "geometries": 16,
+        "upper": {
+          "mae": 0.020635444856309613,
+          "p95": 0.07601196602495719,
+          "nose_p95": 0.0645928130396034,
+          "tail_p95": 0.018209446830880466,
+          "minimum_cp_p90": 0.05790019370944188,
+          "minimum_location_p90": 0.0,
+          "max": 0.32092973306273165,
+          "nose_max": 0.24226101687124357,
+          "tail_max": 0.03527594139099121
+        },
+        "lower": {
+          "mae": 0.008161665003223588,
+          "p95": 0.023158507942245388,
+          "nose_p95": 0.03674983296408274,
+          "tail_p95": 0.02400718657341197,
+          "minimum_cp_p90": 0.04639537333750865,
+          "minimum_location_p90": 0.0,
+          "max": 0.10411807511594606,
+          "nose_max": 0.10411807511594606,
+          "tail_max": 0.06177502398123551
+        }
+      },
+      "8": {
+        "profiles": 47,
+        "geometries": 16,
+        "upper": {
+          "mae": 0.03126678696529374,
+          "p95": 0.12346152130760557,
+          "nose_p95": 0.18401736577378403,
+          "tail_p95": 0.02498440173292115,
+          "minimum_cp_p90": 0.09391668282700172,
+          "minimum_location_p90": 0.0002571743474843595,
+          "max": 0.606406443599004,
+          "nose_max": 0.606406443599004,
+          "tail_max": 0.0422819427584475
+        },
+        "lower": {
+          "mae": 0.010597268451474585,
+          "p95": 0.03096593957674726,
+          "nose_p95": 0.06461783317465897,
+          "tail_p95": 0.03639700498867862,
+          "minimum_cp_p90": 0.10580302414222631,
+          "minimum_location_p90": 0.0,
+          "max": 0.4779230314115548,
+          "nose_max": 0.4779230314115548,
+          "tail_max": 0.05771955898157732
+        }
+      }
+    },
+    "geometry_family": {
+      "symmetric": {
+        "profiles": 41,
+        "geometries": 2,
+        "upper": {
+          "mae": 0.01773031888361679,
+          "p95": 0.0604009825749298,
+          "nose_p95": 0.05378173880433723,
+          "tail_p95": 0.04621718195551311,
+          "minimum_cp_p90": 0.032430773196660656,
+          "minimum_location_p90": 0.0,
+          "max": 0.26287405555552534,
+          "nose_max": 0.10037090180259511,
+          "tail_max": 0.102796734090211
+        },
+        "lower": {
+          "mae": 0.014012973332804934,
+          "p95": 0.044358339144145,
+          "nose_p95": 0.05169155295441086,
+          "tail_p95": 0.048446111241392906,
+          "minimum_cp_p90": 0.036051030419484986,
+          "minimum_location_p90": 0.0,
+          "max": 0.11179831527673889,
+          "nose_max": 0.10411807511594606,
+          "tail_max": 0.10280167947815372
+        }
+      },
+      "cambered": {
+        "profiles": 281,
+        "geometries": 14,
+        "upper": {
+          "mae": 0.02040574519071367,
+          "p95": 0.06760080376236016,
+          "nose_p95": 0.0775074685180086,
+          "tail_p95": 0.043086620235443115,
+          "minimum_cp_p90": 0.049113307018146646,
+          "minimum_location_p90": 0.0,
+          "max": 0.606406443599004,
+          "nose_max": 0.606406443599004,
+          "tail_max": 0.13453262726034418
+        },
+        "lower": {
+          "mae": 0.013754775263899639,
+          "p95": 0.045052612919595766,
+          "nose_p95": 0.08046690755422325,
+          "tail_p95": 0.03133597845095984,
+          "minimum_cp_p90": 0.0559119399735013,
+          "minimum_location_p90": 0.0,
+          "max": 0.4779230314115548,
+          "nose_max": 0.4779230314115548,
+          "tail_max": 0.12230916744428985
+        }
+      },
+      "thinner (8\u201312%)": {
+        "profiles": 137,
+        "geometries": 7,
+        "upper": {
+          "mae": 0.02161240640953443,
+          "p95": 0.07242900042939115,
+          "nose_p95": 0.11452641400094146,
+          "tail_p95": 0.05315269635488906,
+          "minimum_cp_p90": 0.08633175348494326,
+          "minimum_location_p90": 0.0,
+          "max": 0.606406443599004,
+          "nose_max": 0.606406443599004,
+          "tail_max": 0.13453262726034418
+        },
+        "lower": {
+          "mae": 0.013616259722152161,
+          "p95": 0.046758801401800276,
+          "nose_p95": 0.10302703297080762,
+          "tail_p95": 0.032696551039127775,
+          "minimum_cp_p90": 0.08022487741086781,
+          "minimum_location_p90": 0.0,
+          "max": 0.4779230314115548,
+          "nose_max": 0.4779230314115548,
+          "tail_max": 0.12230916744428985
+        }
+      },
+      "thicker (13\u201318%)": {
+        "profiles": 185,
+        "geometries": 9,
+        "upper": {
+          "mae": 0.01887269173005377,
+          "p95": 0.062069858973159864,
+          "nose_p95": 0.053812091623087976,
+          "tail_p95": 0.037337357968890594,
+          "minimum_cp_p90": 0.03636250988858247,
+          "minimum_location_p90": 0.0,
+          "max": 0.30182238117325855,
+          "nose_max": 0.16420138647569904,
+          "tail_max": 0.12679134207644666
+        },
+        "lower": {
+          "mae": 0.013919886922793296,
+          "p95": 0.04367379689369988,
+          "nose_p95": 0.055860558497075496,
+          "tail_p95": 0.036133380791513015,
+          "minimum_cp_p90": 0.03854086972522319,
+          "minimum_location_p90": 0.0,
+          "max": 0.36004930944418856,
+          "nose_max": 0.30777515503698183,
+          "tail_max": 0.10280167947815372
+        }
+      },
+      "camber position 0.2": {
+        "profiles": 101,
+        "geometries": 5,
+        "upper": {
+          "mae": 0.01906116633014304,
+          "p95": 0.06616885741522704,
+          "nose_p95": 0.05738106793398823,
+          "tail_p95": 0.040948756957534804,
+          "minimum_cp_p90": 0.03323948094136403,
+          "minimum_location_p90": 0.0,
+          "max": 0.2792018105984537,
+          "nose_max": 0.18974421748682269,
+          "tail_max": 0.10529733626657704
+        },
+        "lower": {
+          "mae": 0.013989624730094435,
+          "p95": 0.04990346482696806,
+          "nose_p95": 0.09050899538143753,
+          "tail_p95": 0.026734023383930966,
+          "minimum_cp_p90": 0.05009817461225485,
+          "minimum_location_p90": 0.0,
+          "max": 0.3791307825912569,
+          "nose_max": 0.31900605888671163,
+          "tail_max": 0.08359170269874205
+        }
+      },
+      "camber position 0.3": {
+        "profiles": 40,
+        "geometries": 2,
+        "upper": {
+          "mae": 0.020813550485596636,
+          "p95": 0.06987422829307571,
+          "nose_p95": 0.07615145734853135,
+          "tail_p95": 0.03203841669802819,
+          "minimum_cp_p90": 0.04890318954341488,
+          "minimum_location_p90": 0.0,
+          "max": 0.3171280319757752,
+          "nose_max": 0.3171280319757752,
+          "tail_max": 0.06980974309110334
+        },
+        "lower": {
+          "mae": 0.014666967462580336,
+          "p95": 0.04825857042611503,
+          "nose_p95": 0.10356593876605369,
+          "tail_p95": 0.02998608257476232,
+          "minimum_cp_p90": 0.08224043940433057,
+          "minimum_location_p90": 0.000815453173510579,
+          "max": 0.2951875288024217,
+          "nose_max": 0.2951875288024217,
+          "tail_max": 0.10102954543185513
+        }
+      },
+      "camber position 0.4": {
+        "profiles": 81,
+        "geometries": 4,
+        "upper": {
+          "mae": 0.019367059037770265,
+          "p95": 0.06380914132310195,
+          "nose_p95": 0.07104217881781194,
+          "tail_p95": 0.0406070460999443,
+          "minimum_cp_p90": 0.04869515503202693,
+          "minimum_location_p90": 0.0,
+          "max": 0.30182238117325855,
+          "nose_max": 0.2884351150553446,
+          "tail_max": 0.09802406950878757
+        },
+        "lower": {
+          "mae": 0.011989200288839907,
+          "p95": 0.03693598055628525,
+          "nose_p95": 0.05744539782944247,
+          "tail_p95": 0.025868349341085728,
+          "minimum_cp_p90": 0.03705170774581101,
+          "minimum_location_p90": 0.0,
+          "max": 0.27288661407719506,
+          "nose_max": 0.19608197461048404,
+          "tail_max": 0.07317179401066147
+        }
+      },
+      "camber position 0.5": {
+        "profiles": 21,
+        "geometries": 1,
+        "upper": {
+          "mae": 0.021709237734100675,
+          "p95": 0.06784099075298732,
+          "nose_p95": 0.09509587954132148,
+          "tail_p95": 0.04867797474593336,
+          "minimum_cp_p90": 0.07557240202962756,
+          "minimum_location_p90": 0.0,
+          "max": 0.21731012653566317,
+          "nose_max": 0.21731012653566317,
+          "tail_max": 0.07268367304041726
+        },
+        "lower": {
+          "mae": 0.015693730928664367,
+          "p95": 0.05838413722915947,
+          "nose_p95": 0.08856235577375826,
+          "tail_p95": 0.028226751037679576,
+          "minimum_cp_p90": 0.061390570119893795,
+          "minimum_location_p90": 0.0,
+          "max": 0.248241290458946,
+          "nose_max": 0.16038693880768573,
+          "tail_max": 0.04624017193985866
+        }
+      },
+      "camber position 0.6": {
+        "profiles": 38,
+        "geometries": 2,
+        "upper": {
+          "mae": 0.024785013081450577,
+          "p95": 0.07935178641318913,
+          "nose_p95": 0.18191467449022003,
+          "tail_p95": 0.07676625495444506,
+          "minimum_cp_p90": 0.09749909174843063,
+          "minimum_location_p90": 0.0002571743474843595,
+          "max": 0.606406443599004,
+          "nose_max": 0.606406443599004,
+          "tail_max": 0.13453262726034418
+        },
+        "lower": {
+          "mae": 0.014817131517469037,
+          "p95": 0.043102945718564295,
+          "nose_p95": 0.07174675828530597,
+          "tail_p95": 0.047316196164656515,
+          "minimum_cp_p90": 0.10621563787460328,
+          "minimum_location_p90": 0.0,
+          "max": 0.4779230314115548,
+          "nose_max": 0.4779230314115548,
+          "tail_max": 0.12230916744428985
+        }
+      }
+    }
+  },
+  "gates": {
+    "test_coverage": {
+      "100000": true,
+      "250000": true,
+      "500000": true
+    },
+    "test_accuracy": {
+      "upper": {
+        "mae": true,
+        "p95": true,
+        "nose_p95": true,
+        "tail_p95": true,
+        "minimum_cp_p90": true,
+        "minimum_location_p90": true
+      },
+      "lower": {
+        "mae": true,
+        "p95": true,
+        "nose_p95": true,
+        "tail_p95": true,
+        "minimum_cp_p90": true,
+        "minimum_location_p90": true
+      }
+    },
+    "onnx_byte_budget": true,
+    "source_onnx_parity": true
+  }
+}

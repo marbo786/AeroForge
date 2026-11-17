@@ -137,3 +137,8 @@ await copyFile(
   new URL(evidence.coverage_file, reliability),
   new URL(evidence.coverage_file, recoveryTarget),
 );
+const pressureSource = new URL("../../artifacts/pressure-v1/", import.meta.url);
+const pressure = JSON.parse(await readFile(new URL("model.json", pressureSource)));
+const pressureTarget = new URL(`public/models/${pressure.version}/`, root);
+await mkdir(pressureTarget, { recursive: true });
+await copyFile(new URL(pressure.file, pressureSource), new URL(pressure.file, pressureTarget));

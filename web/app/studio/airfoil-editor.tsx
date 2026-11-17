@@ -1,8 +1,14 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import dynamic from "next/dynamic";
 import type { Design } from "../../lib/inference/surrogate";
 import { Chip, Scrubber } from "./kit";
 import { Stage, type Display } from "./stage";
 import type { Field } from "./design-fields";
+
+const PressureView = dynamic(() => import("./pressure-view"), {
+  ssr: false,
+  loading: () => <p role="status">Opening pressure view…</p>,
+});
 
 type AirfoilEditorProps = {
   design: Design;
@@ -35,6 +41,7 @@ export function AirfoilEditor({
   onCharts,
   onSave,
 }: AirfoilEditorProps) {
+  const [pressureOpen, setPressureOpen] = useState(false);
   return (
     <>
       <Stage
@@ -63,6 +70,9 @@ export function AirfoilEditor({
               {label}
             </Chip>
           ))}
+          <Chip active={pressureOpen} onClick={() => setPressureOpen((open) => !open)}>
+            Pressure
+          </Chip>
         </div>
         <Scrubber
           alpha={design.alpha}
@@ -87,6 +97,7 @@ export function AirfoilEditor({
           {dataExport}
         </div>
       </div>
+      {pressureOpen && <PressureView design={design} invalid={invalid} onChange={onChange} />}
     </>
   );
 }

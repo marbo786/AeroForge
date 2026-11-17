@@ -34,6 +34,10 @@ const evidence = JSON.parse(
   await readFile(new URL("../../artifacts/reliability-v1/summary.json", import.meta.url)),
 );
 const coverage = `models/${manifest.version}/${evidence.coverage_file}`;
+const pressure = JSON.parse(
+  await readFile(new URL("../../artifacts/pressure-v1/model.json", import.meta.url)),
+);
+const pressureModel = `models/${pressure.version}/${pressure.file}`;
 const searchWorkers = files.filter((entry) =>
   /^_next\/static\/chunks\/optimizer-worker\.[^/]+\.js$/.test(entry.name),
 );
@@ -51,6 +55,7 @@ for (const name of [
   model,
   preprocessing,
   coverage,
+  pressureModel,
   `${runtime}/ort.wasm.min.mjs`,
   `${runtime}/ort-wasm-simd-threaded.mjs`,
   `${runtime}/ort-wasm-simd-threaded.wasm`,
@@ -105,6 +110,10 @@ const coverageIndex = JSON.parse(coverageBytes);
 assert.equal(evidence.model_sha256, manifest.model_sha256);
 assert.equal(coverageIndex.model_sha256, manifest.model_sha256);
 assert.equal(coverageIndex.training_sha256, evidence.training_sha256);
+const pressureBytes = await readFile(join(root, pressureModel));
+assert.equal(pressureBytes.byteLength, pressure.bytes);
+assert(pressureBytes.byteLength <= 512 * 1024, "Pressure model exceeds 512 KiB");
+assert.equal(createHash("sha256").update(pressureBytes).digest("hex"), pressure.sha256);
 const totalBytes = files.reduce((sum, file) => sum + file.bytes, 0);
 console.log(
   JSON.stringify(

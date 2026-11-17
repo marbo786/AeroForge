@@ -2,6 +2,8 @@
 
 The V3.4 pressure pilot derives its branch split from the ordered analytic contour, then resamples real paired XFOIL panel pressures along each surface. The dataset retains x/c and y/c alongside Cp. [Pressure pairing and geometry details](v3-4/README.md)
 
+The Airfoil Pressure view maps 257 predicted stations per surface onto the same analytic nose-to-tail arc grid. The graph uses dimensionless Cp and physical x/c, with more negative Cp plotted higher. The matched section marker shows the corresponding unrotated x/c and y/c, including each branch's own trailing-edge endpoint. [Pressure validation and limits](v3-5/README.md)
+
 Phase 2 implements geometry only. Geometry validity does not imply that XFOIL converges, that a trained surrogate exists, or that an aerodynamic prediction is validated.
 
 ## Units, normalization and supported candidate geometry

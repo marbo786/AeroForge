@@ -1,0 +1,29 @@
+{
+  "browser": "157.0.8103.51",
+  "report": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "violations": []
+    }
+  ]
+}

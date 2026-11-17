@@ -1,0 +1,163 @@
+.panel {
+  margin-top: 12px;
+  padding: clamp(12px, 2vw, 20px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  --pressure-upper: #f2936d;
+  --pressure-lower: #6bd2e3;
+}
+
+.panel h2 {
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 22px;
+  line-height: 1.12;
+}
+
+.panel .caption {
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+.controls,
+.branches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.controls {
+  margin: 16px 0 12px;
+}
+
+.controls label,
+.station {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.controls select {
+  min-height: 34px;
+  padding: 4px 8px;
+  border: 1px solid var(--muted);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+
+.plot {
+  display: block;
+  width: 100%;
+  touch-action: pan-y;
+}
+
+.plot text {
+  fill: var(--muted);
+  font-family: var(--font-mono), monospace;
+  font-size: 14px;
+}
+
+.grid,
+.upper,
+.lower,
+.section polyline {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.grid {
+  stroke: var(--line);
+}
+
+.upper,
+.lower {
+  stroke-width: 1.8;
+}
+
+.upper {
+  stroke: var(--pressure-upper);
+}
+
+.lower {
+  stroke: var(--pressure-lower);
+  stroke-dasharray: 4 2;
+}
+
+.inspection {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 35%);
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.branches,
+.station,
+.readout {
+  grid-column: 1;
+}
+
+.swatchUpper,
+.swatchLower {
+  display: inline-block;
+  width: 12px;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.swatchUpper {
+  border-top: 2px solid var(--pressure-upper);
+}
+
+.swatchLower {
+  border-top: 2px dashed var(--pressure-lower);
+}
+
+.station input {
+  width: 100%;
+  min-height: 24px;
+  margin: 0;
+  accent-color: var(--accent-control);
+}
+
+.readout {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.section {
+  grid-column: 2;
+  grid-row: 1 / 4;
+  display: block;
+  width: 100%;
+}
+
+.section polyline {
+  stroke: var(--ink);
+}
+
+.marker {
+  fill: var(--ink);
+  stroke: var(--surface);
+  stroke-width: 1.25;
+  vector-effect: non-scaling-stroke;
+}
+
+@media (max-width: 520px) {
+  .inspection {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .section {
+    grid-column: 1;
+    grid-row: auto;
+    width: min(100%, 240px);
+  }
+
+  .plot text {
+    font-size: 16px;
+  }
+}

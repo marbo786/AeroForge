@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { features } from "../lib/inference/surrogate.ts";
+import { decodePressure, pressureStationCount } from "../lib/inference/pressure.ts";
 import { measureCoverage, type CoverageIndex } from "../lib/inference/coverage.ts";
 import index from "../../artifacts/reliability-v1/coverage-v1.json" with { type: "json" };
 import {
@@ -24,6 +25,25 @@ test("browser feature contract preserves raw ratios, degrees and log Reynolds wi
     Math.log10(500000),
   ]);
   assert.equal(features({ m: 0.06, p: 0.2, t: 0.08, alpha: 8, re: 250000 }).length, 5);
+});
+
+test("pressure validation rejects missing, malformed and nonfinite arrays", () => {
+  const dims = [1, 2, pressureStationCount];
+  const data = new Float32Array(2 * pressureStationCount).map((_, index) => index);
+  const [upper, lower] = decodePressure({ dims, data });
+  assert.equal(upper[0], 0);
+  assert.equal(upper.at(-1), pressureStationCount - 1);
+  assert.equal(lower[0], pressureStationCount);
+  assert.equal(lower.at(-1), data.length - 1);
+  assert.throws(() => decodePressure(undefined), /invalid pressure profile/);
+  assert.throws(() => decodePressure({ dims: [1, data.length], data }), /invalid pressure profile/);
+  assert.throws(
+    () => decodePressure({ dims, data: new Float64Array(data) }),
+    /invalid pressure profile/,
+  );
+  assert.throws(() => decodePressure({ dims, data: data.slice(1) }), /invalid pressure profile/);
+  data[pressureStationCount] = NaN;
+  assert.throws(() => decodePressure({ dims, data }), /invalid pressure profile/);
 });
 
 test("browser rejects extrapolation and invalid inputs before loading the runtime", () => {

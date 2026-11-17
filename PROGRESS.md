@@ -7,7 +7,13 @@ Last updated 2026-11-17 (Asia/Karachi).
 - The v2 Studio is live on Cloudflare Pages. The local `main` and cached `origin/main` both pointed to Cleanup Phase F at `28741d8` when `codex/aeroforge-v3` branched. The exact Pages deployment identity remains pending. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md)
 - The accepted ONNX model predicts isolated 2D sections. The AF–02 car and front-wing motion are illustrative. [Model evidence](docs/ML.md) · [Phase D demo](docs/media/aeroforge-demo.gif)
 
-## Latest work · Phase V3.4
+## Latest work · Phase V3.5
+
+- Generated 1,914 eligible pressure profiles from the approved 2,016 XFOIL attempts. Froze the selected model using validation data, then passed all accuracy gates on 322 profiles from 16 held-out geometries. Upper and lower MAE were 0.0201 and 0.0138 Cp. [Data and model report](docs/v3-5/README.md)
+- Added the on-demand Airfoil Pressure view with inverted Cp, linked upper and lower station inspection and explicit missing states. The 270 KiB graph shares the deployed WASM runtime. Chrome matched the 24 frozen source vectors within `9.54e-7` Cp. [Browser evidence](docs/v3-5/README.md#browser-verification)
+- Warm edit-to-pressure-plot p95 was 35.7 ms on desktop and 36.6 ms in Chrome phone emulation. The four reviewed layouts had zero axe WCAG A/AA violations and zero horizontal overflow. All 115 Python, 29 Node and 82 executed browser tests passed. The final static export passed the Pages guard.
+
+## Phase V3.4
 
 - Ran exactly 24 primary, three repeat and three refined XFOIL solves for surface pressure. All 30 CPWR files uniquely matched their PSAV panels. Twenty-two primary cases met the pressure and polar gates, including at least one result for every geometry/Reynolds pair. All three repeats matched at printed precision. Both primary exclusions occurred at Re 100k. [Pressure pilot](docs/v3-4/README.md)
 - Selected 257 arc-length stations per branch for proposed model evaluation. The worst whole-branch reconstruction MAE was 0.00151 Cp. The largest local 320-versus-160 difference reached 0.02604 Cp on the NACA 6618 lower trailing edge. [Panel sensitivity plot](docs/v3-4/panel-sensitivity.png)
@@ -65,7 +71,7 @@ Last updated 2026-11-17 (Asia/Karachi).
 
 ## Next work
 
-- Await explicit approval for V3.5 and its proposed dataset cap, splits, and Cp validation limits. [Proposed V3.5 gate](docs/v3-4/README.md#proposed-v35-gate-for-approval)
+- Await phase review and approval to begin V3.6 geometry and release readiness. [V3 specification](docs/V3_SPEC.md#phase-v36--polish-and-release-readiness)
 - Confirm the exact Cloudflare deployment metadata, named preview and rollback target before a release. [Deployment guide](docs/DEPLOYMENT.md)
 
 [Original specification](docs/SPEC.md) · [V2 specification](docs/V2_SPEC.md) · [Completed milestones](docs/history/progress-through-cleanup-d.md)

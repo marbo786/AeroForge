@@ -1,0 +1,20 @@
+{
+  "selected": "mirrored",
+  "epochs_per_candidate": 600,
+  "plan_sha256": "843b929814a227770d39fd66ee19a1233d39ed22b41677e1ea0bec04f98afe6e",
+  "trainer_sha256": "ed30f08244ef849e0892deea8d3a31f751e52d5cdbe4211ba4ffe81cd19599e9",
+  "score_sha256": "4641fe682f1c30bb8292a178ac168ef659e1dbbd4909ad1f4bf4991a07e496a1",
+  "fit_partition_sha256": {
+    "train": "22f59396e9c76b56f1788d6e34ab2df85de4bdb9b9d72b5a82aef42a32a78258",
+    "validation": "d479baa7276dc95e976a091d65528dc88525bb7425fc022d3094ad80f98c553e"
+  },
+  "model_sha256": "9e0f97d704fcf0a700f939d390c0fa33866da70896f6d89d4e649d75fe6483e3",
+  "onnx_sha256": "5571902bb92d07d945c3da253e2eb49cb15bf3509e9f5d64082ecb67c14b0037",
+  "onnx_bytes": 276173,
+  "source_onnx_max_abs": 9.5367431640625e-07,
+  "parity_vectors_sha256": "71237a807c5aa4193caf0f7b79b2fa167463182e2d878a38d6fde58b80210e2f",
+  "validation_sha256": "68623f6b071e21c1ff4f9335c9aee8f8f6e1db8cdbf36c92502b4e911d5222c1",
+  "torch": "2.12.0+cpu",
+  "onnx": "1.19.1",
+  "onnxruntime": "1.23.2"
+}

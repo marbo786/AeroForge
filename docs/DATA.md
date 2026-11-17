@@ -2,6 +2,8 @@
 
 The separate V3.4 pilot captures and audits surface pressure from the pinned XFOIL build. Its raw attempts and paired arrays are under `data/pressure-pilot-v1/`. [Pressure feasibility report](v3-4/README.md)
 
+V3.5 generated 2,016 fresh attempts with frozen geometry-disjoint splits. The paired profiles and solver originals are local under `data/pressure-v1/`. The committed report records counts, exclusions and provenance by partition. [V3.5 dataset and reproduction](v3-5/README.md#data-and-model-selection)
+
 Phase 3 establishes a real label source and a bounded pilot. It does not train a model, implement inference integration or establish experimental aerodynamic accuracy.
 
 ## Source and acquisition
