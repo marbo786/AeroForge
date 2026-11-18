@@ -1,5 +1,7 @@
 "use client";
 
+import type { Design } from "../../lib/inference/domain";
+import type { PressureProfiles } from "../studio/use-pressure-profile";
 import dynamic from "next/dynamic";
 import { ThemeToggle } from "../studio/theme-toggle";
 import Image from "next/image";
@@ -41,12 +43,16 @@ export function VehicleViewport({
   onAirfoil,
   wing,
   alpha = 0,
+  design,
+  profiles,
 }: {
   active?: boolean;
   initialized?: boolean;
   onAirfoil?: () => void;
   wing?: WingInspection;
   alpha?: number;
+  design?: Design;
+  profiles?: PressureProfiles;
 }) {
   const [status, setStatus] = useState<Status>("poster");
   const [progress, setProgress] = useState<number | null>(null);
@@ -117,6 +123,8 @@ export function VehicleViewport({
       <div
         className="inspection-bay"
         data-render-status={status}
+        data-section-geometry={design ? [design.m, design.p, design.t].join("/") : undefined}
+        data-pressure-surface={profiles ? "ready" : undefined}
         data-render-tier={renderScene ? (compact ? "compact" : "desktop") : undefined}
         data-triangles={stats?.triangles}
         data-draw-calls={stats?.calls}
@@ -143,6 +151,8 @@ export function VehicleViewport({
               compact={compact}
               cameraHelp={cameraHelp}
               alpha={alpha}
+              design={design}
+              profiles={profiles}
               onInspect={wing ? inspect : undefined}
               onProgress={setProgress}
               onFailure={(kind) => setStatus(kind)}

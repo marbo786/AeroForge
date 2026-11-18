@@ -1,6 +1,8 @@
 import { useState, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 import type { Design } from "../../lib/inference/surrogate";
+import { FlowControls, FlowStudy } from "./flow-study";
+import type { FlowMode, usePressureProfile } from "./use-pressure-profile";
 import { Chip, Scrubber } from "./kit";
 import { Stage, type Display } from "./stage";
 import type { Field } from "./design-fields";
@@ -12,6 +14,9 @@ const PressureView = dynamic(() => import("./pressure-view"), {
 
 type AirfoilEditorProps = {
   design: Design;
+  flowMode: FlowMode;
+  onFlowMode: (mode: FlowMode) => void;
+  pressure: ReturnType<typeof usePressureProfile>;
   display: Display;
   onDisplay: (display: Display) => void;
   saved?: Design;
@@ -28,6 +33,9 @@ type AirfoilEditorProps = {
 
 export function AirfoilEditor({
   design,
+  flowMode,
+  onFlowMode,
+  pressure,
   display,
   onDisplay,
   saved,
@@ -59,7 +67,6 @@ export function AirfoilEditor({
               ["camber", "Camber line"],
               ["chord", "Chord"],
               ["labels", "Labels"],
-              ["flow", "Flow [conceptual]"],
             ] as const
           ).map(([key, label]) => (
             <Chip
@@ -74,6 +81,7 @@ export function AirfoilEditor({
             Pressure
           </Chip>
         </div>
+        <FlowControls mode={flowMode} onMode={onFlowMode} />
         <Scrubber
           alpha={design.alpha}
           reduced={reduced}
@@ -97,6 +105,7 @@ export function AirfoilEditor({
           {dataExport}
         </div>
       </div>
+      {flowMode !== "off" && <FlowStudy design={design} mode={flowMode} pressure={pressure} />}
       {pressureOpen && <PressureView design={design} invalid={invalid} onChange={onChange} />}
     </>
   );

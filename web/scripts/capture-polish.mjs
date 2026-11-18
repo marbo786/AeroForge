@@ -63,7 +63,7 @@ try {
             await page.locator('[data-render-status="ready"]').waitFor();
           await audit(view);
         }
-        if (phase !== "phase-1") {
+        if (["phase-2", "phase-3"].includes(phase)) {
           await page.goto("http://127.0.0.1:4175/");
           if (width > 740) await page.locator('[data-render-status="ready"]').waitFor();
           await audit("landing");
@@ -73,7 +73,7 @@ try {
           await audit("tour");
         }
       }
-      if (["phase-3", "phase-4", "phase-5"].includes(phase)) {
+      if (phase === "phase-3") {
         for (const livery of ["ion", "violet"]) {
           for (const theme of ["dark", "light"]) {
             for (const view of ["studio", "analysis"]) {
@@ -100,6 +100,38 @@ try {
         await page.goto("http://127.0.0.1:4175/studio/?view=airfoil&livery=ember");
         await page.locator(".start-lights i").first().waitFor();
         await audit("start-lights");
+      }
+      if (phase === "phase-4") {
+        for (const theme of ["dark", "light"]) {
+          await page.goto("http://127.0.0.1:4175/studio/?view=airfoil&livery=ember");
+          await page.evaluate((theme) => {
+            document.documentElement.dataset.theme = theme;
+            localStorage.setItem("aeroforge-theme", theme);
+          }, theme);
+          await page.getByRole("button", { name: "Surface Cp", exact: true }).click();
+          await page.locator('[data-flow-visual="surface"]').waitFor();
+          await audit("surface-cp");
+          await page.getByRole("button", { name: "Smoke lines", exact: true }).click();
+          await audit("smoke");
+          await page.goto("http://127.0.0.1:4175/studio/?livery=ember");
+          if (width > 740) await page.locator('[data-render-status="ready"]').waitFor();
+          await page.getByRole("button", { name: "Inspect front wing", exact: true }).click();
+          await page.getByRole("button", { name: "Surface Cp", exact: true }).click();
+          await page.locator('[data-pressure-surface="ready"]').waitFor();
+          await audit("wing-cp");
+          for (const [name, query] of [
+            ["pressure-unavailable", "m=.02&p=.4&t=.12&aoa=3&re=240000"],
+            ["pressure-rejected", "m=0&p=0&t=.08&aoa=8&re=100000"],
+          ]) {
+            await page.goto(`http://127.0.0.1:4175/studio/?view=airfoil&${query}`);
+            await page.getByRole("button", { name: "Surface Cp", exact: true }).click();
+            await page
+              .getByRole("region", { name: "Pressure-driven section study" })
+              .getByRole("status")
+              .waitFor();
+            await audit(name);
+          }
+        }
       }
       await page.close();
     }

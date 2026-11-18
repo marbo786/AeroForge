@@ -17,6 +17,8 @@ import { ExportMenu, ShareDesign } from "./design-actions";
 import { Comparison } from "./comparison";
 import { ModelDetails } from "./model-details";
 import { DesignParameters } from "./design-parameters";
+import { FlowControls, FlowStudy } from "./flow-study";
+import { usePressureProfile, type FlowMode } from "./use-pressure-profile";
 import { LiveryPicker, useLivery } from "./livery";
 import { Tour } from "./tour";
 import { ThemeToggle } from "./theme-toggle";
@@ -95,8 +97,9 @@ export default function Instrument(props: InstrumentProps) {
     camber: true,
     chord: true,
     labels: true,
-    flow: false,
   });
+  const [flowMode, setFlowMode] = useState<FlowMode>("off");
+  const pressure = usePressureProfile(design, flowMode !== "off" && view !== "analysis", invalid);
   const [drawer, setDrawer] = useState<StudioDrawer | null>(null);
   const [optimizerOpened, setOptimizerOpened] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
@@ -349,6 +352,8 @@ export default function Instrument(props: InstrumentProps) {
                 initialized={props.urlReady}
                 onAirfoil={() => changeMode("airfoil")}
                 alpha={design.alpha}
+                design={design}
+                profiles={pressure.profiles}
                 wing={{
                   selected: wingSelected,
                   onInspect: inspectWing,
@@ -362,6 +367,11 @@ export default function Instrument(props: InstrumentProps) {
                     <p>Representative NACA section</p>
                   </div>
                   <SectionPreview design={design} invalid={invalid} wing />
+                  <p className="live-cut-caption">
+                    Live section cut. Representative NACA surface overlay; the surrounding car wing
+                    is illustrative.
+                  </p>
+                  <FlowControls mode={flowMode} onMode={setFlowMode} />
                   <button
                     type="button"
                     className="chip micro"
@@ -374,9 +384,15 @@ export default function Instrument(props: InstrumentProps) {
                   </button>
                 </section>
               )}
+              {view === "studio" && wingSelected && flowMode !== "off" && (
+                <FlowStudy design={design} mode={flowMode} pressure={pressure} />
+              )}
             </div>
             {view === "airfoil" && (
               <AirfoilEditor
+                flowMode={flowMode}
+                onFlowMode={setFlowMode}
+                pressure={pressure}
                 display={display}
                 onDisplay={setDisplay}
                 design={design}

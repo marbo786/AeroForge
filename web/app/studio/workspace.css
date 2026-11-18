@@ -933,3 +933,67 @@
     padding-inline: 6px;
   }
 }
+
+.flow-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.flow-study {
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  min-width: 0;
+}
+.flow-study h2 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+.flow-study p,
+.live-cut-caption {
+  font-size: 12px;
+  color: var(--muted);
+}
+.flow-study svg {
+  display: block;
+  width: 100%;
+  background: #101419;
+  margin-block: 12px;
+}
+.flow-foil {
+  fill: #25333e;
+  stroke: var(--foil-line);
+}
+.smoke-trace {
+  fill: none;
+  stroke-width: 2;
+  stroke-dasharray: 15 8;
+  animation: smoke-travel 4s linear infinite;
+}
+@keyframes smoke-travel {
+  to {
+    stroke-dashoffset: -92;
+  }
+}
+.cp-scale {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font:
+    11px var(--font-mono),
+    monospace;
+}
+.cp-scale i {
+  flex: 1;
+  min-width: 60px;
+  height: 8px;
+  background: linear-gradient(90deg, #47a1ff, #ff974b);
+}
+.flow-limit {
+  margin-top: 10px !important;
+}
+.v2-vehicle-workspace > .flow-study {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+}

@@ -1,5 +1,7 @@
 "use client";
 
+import type { Design } from "../../lib/inference/domain";
+import type { PressureProfiles } from "../studio/use-pressure-profile";
 import { Canvas } from "@react-three/fiber";
 import { useState, type RefObject } from "react";
 import type { Vector3 } from "three";
@@ -14,6 +16,8 @@ type SceneProps = {
   wingPose: RefObject<CameraPose | null>;
   wingSelected: boolean;
   alpha: number;
+  design?: Design;
+  profiles?: PressureProfiles;
   compact: boolean;
   cameraHelp: string;
   onInspect?: () => void;

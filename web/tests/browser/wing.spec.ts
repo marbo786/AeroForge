@@ -186,13 +186,14 @@ test("touch pinch orbits without selection and a single tap selects the wing", a
   await alpha(page).fill("8");
   await page.keyboard.press("Escape");
   await expect(inspection(page).locator("figcaption")).toContainText("NACA 4418");
-  const clamped = await frame(page);
-  expect(clamped.equals(beforePitch)).toBe(false);
+  const atEightDegrees = await frame(page);
+  expect(atEightDegrees.equals(beforePitch)).toBe(false);
   await page.getByRole("button", { name: "Edit parameters" }).tap();
   await alpha(page).fill("12");
   await page.keyboard.press("Escape");
   await expect(inspection(page).locator("figcaption")).toContainText("12°");
-  expect((await frame(page)).equals(clamped)).toBe(true);
+  expect((await frame(page)).equals(atEightDegrees)).toBe(false);
+  await expect(page.getByTestId("cl")).toHaveText("—");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 

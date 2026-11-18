@@ -31,3 +31,15 @@ The illustrative Long straight brief selects minimum drag at alpha 2° and CL �
 Phase 3 verification: `npm run verify` passed formatting, lint, TypeScript, 29 Node tests, export/Pages guards and 94 browser tests (17 profile skips). [Sixty audited states](phase-3/audit.json) have zero WCAG A/AA violations and zero overflow. Twelve focused feature tests and four applicable wing tests also passed. Wing picking now probes an actual selectable point, preserving click/keyboard/camera/touch assertions across viewport proportions. No requested behavior deferred.
 
 Reproduce captures from `web/` after a build with `node scripts/capture-polish.mjs phase-3` (substitute the phase number). The script runs its own static server and pinned axe checker. Captures use reduced motion and Chrome phone emulation.
+
+## Phase 4 · pressure and a linked section
+
+Surface Cp colors the actual solver-aligned NACA coordinates with the existing pressure graph. The fixed −3 to +1 color scale visibly labels its saturated ends, while the Pressure plot retains exact station inspection. The graph, transforms, pressure coordinates and frozen artifacts are unchanged. First activation loads pressure; flow-off does not request that graph.
+
+Selected-wing inspection adds an in-place representative section overlay and a white section cut that regenerate with the shared geometry. The existing pitch pivot carries both. Pressure repeats uniformly across the illustrative span and is not a finite-wing pressure result. The car’s surrounding multi-plane assembly remains illustrative.
+
+Wind-tunnel smoke uses pressure colors and responds to geometry and pressure magnitudes, but its paths and dash speed are explicitly schematic. A surface-pressure model cannot establish the surrounding velocity field or streamlines. Reduced motion freezes the dashes.
+
+Nominal geometry/flow bounds and the pressure model’s sampled alpha/Re values gate the study. Known rejected solver cases remain unavailable. Keyed results prevent stale colors after edits or unsupported inputs; failed pressure can be retried. No CFD, velocity inference, downforce conversion or new model is introduced.
+
+Phase 4 verification: `npm run verify` passed formatting, lint, TypeScript, 29 Node tests, export/Pages guards and 101 browser tests (18 profile skips). [Forty-eight audited states](phase-4/audit.json) have zero WCAG A/AA violations and zero overflow. Eleven applicable focused pressure/wing checks and three controls/export checks passed. Frozen Cp vectors agree with displayed samples within `1e-5`. The pitch test now checks distinct 8°/12° illustrative poses while retaining absent coefficients at 12°. No model, Python or frozen-artifact changes. Predicted streamlines and a velocity field remain outside the available model; the smoke trajectories are deliberately labeled schematic.

@@ -19,7 +19,7 @@ export function WingPitch({ pivot, alpha }: { pivot: Object3D; alpha: number }) 
   const reduced = useReducedPreference();
   const initialized = useRef(false);
   // The car faces +Z, so a negative X rotation raises its leading edge.
-  const pitch = MathUtils.degToRad(-MathUtils.clamp(alpha, -7, 7));
+  const pitch = MathUtils.degToRad(-alpha);
   useLayoutEffect(() => {
     if (!initialized.current || reduced) pivot.rotation.x = pitch;
     initialized.current = true;

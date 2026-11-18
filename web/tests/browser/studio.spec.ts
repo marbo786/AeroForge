@@ -573,8 +573,8 @@ test("controls drawer, display toggles, reduced motion and real exports remain u
   await closeControls(page);
   await page.getByRole("button", { name: "Grid", exact: true }).click();
   await expect(page.locator(".airfoil-svg rect[fill='url(#paper-grid)']")).toBeVisible();
-  await page.getByRole("button", { name: "Flow [conceptual]", exact: true }).click();
-  await expect(page.locator(".conceptual-flow")).toContainText("CONCEPTUAL / NOT SIMULATED");
+  await page.getByRole("button", { name: "Surface Cp", exact: true }).click();
+  await expect(page.locator('[data-flow-visual="surface"]')).toBeVisible();
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(page.getByRole("button", { name: "Play alpha sweep", exact: true })).toBeDisabled();
   await page.getByRole("button", { name: "Export +", exact: true }).click();

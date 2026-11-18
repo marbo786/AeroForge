@@ -21,7 +21,6 @@ export type Display = {
   camber: boolean;
   chord: boolean;
   labels: boolean;
-  flow: boolean;
 };
 type HandleField = "m" | "p" | "t" | "alpha";
 type Handle = "camber" | "position" | "thickness" | "rotation";
@@ -355,14 +354,6 @@ export function Stage({
             {display.camber && <polyline className="camber-line" points={camberLine} />}
             {display.chord && <path d="M120 240H680" className="chord-line" />}
             <path d={`M${120 + 560 * (visual.p || 0.4)} 240V287.6`} className="handle-stem" />
-            {display.flow && (
-              <g className="conceptual-flow" aria-label="Conceptual airflow, not a simulation">
-                <path d="M30 170Q280 90 760 178M30 285Q350 350 760 275" />
-                <text x="440" y="380">
-                  CONCEPTUAL / NOT SIMULATED
-                </text>
-              </g>
-            )}
           </g>
           {saved && savedPath && (
             <path

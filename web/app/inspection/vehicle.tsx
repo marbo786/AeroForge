@@ -1,4 +1,7 @@
-import { useFrame, useThree } from "@react-three/fiber";
+import type { Design } from "../../lib/inference/domain";
+import type { PressureProfiles } from "../studio/use-pressure-profile";
+import { WingSection } from "./wing-section";
+import { createPortal, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import { Group, type Material, Mesh, type Object3D, Vector3 } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
@@ -63,6 +66,8 @@ type VehicleProps = {
   compact: boolean;
   lightingSettled: boolean;
   alpha: number;
+  design?: Design;
+  profiles?: PressureProfiles;
   onAnchor: (anchor: Vector3 | null) => void;
 };
 
@@ -76,6 +81,8 @@ export function Vehicle({
   compact,
   lightingSettled,
   alpha,
+  design,
+  profiles,
 }: VehicleProps) {
   const { gl, invalidate } = useThree();
   const [loaded, setLoaded] = useState<{ model: Object3D; pivot: Group | null }>();
@@ -139,6 +146,10 @@ export function Vehicle({
     <>
       <primitive object={visible.model} dispose={null} />
       <LiveryPaint model={visible.model} />
+      {visible.pivot &&
+        wingSelected &&
+        design &&
+        createPortal(<WingSection design={design} profiles={profiles} />, visible.pivot)}
       {visible.pivot && <WingPitch pivot={visible.pivot} alpha={alpha} />}
       <WingInteraction model={visible.model} selected={wingSelected} onInspect={onInspect} />
     </>
