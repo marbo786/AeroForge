@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Preview from "./preview";
+import "../studio/tokens.css";
 import "./inspection.css";
 
 export const metadata: Metadata = {

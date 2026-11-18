@@ -1,11 +1,17 @@
 # AeroForge progress
 
-Last updated 2026-11-17 (Asia/Karachi).
+Last updated 2026-11-19 (Asia/Karachi).
 
 ## Current status
 
 - The v2 Studio is live on Cloudflare Pages. The local `main` and cached `origin/main` both pointed to Cleanup Phase F at `28741d8` when `codex/aeroforge-v3` branched. The exact Pages deployment identity remains pending. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md)
 - The accepted ONNX model predicts isolated 2D sections. The AF–02 car and front-wing motion are illustrative. [Model evidence](docs/ML.md) · [Phase D demo](docs/media/aeroforge-demo.gif)
+
+## Portfolio polish � Phase 1
+
+- Consolidated dark/orange and light palettes, added a persistent theme control, raised small labels and enlarged live coefficient readouts relative to the section name.
+- Added static social metadata and a designed preview with explicit section/car limits. Models, Python and frozen evidence remain unchanged.
+- Passed `npm run verify`: 29 Node and 84 browser tests, 17 profile skips; 18 captured states have zero WCAG A/AA violations and overflow. Verification and captures: [polish record](docs/polish/README.md).
 
 ## Latest work · Phase V3.5
 

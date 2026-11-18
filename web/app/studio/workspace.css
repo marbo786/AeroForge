@@ -1,26 +1,8 @@
 .v2-workspace.instrument {
-  --paper: #101419;
-  --workspace: #12191e;
-  --surface: #171d23;
-  --elevated: #202a31;
-  --line: #34424b;
-  --ink: #e5edf1;
-  --muted: #a3b2bc;
-  --accent: #71ddd9;
-  --accent-control: #235558;
-  --construction: #809a9f;
-  --foil-fill: #27434a;
-  --foil-line: #a9e3e0;
-  --valid: #a8e2c1;
-  --valid-bg: #17352e;
-  --amber: #f2c57c;
-  --amber-bg: #392b1a;
-  --danger: #ffaaa8;
   padding-bottom: 0;
-  color-scheme: dark;
 }
 .v2-workspace .chip.active {
-  color: var(--ink);
+  color: #fff;
 }
 .v2-workspace .chip:disabled {
   opacity: 0.48;
@@ -111,7 +93,7 @@
 }
 .v2-layout {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr) 208px;
+  grid-template-columns: 220px minmax(0, 1fr) 260px;
   gap: 10px;
   padding: 10px;
   align-items: stretch;
@@ -136,7 +118,7 @@
 }
 .v2-view-heading h1 {
   font:
-    625 clamp(25px, 3vw, 39px)/1.05 var(--font-geist),
+    625 clamp(23px, 2.5vw, 30px)/1.05 var(--font-geist),
     sans-serif;
   letter-spacing: -0.055em;
 }
@@ -334,7 +316,7 @@
 }
 .v2-panel-heading .micro {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 11px;
 }
 .v2-parameter-group {
   padding: 12px 0;
@@ -399,12 +381,12 @@
 }
 .v2-metric .readout-number {
   margin-top: 3px;
-  font-size: clamp(22px, 2vw, 32px);
+  font-size: clamp(32px, 3vw, 44px);
   letter-spacing: -0.06em;
 }
 .v2-metric .readout-caption {
   margin-top: 4px;
-  font-size: 8px;
+  font-size: 11px;
 }
 .v2-model {
   display: grid;
@@ -415,7 +397,7 @@
   justify-self: start;
 }
 .v2-model .status-pill {
-  font-size: 9px !important;
+  font-size: 11px !important;
 }
 .v2-latency {
   display: flex;
@@ -634,7 +616,7 @@
     border-left: 1px solid var(--line);
   }
   .v2-metric .readout-number {
-    font-size: clamp(20px, 5vw, 32px);
+    font-size: clamp(24px, 5.5vw, 38px);
   }
   .v2-model {
     grid-template-columns: auto auto auto 1fr;
@@ -681,14 +663,16 @@
     font-size: 15px;
   }
   .v2-header-actions {
-    grid-column: 2;
-    grid-row: 1;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: stretch;
+    justify-content: space-between;
     gap: 5px;
   }
   .v2-header-actions .chip {
     min-height: 44px;
     padding-inline: 7px;
-    font-size: 8px;
+    font-size: 11px;
   }
   .v2-modes {
     grid-column: 1 / -1;
@@ -783,11 +767,11 @@
   }
   .v2-metric-label {
     min-height: 34px;
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.25;
   }
   .v2-metric-label abbr {
-    font-size: 9px;
+    font-size: 11px;
   }
   .v2-model {
     grid-template-columns: minmax(0, 1fr) auto;

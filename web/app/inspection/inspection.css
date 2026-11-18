@@ -1,9 +1,5 @@
 .inspection {
-  --ink: #e5edf1;
-  --muted: #a3b2bc;
-  --edge: #38464e;
-  --accent: #71ddd9;
-  background: #101419;
+  background: var(--paper);
   color: var(--ink);
   min-height: 100svh;
   max-width: none;
@@ -11,7 +7,6 @@
   margin: 0;
   padding: 0;
   font-family: var(--font-geist), system-ui, sans-serif;
-  color-scheme: dark;
 }
 .inspection * {
   box-sizing: border-box;
@@ -129,7 +124,7 @@
 .inspection-state p {
   color: var(--ink);
   font-size: 12px;
-  background: #101419;
+  background: var(--paper);
   border: 1px solid var(--edge);
   margin: 0;
   padding: 7px 10px;
@@ -159,7 +154,7 @@
   justify-content: center;
   gap: 6px;
   color: var(--ink);
-  background: #171d23;
+  background: var(--surface);
   border: 1px solid var(--edge);
   border-radius: 3px;
   font: inherit;

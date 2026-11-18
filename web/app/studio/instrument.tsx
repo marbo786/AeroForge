@@ -17,6 +17,7 @@ import { ExportMenu, ShareDesign } from "./design-actions";
 import { Comparison } from "./comparison";
 import { ModelDetails } from "./model-details";
 import { DesignParameters } from "./design-parameters";
+import { ThemeToggle } from "./theme-toggle";
 import { Telemetry } from "./telemetry";
 import { useTrainingCoverage } from "./use-training-coverage";
 import "./tokens.css";
@@ -276,6 +277,7 @@ export default function Instrument(props: InstrumentProps) {
           ))}
         </nav>
         <div className="v2-header-actions">
+          <ThemeToggle />
           <button
             className="chip micro"
             aria-haspopup="dialog"

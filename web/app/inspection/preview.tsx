@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { ThemeToggle } from "../studio/theme-toggle";
 import Image from "next/image";
 import { Component, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import {
@@ -251,6 +252,7 @@ export default function Preview() {
         <a href="/" className="inspection-brand">
           AeroForge <span>Design Lab</span>
         </a>
+        <ThemeToggle />
         <a className="inspection-button" href="/studio/?view=airfoil">
           Open Airfoil editor <span aria-hidden="true">↗</span>
         </a>
