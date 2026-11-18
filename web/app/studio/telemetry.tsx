@@ -1,9 +1,12 @@
+import { useEffect, useState } from "react";
 import { Readout, StatusPill } from "./kit";
 import type { Result } from "./section-design";
 import { coverageLabels, type TrainingCoverage } from "./use-training-coverage";
 
 type TelemetryProps = {
   current: Result | null;
+  baseline: Result | null;
+  conditionKey: string;
   pending: boolean;
   sweeping: boolean;
   inBounds: boolean;
@@ -19,6 +22,8 @@ type TelemetryProps = {
 
 export function Telemetry({
   current,
+  baseline,
+  conditionKey,
   pending,
   sweeping,
   inBounds,
@@ -31,10 +36,54 @@ export function Telemetry({
   onClamp,
   onDetails,
 }: TelemetryProps) {
+  const [started, setStarted] = useState(false);
+  const [history, setHistory] = useState<Record<string, { first: Result; best: Result }>>({});
+  useEffect(() => {
+    if (!current) return;
+    setStarted(true);
+    setHistory((previous) => {
+      const prior = previous[conditionKey];
+      return {
+        ...previous,
+        [conditionKey]: {
+          first: prior?.first ?? current,
+          best: {
+            ...current,
+            cl: Math.max(prior?.best.cl ?? -Infinity, current.cl),
+            cd: Math.min(prior?.best.cd ?? Infinity, current.cd),
+            ratio: Math.max(prior?.best.ratio ?? -Infinity, current.ratio),
+          },
+        },
+      };
+    });
+  }, [current, conditionKey]);
+  const reference = baseline ?? history[conditionKey]?.first;
+  function delta(key: "cl" | "cd" | "ratio", digits: number) {
+    if (!current || !reference) return <span className="metric-delta">Δ —</span>;
+    const change = current[key] - reference[key];
+    const gain = change * (key === "cd" ? -1 : 1);
+    const best = history[conditionKey]?.best[key];
+    const isBest = gain > 1e-8 && best !== undefined && Math.abs(best - current[key]) < 1e-8;
+    const state = isBest ? "best" : gain > 1e-8 ? "improved" : gain < -1e-8 ? "worse" : "neutral";
+    return (
+      <span className={`metric-delta delta-${state}`}>
+        Δ {change >= 0 ? "+" : ""}
+        {change.toFixed(digits)} ·{" "}
+        {isBest
+          ? "Best"
+          : state === "neutral"
+            ? "Baseline"
+            : state === "improved"
+              ? "Improved"
+              : "Worse"}
+      </span>
+    );
+  }
   return (
     <aside className="v2-telemetry" aria-label="Predicted performance">
       <div className="v2-panel-heading">
         <h2>Predicted performance</h2>
+        <span className="micro">Pit wall / live telemetry</span>
         <span className="micro">Isolated 2D section</span>
       </div>
       <div className="v2-metrics">
@@ -57,9 +106,24 @@ export function Telemetry({
               sweeping={sweeping && inBounds}
               digits={digits}
             />
+            {delta(key, digits)}
           </div>
         ))}
       </div>
+      <p className="telemetry-baseline">
+        {baseline ? "Against saved design" : "Against first section at this α / Re"}. Higher CL /
+        L/D, lower CD. Best is local to this session and operating point.
+      </p>
+      {pending && !started && (
+        <div className="start-lights" role="status" aria-label="Initializing prediction model">
+          <div aria-hidden="true">
+            {[0, 1, 2, 3, 4].map((light) => (
+              <i key={light} style={{ animationDelay: `${light * 180}ms` }} />
+            ))}
+          </div>
+          <span>Initializing prediction model…</span>
+        </div>
+      )}
       <div className="v2-model">
         <div className="v2-latency">
           <span>Inference</span>

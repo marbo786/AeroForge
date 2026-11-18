@@ -73,6 +73,34 @@ try {
           await audit("tour");
         }
       }
+      if (["phase-3", "phase-4", "phase-5"].includes(phase)) {
+        for (const livery of ["ion", "violet"]) {
+          for (const theme of ["dark", "light"]) {
+            for (const view of ["studio", "analysis"]) {
+              await page.goto(`http://127.0.0.1:4175/studio/?view=${view}&livery=${livery}`);
+              await page
+                .locator('[aria-label="Prediction status"]')
+                .filter({ hasText: "Prediction ready" })
+                .waitFor();
+              await page.evaluate((theme) => {
+                document.documentElement.dataset.theme = theme;
+                localStorage.setItem("aeroforge-theme", theme);
+              }, theme);
+              if (view === "studio" && width > 740)
+                await page.locator('[data-render-status="ready"]').waitFor();
+              await audit(`${livery}-${view}`);
+            }
+          }
+        }
+        await page.goto("http://127.0.0.1:4175/studio/?view=airfoil&livery=ember");
+        await page.getByRole("button", { name: "Optimize", exact: true }).click();
+        await page.getByLabel("Illustrative track brief").selectOption("low-drag");
+        await audit("track-preset");
+        await page.route("**/selected.onnx", () => {});
+        await page.goto("http://127.0.0.1:4175/studio/?view=airfoil&livery=ember");
+        await page.locator(".start-lights i").first().waitFor();
+        await audit("start-lights");
+      }
       await page.close();
     }
     await writeFile(`${folder}/audit.json`, JSON.stringify(reports, null, 2));

@@ -17,6 +17,7 @@ import { ExportMenu, ShareDesign } from "./design-actions";
 import { Comparison } from "./comparison";
 import { ModelDetails } from "./model-details";
 import { DesignParameters } from "./design-parameters";
+import { LiveryPicker, useLivery } from "./livery";
 import { Tour } from "./tour";
 import { ThemeToggle } from "./theme-toggle";
 import { Telemetry } from "./telemetry";
@@ -88,6 +89,7 @@ export default function Instrument(props: InstrumentProps) {
     onReset,
     onRetry,
   } = props;
+  const { livery } = useLivery();
   const [display, setDisplay] = useState<Display>({
     grid: false,
     camber: true,
@@ -160,7 +162,7 @@ export default function Instrument(props: InstrumentProps) {
     setDrawer(next);
   }
   function openShare() {
-    setShareUrl(sharedDesignUrl(window.location.origin, design, view));
+    setShareUrl(sharedDesignUrl(window.location.origin, design, view, livery));
     openDrawer("Share design");
   }
   function changeMode(next: WorkspaceView) {
@@ -241,6 +243,8 @@ export default function Instrument(props: InstrumentProps) {
   const telemetryPanel = (
     <Telemetry
       current={current}
+      baseline={saved?.result ?? null}
+      conditionKey={`${design.alpha}/${design.re}`}
       pending={pending}
       sweeping={sweeping}
       inBounds={inBounds}
@@ -254,10 +258,9 @@ export default function Instrument(props: InstrumentProps) {
       onDetails={() => openDrawer("Details")}
     />
   );
-  const analysisTelemetryFirst = compact && view === "analysis";
 
   return (
-    <div className="instrument v2-workspace">
+    <div className="instrument v2-workspace" data-view={view}>
       <header className="v2-header">
         <a href="/" className="v2-brand" aria-label="AeroForge home">
           <svg viewBox="0 0 32 24" width="28" height="24" aria-hidden="true">
@@ -307,6 +310,8 @@ export default function Instrument(props: InstrumentProps) {
             </aside>
           )}
           <div className="v2-center">
+            <LiveryPicker />
+            {telemetryPanel}
             <div className="v2-view-heading">
               <div>
                 <p className="micro">
@@ -387,7 +392,6 @@ export default function Instrument(props: InstrumentProps) {
                 onSave={saveDesign}
               />
             )}
-            {analysisTelemetryFirst && telemetryPanel}
             {view === "analysis" && (
               <section className="v2-analysis" aria-labelledby={analysisTitle}>
                 <h2 className="sr-only" id={analysisTitle}>
@@ -409,7 +413,6 @@ export default function Instrument(props: InstrumentProps) {
               </section>
             )}
           </div>
-          {!analysisTelemetryFirst && telemetryPanel}
         </div>
         {view !== "analysis" && (
           <div className="v2-dock">

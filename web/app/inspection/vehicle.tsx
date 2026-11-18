@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Group, type Material, Mesh, type Object3D, Vector3 } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { compactVehiclePath, vehiclePath, type RenderStats } from "./camera";
+import { LiveryPaint } from "./livery-paint";
 import { WingInteraction, WingPitch } from "./wing";
 
 function disposeVehicle(object: Object3D) {
@@ -137,6 +138,7 @@ export function Vehicle({
   return visible ? (
     <>
       <primitive object={visible.model} dispose={null} />
+      <LiveryPaint model={visible.model} />
       {visible.pivot && <WingPitch pivot={visible.pivot} alpha={alpha} />}
       <WingInteraction model={visible.model} selected={wingSelected} onInspect={onInspect} />
     </>

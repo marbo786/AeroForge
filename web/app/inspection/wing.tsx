@@ -11,6 +11,7 @@ import {
   Raycaster,
   Vector2,
 } from "three";
+import { liveries, useLivery } from "../studio/livery";
 import { useReducedPreference } from "../studio/use-reduced-preference";
 
 export function WingPitch({ pivot, alpha }: { pivot: Object3D; alpha: number }) {
@@ -42,6 +43,7 @@ export function WingInteraction({
   selected: boolean;
   onInspect?: () => void;
 }) {
+  const { livery } = useLivery();
   const { gl, invalidate, get } = useThree();
   const inspect = useRef(onInspect);
   inspect.current = onInspect;
@@ -58,8 +60,8 @@ export function WingInteraction({
         if (!(part instanceof Mesh) || !(part.material instanceof MeshStandardMaterial)) return;
         originals.set(part, part.material);
         const highlight = part.material.clone();
-        highlight.color.lerp(new Color("#209da8"), 0.64);
-        highlight.emissive.set("#167684");
+        highlight.color.lerp(new Color(liveries[livery].accent), 0.64);
+        highlight.emissive.set(liveries[livery].paint);
         highlight.emissiveIntensity = 0.36;
         part.material = highlight;
       });
@@ -136,6 +138,6 @@ export function WingInteraction({
       canvas.removeEventListener("lostpointercapture", end);
       canvas.style.cursor = "";
     };
-  }, [enabled, get, gl, invalidate, model, selected]);
+  }, [enabled, get, gl, invalidate, model, selected, livery]);
   return null;
 }

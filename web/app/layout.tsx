@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./style.css";
+import { LiveryProvider } from "./studio/livery";
 
 const geist = localFont({
   src: "../node_modules/next/dist/next-devtools/server/font/geist-latin.woff2",
@@ -28,13 +29,13 @@ export const metadata: Metadata = {
     type: "website",
     title: "AeroForge | Aerodynamic Design Studio",
     description:
-      "Explore the AF�02. Design isolated NACA sections with live browser predictions and honest limits.",
+      "Explore the AF–02. Design isolated NACA sections with live browser predictions and honest limits.",
     images: [
       {
         url: "/social-preview.png",
         width: 1200,
         height: 630,
-        alt: "AeroForge AF�02 aerodynamic design studio. Illustrative car, isolated section predictions.",
+        alt: "AeroForge AF–02 aerodynamic design studio. Illustrative car, isolated section predictions.",
       },
     ],
   },
@@ -44,7 +45,9 @@ export const metadata: Metadata = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${geist.variable} ${mono.variable} ${condensed.variable}`}>
-      <body>{children}</body>
+      <body>
+        <LiveryProvider>{children}</LiveryProvider>
+      </body>
     </html>
   );
 }

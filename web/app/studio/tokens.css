@@ -398,3 +398,36 @@
 .instrument p {
   color: inherit;
 }
+
+:root[data-livery="ion"] .instrument,
+:root[data-livery="ion"] .inspection {
+  --accent: #86b8ff;
+  --accent-control: #2858a4;
+  --foil-fill: #25344b;
+  --foil-line: #a8cbff;
+}
+:root[data-livery="violet"] .instrument,
+:root[data-livery="violet"] .inspection {
+  --accent: #c1a1ff;
+  --accent-control: #65429b;
+  --foil-fill: #352a44;
+  --foil-line: #d4beff;
+}
+:root[data-theme="light"][data-livery="ion"] .instrument,
+:root[data-theme="light"][data-livery="ion"] .inspection {
+  --accent: #2858a4;
+  --foil-fill: #dce7f5;
+  --foil-line: #2858a4;
+}
+:root[data-theme="light"][data-livery="violet"] .instrument,
+:root[data-theme="light"][data-livery="violet"] .inspection {
+  --accent: #65429b;
+  --foil-fill: #e9dff4;
+  --foil-line: #65429b;
+}
+.instrument {
+  --personal-best: #d4b8ff;
+}
+:root[data-theme="light"] .instrument {
+  --personal-best: #694398;
+}

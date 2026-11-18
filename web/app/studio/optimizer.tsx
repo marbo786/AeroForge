@@ -298,6 +298,7 @@ export default function Optimizer({
 }) {
   const [run, setRun] = useState<Run>();
   const [selected, setSelected] = useState(0);
+  const [track, setTrack] = useState("custom");
   const [undo, setUndo] = useState<Design>();
   const active = useRef<ReturnType<typeof startSearch>>(null);
   useEffect(() => () => active.current?.dispose(), []);
@@ -320,8 +321,33 @@ export default function Optimizer({
           Search isolated NACA sections with the coefficient model. The search excludes limited
           training coverage and screens predicted lift and drag.
         </p>
+        <label className="track-preset">
+          Illustrative track brief
+          <select value={track} disabled={busy} onChange={(event) => setTrack(event.target.value)}>
+            <option value="custom">Custom section search</option>
+            <option value="low-drag">Long straight / low drag</option>
+            <option value="high-lift">Technical circuit / high downforce brief</option>
+          </select>
+        </label>
+        <p className="track-limits">
+          Illustrative presets only. Optimize isolated section coefficients; no track lap time or
+          car downforce is predicted.
+        </p>
         <OptimizationForm
-          initial={run?.settings ?? defaults(design)}
+          key={track}
+          initial={
+            track === "custom"
+              ? (run?.settings ?? defaults(design))
+              : {
+                  ...defaults(design),
+                  objective: track === "low-drag" ? "drag" : "lift",
+                  ranges: {
+                    ...defaults(design).ranges,
+                    alpha: track === "low-drag" ? [2, 2] : [8, 8],
+                  },
+                  minimumLift: track === "low-drag" ? 0.35 : 1,
+                }
+          }
           busy={busy}
           onStart={(settings) => {
             setSelected(0);

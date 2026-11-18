@@ -1,8 +1,8 @@
 # AeroForge portfolio polish
 
-## Phase 1 � unified visual system
+## Phase 1 · unified visual system
 
-One shared token set defines graphite surfaces, orange accents, readable mono labels and a persistent light theme. Theme controls are available in the workspace and standalone inspection page. Coefficient readouts receive more space than the section name; no inference behavior changes. Static Open Graph/Twitter metadata references a designed 1200 � 630 PNG with the honest-limits footnote.
+One shared token set defines graphite surfaces, orange accents, readable mono labels and a persistent light theme. Theme controls are available in the workspace and standalone inspection page. Coefficient readouts receive more space than the section name; no inference behavior changes. Static Open Graph/Twitter metadata references a designed 1200 × 630 PNG with the honest-limits footnote.
 
 Verification and visual evidence are recorded per phase. Captures cover Studio, Airfoil and Analysis at 1440, 768 and 390 pixels in both themes, with WCAG A/AA checks and page-overflow assertions. Chrome phone emulation does not establish physical-phone performance.
 
@@ -12,10 +12,22 @@ The theme preference is local to the browser. Storage failures leave the current
 
 Phase 1 verification: `npm run verify` passed formatting, lint, strict TypeScript, 29 Node tests, static build/Pages guards and 84 browser tests (17 profile-specific skips). Final captures and axe reports in [phase-1](phase-1/audit.json) cover 18 states with zero WCAG A/AA violations and zero overflow. The coefficient graph and preprocessing hashes match the accepted artifacts. Nothing deferred.
 
-## Phase 2 � hero and guided entry
+## Phase 2 · hero and guided entry
 
-The root presents the AF�02 alongside a condensed headline and one editor CTA. The scene reuses the inspection component, including its graphics fallback and phone poster. The GIF was not added to the first viewport: the existing renderer/poster already conveys the car and avoids competing motion. The README demo remains available.
+The root presents the AF–02 alongside a condensed headline and one editor CTA. The scene reuses the inspection component, including its graphics fallback and phone poster. The GIF was not added to the first viewport: the existing renderer/poster already conveys the car and avoids competing motion. The README demo remains available.
 
 A five-step native-dialog tour covers the car, section edits, telemetry, comparison/search and honest limits. It is requested on entry through the hero, remembers skip/completion in local storage and can be replayed with Tour. Direct engineering links do not interrupt the user with a tour. Storage failure permits normal use without persisting the preference.
 
 Phase 2 verification: `npm run verify` passed formatting, lint, TypeScript, 29 Node tests, export/Pages guards and 86 browser tests (17 profile skips). [Thirty captured states](phase-2/audit.json) have zero WCAG A/AA violations and zero overflow, including landing and tour in both themes. Axe 4.14.0 is pinned for reproducible local audits. No requested behavior deferred; the existing GIF remains in the README.
+
+## Phase 3 · fictional racing identity
+
+Ember Works, Ion Velocity and Violet Apex are original fictional finishes. Car paint, section outlines and coefficient charts follow the colorway; the share URL takes precedence over local storage. The compact poster retains its original showroom finish until 3D is enabled.
+
+Telemetry compares against the saved design, or the first eligible section at the current alpha/Re. Green marks higher CL/L/D or lower CD, purple marks an improved session best at that operating point, and amber marks the opposite direction. Text names accompany the colors. These are coefficient conventions, not a claim that higher lift is best for every application. Missing/pending results also clear deltas. Five start lights accompany first model initialization; reduced motion displays static lights with the same status text.
+
+The illustrative Long straight brief selects minimum drag at alpha 2° and CL ≥ 0.35. The Technical circuit brief selects maximum section lift at alpha 8° and stores a minimum-lift setting of 1.0 for a switch to the drag objective. The lift objective itself has no minimum-lift constraint. Neither brief predicts lap time or full-car downforce. Existing custom searches retain their behavior.
+
+Phase 3 verification: `npm run verify` passed formatting, lint, TypeScript, 29 Node tests, export/Pages guards and 94 browser tests (17 profile skips). [Sixty audited states](phase-3/audit.json) have zero WCAG A/AA violations and zero overflow. Twelve focused feature tests and four applicable wing tests also passed. Wing picking now probes an actual selectable point, preserving click/keyboard/camera/touch assertions across viewport proportions. No requested behavior deferred.
+
+Reproduce captures from `web/` after a build with `node scripts/capture-polish.mjs phase-3` (substitute the phase number). The script runs its own static server and pinned axe checker. Captures use reduced motion and Chrome phone emulation.

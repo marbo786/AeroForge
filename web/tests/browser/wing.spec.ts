@@ -71,7 +71,19 @@ async function frontWingPoint(page: Page, mobile = false) {
       ),
   );
   const box = (await canvas(page).boundingBox())!;
-  return { x: box.x + box.width * 0.3, y: box.y + box.height * (mobile ? 0.58 : 0.606) };
+  const candidates = [
+    [0.3, mobile ? 0.58 : 0.606],
+    ...[0.5, 0.56, 0.62, 0.68, 0.74, 0.8].flatMap((y) =>
+      [0.3, 0.4, 0.2, 0.6, 0.7, 0.8].map((x) => [x, y]),
+    ),
+  ];
+  for (const [x, y] of candidates) {
+    const point = { x: box.x + box.width * x, y: box.y + box.height * y };
+    await page.mouse.move(point.x, point.y);
+    if ((await canvas(page).evaluate((node) => getComputedStyle(node).cursor)) === "pointer")
+      return point;
+  }
+  throw new Error("No selectable front-wing point found in the rendered view.");
 }
 
 test("click and keyboard focus the same wing and Return restores the prior camera", async ({

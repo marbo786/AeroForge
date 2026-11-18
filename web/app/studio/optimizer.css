@@ -158,3 +158,20 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.track-preset {
+  display: grid;
+  gap: 8px;
+  margin-block: 18px 8px;
+}
+.track-preset select {
+  padding: 10px;
+  min-height: 44px;
+  background: var(--workspace);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.track-limits {
+  color: var(--muted) !important;
+  font-size: 12px;
+}
