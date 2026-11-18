@@ -107,3 +107,7 @@ The pressure-driven study reuses the frozen pressure session and solver-aligned 
 Car comparison reuses the session’s existing saved design and result. Two independent inspection viewports show the live and saved representative sections, with phone 3D opt-in retained for each. The original viewport stays mounted but inactive so its camera pose can return after comparison. Compare does not infer a full-car performance difference. Share cards render a self-contained SVG with true section geometry, model coefficients, fictional livery and honest-limits footer, then encode it locally as a 1200 × 675 PNG. Completed optimizer challenges use the same card renderer with objective, surrogate objective delta, seed and evaluation count; their share link restores the selected candidate and livery. The comparison baseline remains session-only.
 
 Portfolio-polish updates are verified locally; deployment remains pending. [Current verification and captures](polish/README.md)
+
+## Multi-element research boundary
+
+The [main-plane-plus-flap design note](MULTI_ELEMENT_WING.md) is a plan only. Interacting elements need a new geometry/installation contract, solver evidence, separately validated models and a new applicability domain. The current car assembly and representative-section extrusion do not implement that physics. No multi-element data generation or model change is included.

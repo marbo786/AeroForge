@@ -56,6 +56,6 @@ The portfolio-polish updates are verified locally; deployment is pending.
 
 The v2 Studio is live on Cloudflare Pages. On 2026-11-16 the public smoke test passed and the served vehicle assets matched GitHub `main` at merge `075bf74` (PR #1). V2.6 remains pending for deployment metadata and the separate preview and rollback checks. The static export runs browser inference without an inference API. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Deployment guide](docs/DEPLOYMENT.md)
 
-The [engineering case study](docs/CASE_STUDY.md#limits-and-roadmap) describes future validation work. See the [progress record](PROGRESS.md) for completed milestones.
+The plan-only [multi-element wing design note](docs/MULTI_ELEMENT_WING.md) outlines future data and validation needs. The [engineering case study](docs/CASE_STUDY.md#limits-and-roadmap) describes future validation work. See the [progress record](PROGRESS.md) for completed milestones.
 
 Original application code and documentation use the [MIT License](LICENSE). The browser export includes third-party notices for the runtime, framework, animation packages and fonts. XFOIL uses its upstream license and runs offline. The binary is excluded from this distribution.

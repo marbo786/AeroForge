@@ -7,6 +7,11 @@ Last updated 2026-11-19 (Asia/Karachi).
 - The v2 Studio is live on Cloudflare Pages. The local `main` and cached `origin/main` both pointed to Cleanup Phase F at `28741d8` when `codex/aeroforge-v3` branched. The exact Pages deployment identity remains pending. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md)
 - The accepted ONNX model predicts isolated 2D sections. The AF–02 car and front-wing motion are illustrative. [Model evidence](docs/ML.md) · [Phase D demo](docs/media/aeroforge-demo.gif)
 
+## Portfolio polish · Phase 6 (plan only)
+
+- Documented the data, versioned model contract, validation gates and Reynolds-range rationale for a main plane plus flap. No multi-element implementation or new scientific artifacts. [Research design note](docs/MULTI_ELEMENT_WING.md)
+- Passed the final `npm run verify`: 29 Node and 109 browser tests, with 18 viewport-specific skips. No UI changes; Phase 5 captures remain current. [Polish report](docs/polish/README.md).
+
 ## Portfolio polish · Phase 5
 
 - Added side-by-side live/saved wing inspection on the AF–02, preserving phone poster-first previews and the existing saved-design state.
@@ -101,7 +106,7 @@ Last updated 2026-11-19 (Asia/Karachi).
 
 ## Next work
 
-- Await phase review and approval to begin V3.6 geometry and release readiness. [V3 specification](docs/V3_SPEC.md#phase-v36--polish-and-release-readiness)
+- Review the locally verified portfolio polish and the plan-only [multi-element research scope](docs/MULTI_ELEMENT_WING.md) before new data/model work.
 - Confirm the exact Cloudflare deployment metadata, named preview and rollback target before a release. [Deployment guide](docs/DEPLOYMENT.md)
 
 [Original specification](docs/SPEC.md) · [V2 specification](docs/V2_SPEC.md) · [Completed milestones](docs/history/progress-through-cleanup-d.md)

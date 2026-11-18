@@ -30,7 +30,7 @@ The illustrative Long straight brief selects minimum drag at alpha 2° and CL �
 
 Phase 3 verification: `npm run verify` passed formatting, lint, TypeScript, 29 Node tests, export/Pages guards and 94 browser tests (17 profile skips). [Sixty audited states](phase-3/audit.json) have zero WCAG A/AA violations and zero overflow. Twelve focused feature tests and four applicable wing tests also passed. Wing picking now probes an actual selectable point, preserving click/keyboard/camera/touch assertions across viewport proportions. No requested behavior deferred.
 
-Reproduce captures from `web/` after a build with `node scripts/capture-polish.mjs phase-3` (substitute the phase number). The script runs its own static server and pinned axe checker. Captures use reduced motion and Chrome phone emulation.
+Reproduce captures from `web/` after a build with `node scripts/capture-polish.mjs phase-3` (substitute an implementation phase from 1 to 5). The script runs its own static server and pinned axe checker. Captures use reduced motion and Chrome phone emulation.
 
 ## Phase 4 · pressure and a linked section
 
@@ -53,3 +53,9 @@ Share opens a designed card preview and Download share card PNG. A local SVG-to-
 Completed optimizer results include an Optimizer challenge card. It carries the selected candidate, objective, relative surrogate objective delta when a nonzero baseline is available, seed and evaluation count. The card is downloadable and its URL restores the candidate/livery. It makes no physical performance, lap-time or full-car downforce claim; independent shortlist verification remains necessary.
 
 Phase 5 verification: `npm run verify` passed formatting, lint, TypeScript, 29 Node tests, export/Pages guards and 109 browser tests (18 profile skips). [Forty-eight audited states](phase-5/audit.json) at 1440, 768, 390 and 320 pixels have zero WCAG A/AA violations and zero overflow against document client width. Eight focused sharing tests passed; exported PNG dimensions, signature, livery pixels and footer content were checked. Three repeated camera-return checks passed with exact rendered-interior comparison; a browser-clipped boundary row is excluded. [Design card PNG](phase-5/share-card.png) · [Optimizer challenge PNG](phase-5/optimizer-challenge.png). No requested sharing behavior deferred. Baselines remain session-only; deployment and physical-device testing are not part of this local polish pass.
+
+## Phase 6 · plan only
+
+The [multi-element design note](../MULTI_ELEMENT_WING.md) specifies main/flap geometry and installation data, a new versioned model contract, independent validation gates and the need for a representative higher-Re evidence envelope. It distinguishes a possible low-Re multi-element study from the intended full-scale application. No implementation, solver runs or training were performed. There are no affected UI screenshots; Phase 5 captures remain current.
+
+Phase 6 verification: the required final `npm run verify` passed formatting, lint, TypeScript, 29 Node tests, the static export/Pages guards and 109 browser tests (18 profile-specific skips). Documentation links resolve and changed text files are valid UTF-8. No Python, shared geometry, configs, data or frozen artifacts changed across the polish commits. Phase 5’s 48-state WCAG A/AA and client-width overflow audit remains current because this phase has no UI changes. Multi-element implementation is intentionally deferred; the note is the only deliverable for that research scope.
