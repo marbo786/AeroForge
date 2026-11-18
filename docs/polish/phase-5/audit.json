@@ -1,0 +1,338 @@
+[
+  {
+    "width": 1440,
+    "theme": "dark",
+    "view": "studio",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "view": "airfoil",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "view": "analysis",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "view": "studio",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "view": "airfoil",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "view": "analysis",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "view": "car-compare",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "view": "share-card",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "view": "challenge-card",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "view": "car-compare",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "view": "share-card",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "view": "challenge-card",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "theme": "dark",
+    "view": "studio",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "theme": "dark",
+    "view": "airfoil",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "theme": "dark",
+    "view": "analysis",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "theme": "light",
+    "view": "studio",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "theme": "light",
+    "view": "airfoil",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "theme": "light",
+    "view": "analysis",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "theme": "dark",
+    "view": "car-compare",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "theme": "dark",
+    "view": "share-card",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "theme": "dark",
+    "view": "challenge-card",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "theme": "light",
+    "view": "car-compare",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "theme": "light",
+    "view": "share-card",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "theme": "light",
+    "view": "challenge-card",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "theme": "dark",
+    "view": "studio",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "theme": "dark",
+    "view": "airfoil",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "theme": "dark",
+    "view": "analysis",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "theme": "light",
+    "view": "studio",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "theme": "light",
+    "view": "airfoil",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "theme": "light",
+    "view": "analysis",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "theme": "dark",
+    "view": "car-compare",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "theme": "dark",
+    "view": "share-card",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "theme": "dark",
+    "view": "challenge-card",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "theme": "light",
+    "view": "car-compare",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "theme": "light",
+    "view": "share-card",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "theme": "light",
+    "view": "challenge-card",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "view": "studio",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "view": "airfoil",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "view": "analysis",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "view": "studio",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "view": "airfoil",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "view": "analysis",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "view": "car-compare",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "view": "share-card",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "view": "challenge-card",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "view": "car-compare",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "view": "share-card",
+    "violations": [],
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "view": "challenge-card",
+    "violations": [],
+    "overflow": false
+  }
+]

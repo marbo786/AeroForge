@@ -687,6 +687,7 @@
     grid-row: 2;
     justify-self: stretch;
     justify-content: space-between;
+    flex-wrap: wrap;
     gap: 4px;
   }
   .v2-header-actions .chip {
@@ -996,4 +997,127 @@
 .v2-vehicle-workspace > .flow-study {
   grid-column: 1 / -1;
   margin-top: 8px;
+}
+
+.car-compare-actions,
+.car-comparison-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.car-compare-actions {
+  justify-content: flex-start;
+  margin-block: 4px;
+}
+.car-compare-actions > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.car-comparison {
+  padding: 14px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  min-width: 0;
+}
+.car-comparison h2 {
+  font-size: 20px;
+}
+.car-comparison > p {
+  margin-block: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.car-comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.car-comparison-item {
+  background: var(--workspace);
+  border-color: var(--line);
+  min-width: 0;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.car-comparison-item h3 {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+.v2-workspace .car-comparison .inspection-bay {
+  height: clamp(260px, 30vw, 420px);
+}
+.car-comparison .inspection-camera {
+  gap: 4px;
+}
+.car-comparison .inspection-controls {
+  flex-wrap: wrap;
+}
+.car-comparison .v2-section-preview {
+  margin-top: 12px;
+}
+.car-comparison .comparison-coefficients {
+  margin-top: 10px;
+  font:
+    12px/1.6 var(--font-mono),
+    monospace;
+}
+.share-card {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  margin-top: 24px;
+  min-width: 0;
+}
+.share-card figure {
+  margin: 0;
+  width: 100%;
+}
+.share-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+}
+.share-card figcaption {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.optimizer-challenge {
+  background: var(--surface);
+  border-color: var(--line);
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  margin-top: 18px !important;
+}
+.optimizer-challenge .share-design {
+  margin-top: 18px;
+}
+@media (max-width: 800px) {
+  .car-comparison-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .v2-workspace
+    .car-comparison
+    .inspection-bay:not([data-render-status="ready"], [data-render-status="loading"]) {
+    height: 190px;
+  }
+}
+
+@media (max-width: 360px) {
+  .v2-center > .v2-telemetry .v2-metrics {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .v2-center > .v2-telemetry .v2-metric + .v2-metric {
+    border-left: 0;
+  }
+  .v2-workspace .v2-metric .readout-number {
+    font-size: 32px;
+  }
+  .v2-workspace .v2-metric-label {
+    min-height: 0;
+  }
 }

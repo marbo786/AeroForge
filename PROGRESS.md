@@ -7,6 +7,12 @@ Last updated 2026-11-19 (Asia/Karachi).
 - The v2 Studio is live on Cloudflare Pages. The local `main` and cached `origin/main` both pointed to Cleanup Phase F at `28741d8` when `codex/aeroforge-v3` branched. The exact Pages deployment identity remains pending. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md)
 - The accepted ONNX model predicts isolated 2D sections. The AF–02 car and front-wing motion are illustrative. [Model evidence](docs/ML.md) · [Phase D demo](docs/media/aeroforge-demo.gif)
 
+## Portfolio polish · Phase 5
+
+- Added side-by-side live/saved wing inspection on the AF–02, preserving phone poster-first previews and the existing saved-design state.
+- Added locally exported 1200 × 675 PNG share cards with section geometry, coefficients, fictional livery and honest limits. Completed optimizer challenges share the same card format and candidate URL.
+- Passed `npm run verify`: 29 Node and 109 browser tests, 18 profile skips. Forty-eight audited states, including 320px phones, have zero WCAG A/AA violations and overflow. [Polish record](docs/polish/README.md).
+
 ## Portfolio polish · Phase 4
 
 - Replaced the conceptual-flow toggle with model-driven surface Cp and a labeled schematic wind-tunnel smoke mode.

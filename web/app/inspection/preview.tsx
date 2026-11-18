@@ -45,6 +45,7 @@ export function VehicleViewport({
   alpha = 0,
   design,
   profiles,
+  study = false,
 }: {
   active?: boolean;
   initialized?: boolean;
@@ -53,6 +54,7 @@ export function VehicleViewport({
   alpha?: number;
   design?: Design;
   profiles?: PressureProfiles;
+  study?: boolean;
 }) {
   const [status, setStatus] = useState<Status>("poster");
   const [progress, setProgress] = useState<number | null>(null);
@@ -119,7 +121,7 @@ export function VehicleViewport({
   };
 
   return (
-    <div className="vehicle-viewport" data-wing-selected={wing?.selected || undefined}>
+    <div className="vehicle-viewport" data-wing-selected={wing?.selected || study || undefined}>
       <div
         className="inspection-bay"
         data-render-status={status}
@@ -147,7 +149,7 @@ export function VehicleViewport({
               command={command}
               pose={pose}
               wingPose={wingPose}
-              wingSelected={!!wing?.selected}
+              wingSelected={!!wing?.selected || study}
               compact={compact}
               cameraHelp={cameraHelp}
               alpha={alpha}

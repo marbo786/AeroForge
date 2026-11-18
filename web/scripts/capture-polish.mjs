@@ -20,12 +20,12 @@ try {
   const browser = await chromium.launch(process.platform === "win32" ? { channel: "chrome" } : {});
   try {
     const reports = [];
-    for (const width of [1440, 768, 390]) {
+    for (const width of [1440, 768, 390, ...(phase === "phase-5" ? [320] : [])]) {
       const page = await browser.newPage({
-        viewport: { width, height: width === 390 ? 844 : 900 },
+        viewport: { width, height: width <= 390 ? 844 : 900 },
         reducedMotion: "reduce",
-        isMobile: width === 390,
-        hasTouch: width === 390,
+        isMobile: width <= 390,
+        hasTouch: width <= 390,
       });
       await page.addInitScript(() => localStorage.setItem("aeroforge-tour", "done"));
       async function audit(view) {
@@ -38,7 +38,7 @@ try {
           ).violations.map(({ id, nodes }) => ({ id, targets: nodes.map((n) => n.target) })),
         );
         const overflow = await page.evaluate(
-          () => document.documentElement.scrollWidth > innerWidth,
+          () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
         );
         const theme = await page.evaluate(() => document.documentElement.dataset.theme ?? "dark");
         await page.screenshot({
@@ -50,7 +50,7 @@ try {
       }
       for (const theme of ["dark", "light"]) {
         for (const view of ["studio", "airfoil", "analysis"]) {
-          await page.goto(`http://127.0.0.1:4175/studio/?view=${view}`);
+          await page.goto(`http://127.0.0.1:4175/studio/?view=${view}&livery=ember`);
           await page
             .locator('[aria-label="Prediction status"]')
             .filter({ hasText: "Prediction ready" })
@@ -130,6 +130,64 @@ try {
               .getByRole("status")
               .waitFor();
             await audit(name);
+          }
+        }
+      }
+      if (phase === "phase-5") {
+        for (const theme of ["dark", "light"]) {
+          await page.goto("http://127.0.0.1:4175/studio/?livery=ember");
+          await page.evaluate((theme) => {
+            document.documentElement.dataset.theme = theme;
+            localStorage.setItem("aeroforge-theme", theme);
+          }, theme);
+          await page
+            .locator('[aria-label="Prediction status"]')
+            .filter({ hasText: "Prediction ready" })
+            .waitFor();
+          await page.getByRole("button", { name: "Save baseline", exact: true }).click();
+          const edit = page.getByRole("button", { name: "Edit parameters", exact: true });
+          if (await edit.isVisible()) await edit.click();
+          await page.getByLabel("Thickness", { exact: true }).fill("14");
+          const close = page.getByRole("button", { name: "Close Design parameters", exact: true });
+          if (await close.isVisible()) await close.click();
+          await page.getByRole("button", { name: "Compare on car", exact: true }).click();
+          if (width > 740)
+            await page.waitForFunction(
+              () =>
+                document.querySelectorAll('.car-comparison [data-render-status="ready"]').length ===
+                2,
+            );
+          await page
+            .locator('[aria-label="Prediction status"]')
+            .filter({ hasText: "Prediction ready" })
+            .waitFor();
+          await audit("car-compare");
+          await page.goto("http://127.0.0.1:4175/studio/?view=airfoil&livery=ion");
+          await page
+            .locator('[aria-label="Prediction status"]')
+            .filter({ hasText: "Prediction ready" })
+            .waitFor();
+          await page.getByRole("button", { name: "Share", exact: true }).click();
+          await page.locator(".share-card img").waitFor();
+          await audit("share-card");
+          if (width === 1440 && theme === "dark") {
+            const event = page.waitForEvent("download");
+            await page.getByRole("button", { name: "Download share card PNG" }).click();
+            await (await event).saveAs(`${folder}/share-card.png`);
+          }
+          await page.goto("http://127.0.0.1:4175/studio/?view=airfoil&livery=violet");
+          await page.getByRole("button", { name: "Optimize", exact: true }).click();
+          await page.getByText("Geometry limits and search settings", { exact: true }).click();
+          await page.getByLabel("Candidate evaluation limit").fill("64");
+          await page.getByRole("button", { name: "Start search", exact: true }).click();
+          const challenge = page.getByRole("region", { name: "Optimizer challenge card" });
+          await challenge.waitFor();
+          await challenge.scrollIntoViewIfNeeded();
+          await audit("challenge-card");
+          if (width === 1440 && theme === "dark") {
+            const event = page.waitForEvent("download");
+            await challenge.getByRole("button", { name: "Download share card PNG" }).click();
+            await (await event).saveAs(`${folder}/optimizer-challenge.png`);
           }
         }
       }

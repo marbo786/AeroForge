@@ -17,6 +17,8 @@ import { ExportMenu, ShareDesign } from "./design-actions";
 import { Comparison } from "./comparison";
 import { ModelDetails } from "./model-details";
 import { DesignParameters } from "./design-parameters";
+import { CarComparison } from "./car-comparison";
+import { ShareCard } from "./share-card";
 import { FlowControls, FlowStudy } from "./flow-study";
 import { usePressureProfile, type FlowMode } from "./use-pressure-profile";
 import { LiveryPicker, useLivery } from "./livery";
@@ -103,6 +105,7 @@ export default function Instrument(props: InstrumentProps) {
   const [drawer, setDrawer] = useState<StudioDrawer | null>(null);
   const [optimizerOpened, setOptimizerOpened] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
+  const [compareCar, setCompareCar] = useState(false);
   const [saved, setSaved] = useState<SavedDesign | null>(null);
   const [inspectionAngle, setInspectionAngle] = useState<number | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
@@ -182,6 +185,7 @@ export default function Instrument(props: InstrumentProps) {
   function saveDesign() {
     setSaved({ design, result: current });
   }
+  const comparingCar = compareCar && saved !== null;
   const cannotSave = !props.urlReady || invalid || pending;
   const parameters = (
     <DesignParameters
@@ -232,7 +236,10 @@ export default function Instrument(props: InstrumentProps) {
       current={current}
       saved={saved}
       onRestore={() => props.onRestore(saved.design)}
-      onClear={() => setSaved(null)}
+      onClear={() => {
+        setSaved(null);
+        setCompareCar(false);
+      }}
     />
   ) : (
     <div className="v2-empty-comparison">
@@ -342,13 +349,40 @@ export default function Instrument(props: InstrumentProps) {
                 Edit parameters
               </button>
             </div>
+            {view === "studio" && (
+              <div className="car-compare-actions">
+                {!saved && (
+                  <button className="chip micro" disabled={cannotSave} onClick={saveDesign}>
+                    Save baseline
+                  </button>
+                )}
+                <button
+                  className="chip micro"
+                  disabled={!saved}
+                  aria-pressed={comparingCar}
+                  onClick={() => setCompareCar(!compareCar)}
+                >
+                  Compare on car
+                </button>
+                {!saved && <span>Save a baseline to inspect two sections side by side.</span>}
+              </div>
+            )}
+            {view === "studio" && comparingCar && saved && (
+              <CarComparison
+                design={design}
+                current={current}
+                saved={saved}
+                invalid={invalid}
+                onClose={() => setCompareCar(false)}
+              />
+            )}
             <div
               className="v2-vehicle-workspace"
-              hidden={view !== "studio"}
+              hidden={view !== "studio" || comparingCar}
               data-section-open={wingSelected || undefined}
             >
               <VehicleViewport
-                active={view === "studio"}
+                active={view === "studio" && !comparingCar}
                 initialized={props.urlReady}
                 onAirfoil={() => changeMode("airfoil")}
                 alpha={design.alpha}
@@ -501,6 +535,7 @@ export default function Instrument(props: InstrumentProps) {
       </Drawer>
       <Drawer open={drawer === "Share design"} onClose={() => setDrawer(null)} title="Share design">
         <ShareDesign url={shareUrl} />
+        <ShareCard design={design} current={current} />
       </Drawer>
       {optimizerOpened && (
         <Optimizer

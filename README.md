@@ -8,9 +8,9 @@ AeroForge is an airfoil design studio with a 3D inspection bay for the illustrat
 
 The car and wing pitch are illustrative. Predictions describe isolated NACA sections within **−4° to 8°** and **Re 100,000 to 500,000**, below typical full-scale Formula 1 front-wing conditions. [Formula 1 front-wing study](https://link.springer.com/article/10.1007/s00348-026-04191-5)
 
-![AeroForge demo showing a dragged airfoil handle, AF–02 front-wing inspection, and a switch to live lift and drag charts](docs/media/aeroforge-demo.gif)
+![AeroForge landing page with the original AF–02, studio entry and honest limits](docs/polish/phase-3/1440-dark-landing.png)
 
-[Still view of Studio](docs/cleanup-c/after-1440.png) · [Mobile Analysis](docs/v2-5/after/390-analysis.png)
+[Interaction demo](docs/media/aeroforge-demo.gif) · [Studio](docs/polish/phase-5/1440-dark-studio.png) · [Mobile Analysis](docs/polish/phase-5/390-dark-analysis.png)
 
 ## Model accuracy
 
@@ -32,9 +32,13 @@ npm run build
 npm run serve
 ```
 
-Open Studio to orbit the car and select **Inspect front wing**. Use Airfoil to edit the representative NACA section with sliders or geometry handles, and use Analysis to inspect lift and drag curves and compare a saved design. **Share** copies a URL that restores the current view and design. Phones start with a still preview and offer **Enable 3D** and **Edit parameters**. **Details / evidence** opens the model limits and links to the final evaluation. [Local Studio](http://127.0.0.1:4173/)
+Start with the AF–02 landing scene and choose **Enter design studio** for a short, skippable tour. Studio, Airfoil and Analysis share the same section and live coefficients. Phones start with a still preview and offer **Enable 3D** and **Edit parameters**.
 
-Run `npm run verify` from `web` for lint, strict TypeScript, the static export checks, 23 Node tests and 59 Playwright tests. The separate Python evidence suite has 104 tests. V2.5 Lighthouse lab performance was 92 on mobile and 86 on desktop, with 100 for accessibility, best practices and SEO in both profiles. Playwright uses installed Chrome on Windows and its matching Chromium on Linux. The separate `/spike/` route is an inference test fixture. [V2.5 measurements](docs/v2-5/README.md)
+Choose an original fictional colorway, toggle the remembered light theme, and use **Inspect front wing** to see the live representative NACA surface and section cut. **Surface Cp** uses the existing pressure model at sampled operating points; smoke paths are explicitly schematic. Save a baseline and choose **Compare on car** for side-by-side inspection, or compare section curves in Analysis. **Share** provides a restorable design/colorway URL and a designed PNG card. Completed optimizer searches include a shareable challenge card; track briefs remain illustrative. **Details / evidence** explains model applicability. [Local Studio](http://127.0.0.1:4173/) · [Portfolio polish and screenshots](docs/polish/README.md)
+
+
+Run `npm run verify` from `web` for formatting, lint, strict TypeScript, static export checks, 29 Node tests and 109 executed Playwright tests (18 viewport-specific skips). These presentation changes leave Python code and all frozen coefficient/pressure artifacts untouched; the Python evidence audit remains a separate check. Historical V2.5 Lighthouse lab performance was 92 on mobile and 86 on desktop, with 100 for accessibility, best practices and SEO in both profiles. Playwright uses installed Chrome on Windows and matching Chromium on Linux. The separate `/spike/` route is an inference fixture. [V2.5 measurements](docs/v2-5/README.md) · [Current local verification](docs/polish/README.md)
+
 
 ## Model and evidence
 
@@ -47,6 +51,8 @@ See [model training, evaluation and reproduction](docs/ML.md), [XFOIL data gener
 To reproduce training, create a fresh recovery plan with `scripts/plan_recovery.py`, generate the development labels with the documented `scripts/run_pilot.py` configurations, then run `scripts/tune_recovery.py`. Follow the freeze, simulation and evaluation steps in the [recovery protocol](docs/ML.md) with new output paths and an independent final reservation.
 
 ## Hosting and license
+
+The portfolio-polish updates are verified locally; deployment is pending.
 
 The v2 Studio is live on Cloudflare Pages. On 2026-11-16 the public smoke test passed and the served vehicle assets matched GitHub `main` at merge `075bf74` (PR #1). V2.6 remains pending for deployment metadata and the separate preview and rollback checks. The static export runs browser inference without an inference API. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Deployment guide](docs/DEPLOYMENT.md)
 

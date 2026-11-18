@@ -58,7 +58,18 @@ async function frame(page: Page) {
         requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
       ),
   );
-  return canvas(page).screenshot();
+  const screenshot = await canvas(page).screenshot();
+  const interior = await page.evaluate(async (encoded) => {
+    const image = new Image();
+    image.src = `data:image/png;base64,${encoded}`;
+    await image.decode();
+    const canvas = document.createElement("canvas");
+    canvas.width = image.width - 2;
+    canvas.height = image.height - 2;
+    canvas.getContext("2d")!.drawImage(image, -1, -1);
+    return canvas.toDataURL("image/png").split(",")[1];
+  }, screenshot.toString("base64"));
+  return Buffer.from(interior, "base64");
 }
 
 async function frontWingPoint(page: Page, mobile = false) {

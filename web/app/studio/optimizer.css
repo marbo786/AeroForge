@@ -87,6 +87,8 @@
   min-width: 0;
 }
 .v3-search-results {
+  background: var(--surface);
+  border-color: var(--line);
   padding-top: 14px;
   border-top: 1px solid var(--line);
 }
@@ -134,6 +136,9 @@
 .v3-search-deltas dd {
   font-family: var(--font-mono), monospace;
   font-size: 14px;
+}
+.v3-search-deltas dt {
+  color: var(--muted);
 }
 .v3-search-history svg {
   width: 100%;

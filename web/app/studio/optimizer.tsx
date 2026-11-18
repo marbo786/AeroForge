@@ -17,6 +17,10 @@ import {
   type Objective,
   type Settings,
 } from "../../lib/optimization/search";
+import { ShareCard } from "./share-card";
+import { ShareDesign } from "./design-actions";
+import { sharedDesignUrl } from "./shared-design";
+import { useLivery } from "./livery";
 import { download } from "./design-actions";
 import { Drawer } from "./kit";
 import { SectionPreview } from "./section-preview";
@@ -298,6 +302,7 @@ export default function Optimizer({
 }) {
   const [run, setRun] = useState<Run>();
   const [selected, setSelected] = useState(0);
+  const { livery } = useLivery();
   const [track, setTrack] = useState("custom");
   const [undo, setUndo] = useState<Design>();
   const active = useRef<ReturnType<typeof startSearch>>(null);
@@ -475,6 +480,33 @@ export default function Optimizer({
                   ))}
                 </dl>
                 <History run={run} />
+                {!busy && run.status === "finished" && (
+                  <section className="optimizer-challenge" aria-label="Optimizer challenge card">
+                    <h3>Optimizer challenge</h3>
+                    <p>
+                      Surrogate-selected result. Independently verify the shortlist before drawing
+                      physical conclusions.
+                    </p>
+                    <ShareCard
+                      design={candidate.design}
+                      current={{
+                        ...candidate.prediction,
+                        ratio: candidate.prediction.cl / candidate.prediction.cd,
+                      }}
+                      title="Optimizer challenge"
+                      subtitle={`Surrogate / ${objectives[run.settings.objective]} · ${baselineScore !== null && Math.abs(baselineScore) > 1e-8 ? `objective Δ ${(((candidate.score - baselineScore) / Math.abs(baselineScore)) * 100).toFixed(1)}%` : "baseline unavailable"} · seed ${run.settings.seed} · ${counts.completed} evaluations`}
+                    />
+                    <ShareDesign
+                      url={sharedDesignUrl(
+                        window.location.origin,
+                        candidate.design,
+                        "airfoil",
+                        livery,
+                      )}
+                    />
+                  </section>
+                )}
+
                 {!busy && (
                   <div className="v3-search-shortlist">
                     <button
