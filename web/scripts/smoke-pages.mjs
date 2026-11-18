@@ -37,7 +37,8 @@ try {
     runtimePaths.add(url.pathname);
   });
   for (const [path, pattern] of [
-    ["/", /AF–02/],
+    ["/", /Shape your aerodynamic instinct/],
+    ["/studio/", /AF–02/],
     ["/studio/?view=airfoil&m=.04&p=.4&t=.12&aoa=4&re=250000", /NACA 4412/],
     ["/model/", /Model evidence/i],
     ["/spike/", /inference/i],
@@ -47,14 +48,24 @@ try {
     assert.match(response.headers()["content-type"], /text\/html/i, path);
     assert.equal(response.headers()["x-content-type-options"], "nosniff", path);
     await page.getByRole("heading", { level: 1, name: pattern }).waitFor();
-    if (path === "/" || path.startsWith("/studio/")) {
+    if (path === "/") {
+      await page.getByRole("link", { name: "Enter design studio" }).waitFor();
+      assert.equal(
+        await page.locator(".inspection-render canvas").count(),
+        0,
+        "Phone hero must start with the poster",
+      );
+    }
+    if (path.startsWith("/studio/")) {
       await page
         .getByRole("status")
         .filter({ hasText: "Prediction ready" })
         .waitFor({ state: "attached" });
       assert.match(await page.getByTestId("cl").innerText(), /^-?\d+\.\d{4}$/);
       assert(
-        await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+        ),
         "Mobile overflow",
       );
     }
@@ -105,7 +116,7 @@ try {
       {
         origin: host.origin,
         browser: browser.version(),
-        routes: 4,
+        routes: 5,
         sameOriginInference: true,
         modelAndPreprocessingVerified: true,
         headers: "MIME, nosniff, immutable",
