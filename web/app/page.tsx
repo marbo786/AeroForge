@@ -1,4 +1,4 @@
-import Studio from "./studio/studio";
+import Landing from "./landing";
 export default function Home() {
-  return <Studio />;
+  return <Landing />;
 }

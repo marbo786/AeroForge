@@ -16,7 +16,7 @@ test("Studio starts with the car, and workspace modes share edits and comparison
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
+  await page.goto("/studio/");
   const navigation = page.getByRole("navigation", { name: "Workspace views" });
   await expect(navigation.getByRole("button", { name: "Studio", exact: true })).toHaveAttribute(
     "aria-pressed",

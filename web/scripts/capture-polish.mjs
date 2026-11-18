@@ -28,6 +28,26 @@ try {
         hasTouch: width === 390,
       });
       await page.addInitScript(() => localStorage.setItem("aeroforge-tour", "done"));
+      async function audit(view) {
+        await page.addScriptTag({ path: "node_modules/axe-core/axe.min.js" });
+        const violations = await page.evaluate(async () =>
+          (
+            await window.axe.run(document, {
+              runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
+            })
+          ).violations.map(({ id, nodes }) => ({ id, targets: nodes.map((n) => n.target) })),
+        );
+        const overflow = await page.evaluate(
+          () => document.documentElement.scrollWidth > innerWidth,
+        );
+        const theme = await page.evaluate(() => document.documentElement.dataset.theme ?? "dark");
+        await page.screenshot({
+          path: `${folder}/${width}-${theme}-${view}.png`,
+          fullPage: true,
+          animations: "disabled",
+        });
+        reports.push({ width, theme, view, violations, overflow });
+      }
       for (const theme of ["dark", "light"]) {
         for (const view of ["studio", "airfoil", "analysis"]) {
           await page.goto(`http://127.0.0.1:4175/studio/?view=${view}`);
@@ -41,23 +61,16 @@ try {
           }, theme);
           if (view === "studio" && width > 740)
             await page.locator('[data-render-status="ready"]').waitFor();
-          await page.addScriptTag({ path: ".wrangler/phase-f/node_modules/axe-core/axe.min.js" });
-          const violations = await page.evaluate(async () =>
-            (
-              await window.axe.run(document, {
-                runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
-              })
-            ).violations.map(({ id, nodes }) => ({ id, targets: nodes.map((n) => n.target) })),
-          );
-          const overflow = await page.evaluate(
-            () => document.documentElement.scrollWidth > innerWidth,
-          );
-          await page.screenshot({
-            path: `${folder}/${width}-${theme}-${view}.png`,
-            fullPage: true,
-            animations: "disabled",
-          });
-          reports.push({ width, theme, view, violations, overflow });
+          await audit(view);
+        }
+        if (phase !== "phase-1") {
+          await page.goto("http://127.0.0.1:4175/");
+          if (width > 740) await page.locator('[data-render-status="ready"]').waitFor();
+          await audit("landing");
+          await page.goto("http://127.0.0.1:4175/studio/");
+          await page.getByRole("button", { name: "Tour", exact: true }).click();
+          await page.getByRole("dialog", { name: "AeroForge tour" }).waitFor();
+          await audit("tour");
         }
       }
       await page.close();

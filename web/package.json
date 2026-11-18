@@ -39,6 +39,7 @@
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
     "@types/three": "0.187.0",
+    "axe-core": "4.14.0",
     "eslint": "10.14.0",
     "onnx-proto": "8.0.1",
     "prettier": "3.9.6",

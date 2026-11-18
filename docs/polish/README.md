@@ -11,3 +11,11 @@ The palette uses graphite `#101419`, panel `#171d23`, text `#eef1f4`, muted text
 The theme preference is local to the browser. Storage failures leave the current session usable. No car performance, uncertainty or full-scale downforce claim is introduced.
 
 Phase 1 verification: `npm run verify` passed formatting, lint, strict TypeScript, 29 Node tests, static build/Pages guards and 84 browser tests (17 profile-specific skips). Final captures and axe reports in [phase-1](phase-1/audit.json) cover 18 states with zero WCAG A/AA violations and zero overflow. The coefficient graph and preprocessing hashes match the accepted artifacts. Nothing deferred.
+
+## Phase 2 · hero and guided entry
+
+The root presents the AF–02 alongside a condensed headline and one editor CTA. The scene reuses the inspection component, including its graphics fallback and phone poster. The GIF was not added to the first viewport: the existing renderer/poster already conveys the car and avoids competing motion. The README demo remains available.
+
+A five-step native-dialog tour covers the car, section edits, telemetry, comparison/search and honest limits. It is requested on entry through the hero, remembers skip/completion in local storage and can be replayed with Tour. Direct engineering links do not interrupt the user with a tour. Storage failure permits normal use without persisting the preference.
+
+Phase 2 verification: `npm run verify` passed formatting, lint, TypeScript, 29 Node tests, export/Pages guards and 86 browser tests (17 profile skips). [Thirty captured states](phase-2/audit.json) have zero WCAG A/AA violations and zero overflow, including landing and tour in both themes. Axe 4.14.0 is pinned for reproducible local audits. No requested behavior deferred; the existing GIF remains in the README.
