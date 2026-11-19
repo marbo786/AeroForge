@@ -59,3 +59,7 @@ For a manually managed project, choose **Direct Upload** instead and upload the 
 4. Record the tested HTTPS URL and release commit in the README and progress tracker. If a release needs reverting, use Pages deployment rollback and repeat the smoke check against the production URL.
 
 The v2 deployment passed the public HTTPS smoke test on 2026-11-16. Both public GLBs and the poster matched the merged `main` tree at `075bf74`. The Pages deployment metadata, a separately identified preview, and the rollback target still need V2.6 verification. The preceding Git source baseline is `e8e0ea0`. [Live Studio](https://aeroforge-9tf.pages.dev/) · [V2 release evidence](RELEASE_CHECKLIST.md) · [Historical v1 audit](RELEASE.md)
+
+## Portfolio publication
+
+The portfolio release is published through the existing Git-integrated `aeroforge` project and production branch `main`. The smoke checks the landing page and Studio separately. [Release record, application source and rollback target](PORTFOLIO_RELEASE.md).

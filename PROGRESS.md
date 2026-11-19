@@ -1,11 +1,17 @@
 # AeroForge progress
 
-Last updated 2026-11-19 (Asia/Karachi).
+Last updated 2026-11-20 (Asia/Karachi).
 
 ## Current status
 
 - The v2 Studio is live on Cloudflare Pages. The local `main` and cached `origin/main` both pointed to Cleanup Phase F at `28741d8` when `codex/aeroforge-v3` branched. The exact Pages deployment identity remains pending. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md)
 - The accepted ONNX model predicts isolated 2D sections. The AF–02 car and front-wing motion are illustrative. [Model evidence](docs/ML.md) · [Phase D demo](docs/media/aeroforge-demo.gif)
+
+## Portfolio publication
+
+- Pushed the complete portfolio work to GitHub `main` and published through the existing Cloudflare Pages project. [Live AeroForge](https://aeroforge-9tf.pages.dev/) · [Release record](docs/PORTFOLIO_RELEASE.md).
+- Public HTTPS smoke verified five routes, same-origin inference, frozen model hashes, headers and the missing-runtime 404 with zero browser errors.
+- Corrected a Linux-CI phone export-menu overlap. Six repeated controls/export tests passed; six recaptured states have zero WCAG A/AA violations and overflow. Application source: `ac22c20`. The prior production deployment is recorded as the rollback target.
 
 ## Portfolio polish · Phase 6 (plan only)
 

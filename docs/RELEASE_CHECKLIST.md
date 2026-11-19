@@ -1,4 +1,8 @@
-# AeroForge v2 release checklist
+# AeroForge release evidence
+
+The current portfolio publication, application source, public smoke result and recorded rollback target are in the [portfolio release record](PORTFOLIO_RELEASE.md). The v2 evidence below is historical.
+
+## Historical v2 release checklist
 
 The v2 Studio is live on Cloudflare Pages. GitHub `main` contains PR #1 at merge `075bf74`, whose tree matches the V2.5 implementation at `5a36255`. The public HTTPS checks on 2026-11-16 verified the v2 behavior and matching assets. V2.6 remains pending for deployment metadata, a separately identified preview and the rollback check. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Merged PR](https://github.com/marbo786/AeroForge/pull/1) · [Deployment guide](DEPLOYMENT.md)
 

@@ -52,7 +52,7 @@ To reproduce training, create a fresh recovery plan with `scripts/plan_recovery.
 
 ## Hosting and license
 
-The portfolio-polish updates are verified locally; deployment is pending.
+The portfolio-polish updates are published on Cloudflare Pages. [Release record and rollback target](docs/PORTFOLIO_RELEASE.md).
 
 The v2 Studio is live on Cloudflare Pages. On 2026-11-16 the public smoke test passed and the served vehicle assets matched GitHub `main` at merge `075bf74` (PR #1). V2.6 remains pending for deployment metadata and the separate preview and rollback checks. The static export runs browser inference without an inference API. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Deployment guide](docs/DEPLOYMENT.md)
 
