@@ -493,6 +493,9 @@
 .v2-workspace .export-options {
   display: grid;
 }
+.v2-workspace .export-menu {
+  z-index: 30;
+}
 .v2-workspace .export-options > div {
   display: flex;
   gap: 6px;
@@ -673,6 +676,14 @@
   }
 }
 @media (max-width: 640px) {
+  .v2-workspace .export-options {
+    inset-inline: auto 0;
+    max-width: calc(100vw - 24px);
+  }
+  .v2-workspace .export-options > div {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(60px, 1fr));
+  }
   .v2-header {
     padding: 0 10px;
     gap: 0 6px;

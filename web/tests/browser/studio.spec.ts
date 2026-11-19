@@ -578,6 +578,10 @@ test("controls drawer, display toggles, reduced motion and real exports remain u
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(page.getByRole("button", { name: "Play alpha sweep", exact: true })).toBeDisabled();
   await page.getByRole("button", { name: "Export +", exact: true }).click();
+  const exportBounds = await page.getByRole("group", { name: "Export formats" }).boundingBox();
+  const pageWidth = await page.evaluate(() => document.documentElement.clientWidth);
+  expect(exportBounds!.x).toBeGreaterThanOrEqual(0);
+  expect(exportBounds!.x + exportBounds!.width).toBeLessThanOrEqual(pageWidth);
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "json", exact: true }).click();
   const download = await downloadPromise;
