@@ -1,6 +1,8 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useId, useState, type ReactNode } from "react";
+
+import "./livery.css";
 
 export const liveries = {
   ember: { name: "Ember Works", accent: "#ff9559", paint: "#8b321d" },
@@ -44,23 +46,37 @@ export const useLivery = () => useContext(LiveryContext);
 
 export function LiveryPicker() {
   const { livery, select } = useLivery();
+  const group = useId();
   return (
-    <div className="livery-picker">
-      <label htmlFor="livery">Fictional colorway</label>
-      <select
-        id="livery"
-        value={livery}
-        onChange={(event) => {
-          if (validLivery(event.target.value)) select(event.target.value);
-        }}
-      >
-        {Object.entries(liveries).map(([id, item]) => (
-          <option key={id} value={id}>
-            {item.name}
-          </option>
-        ))}
-      </select>
-      <span>Original AF–02 finishes</span>
+    <div className="livery-picker" role="radiogroup" aria-label="Fictional colorway">
+      <span className="livery-label">Fictional colorway</span>
+      <div className="livery-swatches">
+        {(Object.entries(liveries) as [LiveryId, (typeof liveries)[LiveryId]][]).map(
+          ([id, item]) => (
+            <label className="livery-chip" key={id}>
+              <input
+                type="radio"
+                name={group}
+                value={id}
+                checked={livery === id}
+                onChange={() => select(id)}
+                aria-label={item.name}
+              />
+              <span
+                className="livery-swatch"
+                aria-hidden="true"
+                style={{
+                  background: `linear-gradient(135deg, ${item.accent} 50%, ${item.paint} 50%)`,
+                }}
+              />
+              <span className="livery-name" aria-hidden="true">
+                {item.name}
+              </span>
+            </label>
+          ),
+        )}
+      </div>
+      <span className="livery-caption">Original AF–02 finishes</span>
     </div>
   );
 }

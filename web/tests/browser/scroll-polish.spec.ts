@@ -1,5 +1,25 @@
 import { test, expect } from "@playwright/test";
 
+test("swatches support arrow keys and share the persisted landing and studio colorway", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const ember = page.getByRole("radio", { name: "Ember Works" });
+  await ember.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("radio", { name: "Ion Velocity" })).toBeChecked();
+  await expect(page.getByRole("radio", { name: "Ion Velocity" })).toBeFocused();
+  await expect(page).toHaveURL(/livery=ion/);
+  await page.keyboard.press("ArrowLeft");
+  await expect(ember).toBeChecked();
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.getByRole("radio", { name: "Violet Apex" })).toBeChecked();
+  await page.goto("/studio/?view=airfoil");
+  await expect(page.getByRole("radio", { name: "Violet Apex" })).toBeChecked();
+  await page.reload();
+  await expect(page.getByRole("radio", { name: "Violet Apex" })).toBeChecked();
+});
+
 test("desktop scroll reuses one camera and colors its wing from pressure", async ({
   page,
   isMobile,

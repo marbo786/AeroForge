@@ -4,6 +4,8 @@ Last updated 2026-11-20 (Asia/Karachi).
 
 ## Scroll polish
 
+- Phase B complete: shared keyboard-native swatches preserve URL/local colorways. Full verification: 29 Node and 116 browser tests passed; 19 skips. Twenty audited landing/studio states are clean. Application JS phase delta: +418 / +287 gzip bytes, desktop / phone. [Captures and evidence](docs/polish/README.md#scroll-polish--phase-b).
+
 - Phase A complete on `codex/scroll-polish`: continuous landing, one scroll-driven desktop renderer, lazy live model panels, native phone/reduced-motion layouts. Full verification: 29 Node and 114 browser tests passed; 19 viewport skips. Ten audited width/theme states have zero WCAG A/AA violations or overflow. Initial application JS fell 65,325 / 71,005 gzip bytes (desktop / phone); cold panel activation still has isolated longer frames. [Evidence and captures](docs/polish/README.md#scroll-polish--phase-a).
 
 ## Current status

@@ -36,13 +36,13 @@ test("theme persists across engineering views and reloads", async ({ page }) => 
 
 test("fictional colorways restore from shared URLs", async ({ page }) => {
   await page.goto("/studio/?view=airfoil");
-  await page.getByLabel("Fictional colorway").selectOption("ion");
+  await page.getByRole("radio", { name: "Ion Velocity" }).check();
   await expect(page.locator("html")).toHaveAttribute("data-livery", "ion");
   await page.getByRole("button", { name: "Share", exact: true }).click();
   const link = await page.getByLabel("Design URL").inputValue();
   expect(new URL(link).searchParams.get("livery")).toBe("ion");
   await page.goto(link);
-  await expect(page.getByLabel("Fictional colorway")).toHaveValue("ion");
+  await expect(page.getByRole("radio", { name: "Ion Velocity" })).toBeChecked();
 });
 
 test("illustrative track briefs set objective, angle and lift requirement", async ({ page }) => {
