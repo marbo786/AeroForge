@@ -111,3 +111,8 @@ Portfolio-polish releases publish from GitHub `main` through the existing Cloudf
 ## Multi-element research boundary
 
 The [main-plane-plus-flap design note](MULTI_ELEMENT_WING.md) is a plan only. Interacting elements need a new geometry/installation contract, solver evidence, separately validated models and a new applicability domain. The current car assembly and representative-section extrusion do not implement that physics. No multi-element data generation or model change is included.
+
+
+## Scroll-driven introduction
+
+The landing route owns an optional Lenis instance and a mutable scroll-camera store. The inspection camera subscribes to that store, interpolates its existing view framing, and invalidates demand frames only when progress changes. The store is absent from ordinary studio camera control. Coarse-pointer/compact layouts use normal document flow and native scrolling; reduced motion keeps the same readable story without choreography. Intersection observers mount the below-fold story lab, which reuses existing geometry, coefficient inference, pressure eligibility and share-card components. Legacy root design parameters still select the studio rather than the story.

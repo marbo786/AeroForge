@@ -4,6 +4,10 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import assert from "node:assert/strict";
 
 const phase = process.argv[2] ?? "phase-1";
+if (/^scroll-[a-e]$/.test(phase)) {
+  await import("./capture-scroll-polish.mjs");
+  process.exit(0);
+}
 assert(/^phase-[1-5]$/.test(phase));
 const folder = `../docs/polish/${phase}`;
 await mkdir(folder, { recursive: true });

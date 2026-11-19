@@ -9,8 +9,10 @@ import type { CameraCommand, CameraPose, RenderStats } from "./camera";
 import { CameraRig, initialCameraPosition } from "./camera-rig";
 import { Floor, Lighting } from "./environment";
 import { Vehicle } from "./vehicle";
+import type { ScrollCamera } from "./scroll-camera";
 
 type SceneProps = {
+  story?: ScrollCamera;
   command: CameraCommand;
   pose: RefObject<CameraPose | null>;
   wingPose: RefObject<CameraPose | null>;
@@ -28,6 +30,7 @@ type SceneProps = {
 
 export default function Scene({
   command,
+  story,
   pose,
   wingPose,
   wingSelected,
@@ -51,16 +54,17 @@ export default function Scene({
         <Vehicle
           {...callbacks}
           onAnchor={setAnchor}
-          wingSelected={wingSelected}
+          wingSelected={wingSelected || !!story}
           compact={compact}
           lightingSettled={lightingSettled}
         />
         <CameraRig
           command={command}
+          story={story}
           pose={pose}
           wingPose={wingPose}
           wingSelected={wingSelected}
-          anchor={wingSelected ? anchor : null}
+          anchor={wingSelected || story ? anchor : null}
           cameraHelp={cameraHelp}
         />
       </Canvas>

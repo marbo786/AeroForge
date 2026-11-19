@@ -2,6 +2,7 @@
 
 import type { Design } from "../../lib/inference/domain";
 import type { PressureProfiles } from "../studio/use-pressure-profile";
+import type { ScrollCamera } from "./scroll-camera";
 import dynamic from "next/dynamic";
 import { ThemeToggle } from "../studio/theme-toggle";
 import Image from "next/image";
@@ -46,6 +47,8 @@ export function VehicleViewport({
   design,
   profiles,
   study = false,
+  story,
+  autoStart = true,
 }: {
   active?: boolean;
   initialized?: boolean;
@@ -55,6 +58,8 @@ export function VehicleViewport({
   design?: Design;
   profiles?: PressureProfiles;
   study?: boolean;
+  story?: ScrollCamera;
+  autoStart?: boolean;
 }) {
   const [status, setStatus] = useState<Status>("poster");
   const [progress, setProgress] = useState<number | null>(null);
@@ -93,7 +98,13 @@ export function VehicleViewport({
       setProgress(null);
       setStatus("loading");
     }
-    if (!initialized || !active || status !== "poster" || !matchMedia("(min-width: 741px)").matches)
+    if (
+      !autoStart ||
+      !initialized ||
+      !active ||
+      status !== "poster" ||
+      !matchMedia("(min-width: 741px)").matches
+    )
       return;
     if (typeof requestIdleCallback === "function") {
       const callback = requestIdleCallback(start, { timeout: 600 });
@@ -101,12 +112,12 @@ export function VehicleViewport({
     }
     const timeout = window.setTimeout(start, 0);
     return () => window.clearTimeout(timeout);
-  }, [active, initialized, status]);
+  }, [active, initialized, status, autoStart]);
 
   if (!active) return null;
   const renderScene = active && (status === "ready" || status === "loading");
   const message = {
-    poster: "3D preview is optional on compact screens.",
+    poster: "Still preview · 3D is optional.",
     loading: "Loading 3D preview…",
     ready: "Drag to orbit. Scroll or pinch to zoom.",
     unsupported: "3D is unavailable in this browser.",
@@ -147,6 +158,7 @@ export function VehicleViewport({
           <GraphicsBoundary onFailure={() => setStatus("failed")}>
             <Scene
               command={command}
+              story={story}
               pose={pose}
               wingPose={wingPose}
               wingSelected={!!wing?.selected || study}

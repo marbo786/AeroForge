@@ -2,6 +2,10 @@
 
 Last updated 2026-11-20 (Asia/Karachi).
 
+## Scroll polish
+
+- Phase A complete on `codex/scroll-polish`: continuous landing, one scroll-driven desktop renderer, lazy live model panels, native phone/reduced-motion layouts. Full verification: 29 Node and 114 browser tests passed; 19 viewport skips. Ten audited width/theme states have zero WCAG A/AA violations or overflow. Initial application JS fell 65,325 / 71,005 gzip bytes (desktop / phone); cold panel activation still has isolated longer frames. [Evidence and captures](docs/polish/README.md#scroll-polish--phase-a).
+
 ## Current status
 
 - The v2 Studio is live on Cloudflare Pages. The local `main` and cached `origin/main` both pointed to Cleanup Phase F at `28741d8` when `codex/aeroforge-v3` branched. The exact Pages deployment identity remains pending. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md)

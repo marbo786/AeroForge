@@ -5,7 +5,7 @@ test("landing enters a skippable tour and remembers its completion", async ({ pa
   await expect(
     page.getByRole("heading", { name: "Shape your aerodynamic instinct." }),
   ).toBeVisible();
-  await page.getByRole("link", { name: "Enter design studio" }).click();
+  await page.getByRole("link", { name: "Enter design studio" }).first().click();
   const tour = page.getByRole("dialog", { name: "AeroForge tour" });
   await expect(tour).toBeVisible();
   for (let i = 0; i < 4; i++) await tour.getByRole("button", { name: "Next step" }).click();

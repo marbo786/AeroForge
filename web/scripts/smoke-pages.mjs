@@ -49,7 +49,7 @@ try {
     assert.equal(response.headers()["x-content-type-options"], "nosniff", path);
     await page.getByRole("heading", { level: 1, name: pattern }).waitFor();
     if (path === "/") {
-      await page.getByRole("link", { name: "Enter design studio" }).waitFor();
+      await page.getByRole("link", { name: "Enter design studio" }).first().waitFor();
       assert.equal(
         await page.locator(".inspection-render canvas").count(),
         0,

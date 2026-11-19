@@ -4,6 +4,7 @@ import { MathUtils, OrthographicCamera, type PerspectiveCamera, Quaternion, Vect
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { useReducedPreference } from "../studio/use-reduced-preference";
 import type { CameraCommand, CameraPose, View } from "./camera";
+import type { ScrollCamera } from "./scroll-camera";
 
 const target = new Vector3(0, 0.54, 0);
 const wingDirection = new Vector3(0.53, 0.43, 1).normalize();
@@ -33,6 +34,7 @@ function fitPerspective(direction: Vector3, slope: number, aspect: number) {
 }
 
 type CameraRigProps = {
+  story?: ScrollCamera;
   command: CameraCommand;
   pose: RefObject<CameraPose | null>;
   wingPose: RefObject<CameraPose | null>;
@@ -42,6 +44,7 @@ type CameraRigProps = {
 };
 
 export function CameraRig({
+  story,
   command,
   pose,
   wingPose,
@@ -124,6 +127,45 @@ export function CameraRig({
 
   const lastCommand = useRef<CameraCommand>(null);
   useEffect(() => {
+    if (!story || reduced) return;
+    const update = () => {
+      const orbit = controls.current;
+      if (!orbit || !size.width || !size.height) return;
+      move.current = null;
+      const progress = MathUtils.clamp(story.get(), 0, 3);
+      const segment = Math.min(2, Math.floor(progress));
+      const fraction = progress - segment;
+      const t = fraction * fraction * (3 - 2 * fraction);
+      const aspect = size.width / size.height;
+      const slope = Math.tan(MathUtils.degToRad(perspective.fov / 2));
+      const directions = [
+        new Vector3(...views["Three-quarter"].direction).normalize(),
+        new Vector3(0, 0.12, 1).normalize(),
+        new Vector3(1, 0.12, 0.05).normalize(),
+        wingDirection,
+      ];
+      const targets = [target, target, target, anchor ?? target];
+      const distances = directions.map((direction, index) =>
+        index === 3
+          ? Math.max(1.5, 3.22 / aspect) / (2 * slope)
+          : fitPerspective(direction, slope, aspect),
+      );
+      orbit.target.lerpVectors(targets[segment], targets[segment + 1], t);
+      perspective.position
+        .lerpVectors(directions[segment], directions[segment + 1], t)
+        .normalize()
+        .multiplyScalar(MathUtils.lerp(distances[segment], distances[segment + 1], t))
+        .add(orbit.target);
+      perspective.lookAt(orbit.target);
+      orbit.object = perspective;
+      orbit.enableZoom = false;
+      set({ camera: perspective });
+      invalidate();
+    };
+    update();
+    return story.subscribe(update);
+  }, [story, reduced, size.width, size.height, anchor, perspective, set, invalidate]);
+  useEffect(() => {
     if (!size.width || !size.height) return;
     orthographic.right = (orthographic.top * size.width) / size.height;
     orthographic.left = -orthographic.right;
@@ -132,6 +174,7 @@ export function CameraRig({
   }, [orthographic, size.width, size.height, invalidate]);
 
   useEffect(() => {
+    if (story && !reduced) return;
     const orbit = controls.current;
     if (!orbit || !size.width || !size.height) return;
     if (wingSelected && !anchor) return;
@@ -289,6 +332,7 @@ export function CameraRig({
       invalidate();
     }
   }, [
+    story,
     command,
     size.width,
     size.height,
