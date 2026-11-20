@@ -37,7 +37,9 @@ export function Telemetry({
   onDetails,
 }: TelemetryProps) {
   const [started, setStarted] = useState(false);
-  const [history, setHistory] = useState<Record<string, { first: Result; best: Result }>>({});
+  const [history, setHistory] = useState<
+    Record<string, { first: Result; best: Result; worst: Result }>
+  >({});
   useEffect(() => {
     if (!current) return;
     setStarted(true);
@@ -53,6 +55,12 @@ export function Telemetry({
             cd: Math.min(prior?.best.cd ?? Infinity, current.cd),
             ratio: Math.max(prior?.best.ratio ?? -Infinity, current.ratio),
           },
+          worst: {
+            ...current,
+            cl: Math.min(prior?.worst.cl ?? Infinity, current.cl),
+            cd: Math.max(prior?.worst.cd ?? -Infinity, current.cd),
+            ratio: Math.min(prior?.worst.ratio ?? Infinity, current.ratio),
+          },
         },
       };
     });
@@ -65,18 +73,59 @@ export function Telemetry({
     const best = history[conditionKey]?.best[key];
     const isBest = gain > 1e-8 && best !== undefined && Math.abs(best - current[key]) < 1e-8;
     const state = isBest ? "best" : gain > 1e-8 ? "improved" : gain < -1e-8 ? "worse" : "neutral";
+    const worst = history[conditionKey]?.worst[key];
+    const span = best !== undefined && worst !== undefined ? best - worst : 0;
+    const position =
+      span && worst !== undefined
+        ? Math.max(0, Math.min(100, ((current[key] - worst) / span) * 100))
+        : 0;
+    const symbol = key === "ratio" ? "L/D" : key.toUpperCase();
     return (
-      <span className={`metric-delta delta-${state}`}>
-        Δ {change >= 0 ? "+" : ""}
-        {change.toFixed(digits)} ·{" "}
-        {isBest
-          ? "Best"
-          : state === "neutral"
-            ? "Baseline"
-            : state === "improved"
-              ? "Improved"
-              : "Worse"}
-      </span>
+      <>
+        <span className={`metric-delta delta-${state}`}>
+          <span aria-hidden="true">{state === "neutral" ? "↔" : change > 0 ? "↑" : "↓"}</span>{" "}
+          {change >= 0 ? "+" : ""}
+          {change.toFixed(digits)} ·{" "}
+          {isBest
+            ? "Session best"
+            : state === "neutral"
+              ? "Baseline"
+              : state === "improved"
+                ? "Better"
+                : "Worse"}
+        </span>
+        <div
+          className={`sector-track delta-${state}`}
+          role="meter"
+          aria-label={`${symbol} session position`}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(position)}
+          aria-valuetext={
+            span
+              ? `${Math.round(position)} percent from session worst toward best at this α / Re`
+              : "One observed value at this α / Re"
+          }
+        >
+          {Array.from({ length: 8 }, (_, index) => (
+            <i
+              key={index}
+              aria-hidden="true"
+              data-filled={span && index < Math.ceil(position / 12.5) ? "true" : undefined}
+            />
+          ))}
+        </div>
+        <div className="sector-caption">
+          {span ? (
+            <>
+              <span>Worst</span>
+              <span>Best</span>
+            </>
+          ) : (
+            <span>One observed value</span>
+          )}
+        </div>
+      </>
     );
   }
   return (
@@ -112,7 +161,7 @@ export function Telemetry({
       </div>
       <p className="telemetry-baseline">
         {baseline ? "Against saved design" : "Against first section at this α / Re"}. Higher CL /
-        L/D, lower CD. Best is local to this session and operating point.
+        L/D, lower CD. Best and observed-range bars are local to this session and operating point.
       </p>
       {pending && !started && (
         <div className="start-lights" role="status" aria-label="Initializing prediction model">

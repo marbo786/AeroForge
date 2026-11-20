@@ -81,6 +81,33 @@ try {
             reports.push({ width, theme, view: state, violations, overflow, documentHeight });
           }
           await audit(view);
+          if (phase === "scroll-d") {
+            for (const [camber, label] of [
+              ["4", "Session best"],
+              ["3", "Better"],
+              ["1", "Worse"],
+            ]) {
+              const edit = page.getByRole("button", { name: "Edit parameters", exact: true });
+              if (await edit.isVisible()) await edit.click();
+              await page.getByLabel("Maximum camber", { exact: true }).fill(camber);
+              const close = page.getByRole("button", {
+                name: "Close Design parameters",
+                exact: true,
+              });
+              if (await close.isVisible()) await close.click();
+              await page
+                .locator(".v2-metric")
+                .first()
+                .locator(".metric-delta")
+                .filter({ hasText: label })
+                .waitFor();
+              await page.locator(".v2-telemetry").screenshot({
+                path: `${folder}/${width}-${theme}-telemetry-${camber}.png`,
+                animations: "disabled",
+              });
+              await audit(`telemetry-${camber}`);
+            }
+          }
           if (phase === "scroll-c") {
             await page.getByRole("button", { name: "View", exact: true }).click();
             const menu = page.getByRole("group", { name: "View preferences" });

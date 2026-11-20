@@ -4,6 +4,8 @@ Last updated 2026-11-20 (Asia/Karachi).
 
 ## Scroll polish
 
+- Phase D complete: 13px bold telemetry deltas, arrow/word state labels, observed-range sectors and reduced-motion-safe result ticks. Full verification passed 29 Node / 121 browser tests with 20 skips. Forty audited states are clean. Initial landing JS phase delta is −1 / −1 gzip bytes; full-story chunks grew by 9 bytes. [Evidence](docs/polish/README.md#scroll-polish--phase-d).
+
 - Phase C complete: accessible View disclosure, native tour focus return, sticky operating-point rail. Fresh full verification passed 29 Node / 119 browser tests with 20 skips after a host-suspension timeout was confirmed environmental. Thirty audited states are clean; desktop page height is unchanged. Initial landing application JS phase delta: +1 / +1 gzip bytes. [Evidence](docs/polish/README.md#scroll-polish--phase-c).
 
 - Phase B complete: shared keyboard-native swatches preserve URL/local colorways. Full verification: 29 Node and 116 browser tests passed; 19 skips. Twenty audited landing/studio states are clean. Application JS phase delta: +418 / +287 gzip bytes, desktop / phone. [Captures and evidence](docs/polish/README.md#scroll-polish--phase-b).

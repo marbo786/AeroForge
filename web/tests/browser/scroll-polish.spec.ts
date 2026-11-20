@@ -1,5 +1,50 @@
 import { test, expect } from "@playwright/test";
 
+test("telemetry names best, better and worse and clears session bars outside the domain", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/studio/?view=airfoil");
+  const clDelta = page.locator(".v2-metric").first().locator(".metric-delta");
+  const edit = page.getByRole("button", { name: "Edit parameters", exact: true });
+  const close = page.getByRole("button", { name: "Close Design parameters", exact: true });
+  async function camber(value: string) {
+    if (await edit.isVisible()) await edit.click();
+    await page.getByLabel("Maximum camber", { exact: true }).fill(value);
+    if (await close.isVisible()) await close.click();
+    await expect(page.getByLabel("Prediction status")).toContainText("Prediction ready");
+  }
+  await expect(clDelta).toContainText("Baseline");
+  await camber("4");
+  await expect(clDelta).toContainText("Session best");
+  await expect(
+    page.getByRole("meter", { name: "CL session position", exact: true }),
+  ).toHaveAttribute("aria-valuenow", "100");
+  await camber("3");
+  await expect(clDelta).toContainText("Better");
+  const position = Number(
+    await page
+      .getByRole("meter", { name: "CL session position", exact: true })
+      .getAttribute("aria-valuenow"),
+  );
+  expect(position).toBeGreaterThan(0);
+  expect(position).toBeLessThan(100);
+  await camber("1");
+  await expect(clDelta).toContainText("Worse");
+  expect(
+    await clDelta.evaluate((node) => parseFloat(getComputedStyle(node).fontSize)),
+  ).toBeGreaterThanOrEqual(13);
+  expect(
+    await page.getByTestId("cl").evaluate((node) => getComputedStyle(node).animationName),
+  ).toBe("none");
+  if (await edit.isVisible()) await edit.click();
+  await page.getByLabel("Angle of attack", { exact: true }).fill("12");
+  if (await close.isVisible()) await close.click();
+  await expect(page.getByTestId("cl")).toHaveText("—");
+  await expect(page.getByRole("meter")).toHaveCount(0);
+  await expect(clDelta).toHaveText("Δ —");
+});
+
 test("View keeps primary actions visible and returns keyboard focus after Escape and Tour", async ({
   page,
 }) => {

@@ -43,7 +43,11 @@ export function Readout({
   const shown = value === undefined ? "—" : value.toFixed(digits);
   return (
     <div className={`readout ${pending ? "is-pending" : ""}`}>
-      <div className="readout-number" data-testid={id}>
+      <div
+        className={`readout-number ${value === undefined ? "" : "has-value"}`}
+        key={shown}
+        data-testid={id}
+      >
         {shown}
       </div>
       <div className="readout-caption micro">

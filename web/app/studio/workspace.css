@@ -858,7 +858,7 @@
   display: block;
   margin-top: 8px;
   font:
-    11px/1.5 var(--font-mono),
+    700 13px/1.5 var(--font-mono),
     monospace;
   color: var(--muted);
   overflow-wrap: anywhere;
@@ -1197,4 +1197,43 @@
 .rail-operating-point p {
   color: var(--muted);
   font-size: 11px;
+}
+
+.sector-track {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 3px;
+  margin-top: 10px;
+}
+.sector-track i {
+  height: 5px;
+  border: 1px solid var(--muted);
+  border-radius: 1px;
+}
+.sector-track i[data-filled] {
+  background: currentColor;
+  border-color: currentColor;
+}
+.sector-caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 5px;
+  font:
+    11px/1.4 var(--font-mono),
+    monospace;
+  color: var(--muted);
+}
+.v2-workspace .readout-number.has-value {
+  animation: metric-tick 180ms ease-out;
+}
+@keyframes metric-tick {
+  from {
+    transform: translateY(3px);
+    opacity: 0.55;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }

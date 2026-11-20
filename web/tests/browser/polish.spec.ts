@@ -101,7 +101,7 @@ test("telemetry compares a saved baseline and clears deltas outside the domain",
   await page.getByLabel("Airfoil preset", { exact: true }).selectOption("4412");
   const close = page.getByRole("button", { name: "Close Design parameters", exact: true });
   if (await close.isVisible()) await close.click();
-  await expect(page.locator(".delta-best").first()).toContainText("Best");
+  await expect(page.locator(".delta-best").first()).toContainText("Session best");
   if (await edit.isVisible()) await edit.click();
   await page.getByLabel("Angle of attack", { exact: true }).fill("12");
   if (await close.isVisible()) await close.click();
