@@ -38,7 +38,7 @@ function contourPath(contour: readonly Point[]) {
 }
 
 // Presentation-only interpolation: generate true NACA coordinates on every frame.
-export function useGeometryMotion(design: Design) {
+function useGeometryMotion(design: Design) {
   const reduced = useReducedPreference();
   const [visual, setVisual] = useState(design);
   const m = useSpring(design.m, { stiffness: 260, damping: 32 });

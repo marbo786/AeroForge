@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { VehicleViewport } from "./inspection/preview";
 import { createScrollCamera } from "./inspection/scroll-camera";
 import { ThemeToggle } from "./studio/theme-toggle";
-import { LiveryPicker } from "./studio/livery";
+import { LiveryPicker, useLivery } from "./studio/livery";
 import type { PressureProfiles } from "./studio/use-pressure-profile";
 import "./studio/tokens.css";
 import "./inspection/inspection.css";
@@ -38,6 +38,8 @@ function Deferred({ children }: { children: ReactNode }) {
 }
 
 function ScrollStory() {
+  const { livery } = useLivery();
+  const studioUrl = `/studio/?tour=1&livery=${livery}`;
   const progress = useRef<HTMLDivElement>(null);
   const [camera] = useState(createScrollCamera);
   const [animated, setAnimated] = useState(false);
@@ -73,6 +75,15 @@ function ScrollStory() {
       });
     };
     const focus = () => lenis?.scrollTo(window.scrollY, { immediate: true });
+    const suspend = () => {
+      generation++;
+      lenis?.destroy();
+      lenis = undefined;
+      cancelAnimationFrame(frame);
+    };
+    const resume = (event: PageTransitionEvent) => {
+      if (event.persisted) updatePreference();
+    };
     const anchor = (event: MouseEvent) => {
       if (
         !lenis ||
@@ -98,6 +109,8 @@ function ScrollStory() {
     preference.addEventListener("change", updatePreference);
     document.addEventListener("focusin", focus);
     document.addEventListener("click", anchor);
+    window.addEventListener("pagehide", suspend);
+    window.addEventListener("pageshow", resume);
     return () => {
       cancelled = true;
       lenis?.destroy();
@@ -105,6 +118,8 @@ function ScrollStory() {
       preference.removeEventListener("change", updatePreference);
       document.removeEventListener("focusin", focus);
       document.removeEventListener("click", anchor);
+      window.removeEventListener("pagehide", suspend);
+      window.removeEventListener("pageshow", resume);
     };
   }, []);
   useEffect(() => {
@@ -160,7 +175,7 @@ function ScrollStory() {
         </a>
         <div>
           <ThemeToggle />
-          <a className="landing-cta" href="/studio/?tour=1">
+          <a className="landing-cta" href={studioUrl}>
             Enter design studio
           </a>
         </div>
@@ -228,7 +243,7 @@ function ScrollStory() {
             <Deferred>
               <StoryLab mode="compare" />
             </Deferred>
-            <a className="story-link" href="/studio/">
+            <a className="story-link" href={`/studio/?livery=${livery}`}>
               Compare on the illustrative car
             </a>
           </section>
@@ -266,7 +281,7 @@ function ScrollStory() {
         </aside>
         <div className="story-finish">
           <h2 className="display">Your section. Your next question.</h2>
-          <a className="landing-cta" href="/studio/?tour=1">
+          <a className="landing-cta" href={studioUrl}>
             Enter design studio
           </a>
         </div>

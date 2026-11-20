@@ -1,6 +1,11 @@
 .landing {
   min-height: 100vh;
 }
+.landing a,
+.landing button,
+.landing input {
+  scroll-margin-block: 84px;
+}
 .landing-header {
   flex-direction: row;
   display: flex;

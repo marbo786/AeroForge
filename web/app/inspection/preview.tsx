@@ -119,7 +119,9 @@ export function VehicleViewport({
   const message = {
     poster: "Still preview · 3D is optional.",
     loading: "Loading 3D preview…",
-    ready: "Drag to orbit. Scroll or pinch to zoom.",
+    ready: story
+      ? "Scroll to move through the car. Drag to orbit."
+      : "Drag to orbit. Scroll or pinch to zoom.",
     unsupported: "3D is unavailable in this browser.",
     failed: "The 3D preview could not load.",
     lost: "The 3D graphics context was lost.",

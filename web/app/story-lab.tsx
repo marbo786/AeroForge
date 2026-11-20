@@ -7,16 +7,47 @@ import { SectionPreview } from "./studio/section-preview";
 import { ShareCard } from "./studio/share-card";
 import { FlowControls, FlowStudy } from "./studio/flow-study";
 import { usePressureProfile, type FlowMode } from "./studio/use-pressure-profile";
-import { useGeometryMotion } from "./studio/stage";
 import type { PressureProfiles } from "./studio/use-pressure-profile";
 
 const baseline: Design = { m: 0, p: 0, t: 0.12, alpha: 4, re: 250000 };
 const example: Design = { ...baseline, m: 0.02, p: 0.4 };
+function useStoryMorph(design: Design) {
+  const reduced = useReducedPreference();
+  const [visual, setVisual] = useState(design);
+  const current = useRef(design);
+  useEffect(() => {
+    if (reduced) {
+      current.current = design;
+      setVisual(design);
+      return;
+    }
+    const from = current.current;
+    if (from.m === design.m) return;
+    let frame = 0;
+    const start = performance.now();
+    const update = (now: number) => {
+      const fraction = Math.min(1, (now - start) / 320);
+      const t = fraction * fraction * (3 - 2 * fraction);
+      const m = from.m + (design.m - from.m) * t;
+      const next = { ...design, m, p: m ? design.p || from.p || 0.4 : 0 };
+      current.current = next;
+      setVisual(next);
+      if (fraction < 1) frame = requestAnimationFrame(update);
+    };
+    frame = requestAnimationFrame(update);
+    return () => cancelAnimationFrame(frame);
+  }, [design, reduced]);
+  return reduced ? design : visual;
+}
 function StoryNumber({ value, digits }: { value?: number; digits: number }) {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedPreference();
   useEffect(() => {
-    if (reduced || value === undefined) return;
+    if (reduced) {
+      if (ref.current) ref.current.textContent = value?.toFixed(digits) ?? "—";
+      return;
+    }
+    if (value === undefined) return;
     let frame = 0;
     const start = performance.now();
     const update = (now: number) => {
@@ -45,7 +76,7 @@ export default function StoryLab({
   const [error, setError] = useState(false);
   const [flow, setFlow] = useState<FlowMode>("surface");
   const pressure = usePressureProfile(design, mode === "pressure" && flow !== "off", false);
-  const visual = useGeometryMotion(design);
+  const visual = useStoryMorph(design);
   useEffect(() => {
     if (mode === "pressure") onPressure?.(pressure.profiles);
   }, [mode, onPressure, pressure.profiles]);
