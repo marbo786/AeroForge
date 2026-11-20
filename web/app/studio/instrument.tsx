@@ -22,8 +22,7 @@ import { ShareCard } from "./share-card";
 import { FlowControls, FlowStudy } from "./flow-study";
 import { usePressureProfile, type FlowMode } from "./use-pressure-profile";
 import { LiveryPicker, useLivery } from "./livery";
-import { Tour } from "./tour";
-import { ThemeToggle } from "./theme-toggle";
+import { ViewMenu } from "./view-menu";
 import { Telemetry } from "./telemetry";
 import { useTrainingCoverage } from "./use-training-coverage";
 import "./tokens.css";
@@ -291,8 +290,7 @@ export default function Instrument(props: InstrumentProps) {
           ))}
         </nav>
         <div className="v2-header-actions">
-          <ThemeToggle />
-          <Tour onView={changeMode} />
+          <ViewMenu onView={changeMode} />
           <button
             className="chip micro"
             aria-haspopup="dialog"
@@ -317,6 +315,26 @@ export default function Instrument(props: InstrumentProps) {
           {!compact && (
             <aside className="v2-controls" aria-label="Design parameters">
               {parameters}
+              <div className="rail-operating-point" aria-label="Operating point">
+                <h3>Operating point</h3>
+                <dl>
+                  <div>
+                    <dt>α</dt>
+                    <dd>{design.alpha.toLocaleString("en-US", { maximumFractionDigits: 1 })}°</dd>
+                  </div>
+                  <div>
+                    <dt>Re</dt>
+                    <dd>{design.re.toLocaleString("en-US")}</dd>
+                  </div>
+                </dl>
+                <p>
+                  {invalid
+                    ? "Last valid inputs"
+                    : inBounds
+                      ? "Isolated section · model range"
+                      : "Outside model range"}
+                </p>
+              </div>
             </aside>
           )}
           <div className="v2-center">

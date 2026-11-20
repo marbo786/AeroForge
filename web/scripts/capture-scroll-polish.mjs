@@ -66,17 +66,39 @@ try {
             });
           }
           await page.addScriptTag({ path: "node_modules/axe-core/axe.min.js" });
-          const violations = await page.evaluate(async () =>
-            (
-              await window.axe.run(document, {
-                runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
-              })
-            ).violations.map(({ id, nodes }) => ({ id, targets: nodes.map((n) => n.target) })),
-          );
-          const overflow = await page.evaluate(
-            () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
-          );
-          reports.push({ width, theme, view, violations, overflow });
+          async function audit(state) {
+            const violations = await page.evaluate(async () =>
+              (
+                await window.axe.run(document, {
+                  runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
+                })
+              ).violations.map(({ id, nodes }) => ({ id, targets: nodes.map((n) => n.target) })),
+            );
+            const overflow = await page.evaluate(
+              () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+            );
+            const documentHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+            reports.push({ width, theme, view: state, violations, overflow, documentHeight });
+          }
+          await audit(view);
+          if (phase === "scroll-c") {
+            await page.getByRole("button", { name: "View", exact: true }).click();
+            const menu = page.getByRole("group", { name: "View preferences" });
+            const bounds = await menu.boundingBox();
+            assert(bounds.x >= 0 && bounds.x + bounds.width <= width);
+            await page.screenshot({
+              path: `${folder}/${width}-${theme}-view-menu.png`,
+              animations: "disabled",
+            });
+            await audit("view-menu");
+            await page.getByRole("button", { name: "Tour", exact: true }).click();
+            await page.getByRole("dialog", { name: "AeroForge tour" }).waitFor();
+            await page.screenshot({
+              path: `${folder}/${width}-${theme}-tour.png`,
+              animations: "disabled",
+            });
+            await audit("tour");
+          }
         }
         await page.close();
       }

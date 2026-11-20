@@ -31,8 +31,19 @@ const steps: { title: string; text: string; view: WorkspaceView }[] = [
   },
 ];
 
-export function Tour({ onView }: { onView: (view: WorkspaceView) => void }) {
+export function Tour({
+  onView,
+  request = 0,
+  showTrigger = true,
+}: {
+  onView: (view: WorkspaceView) => void;
+  request?: number;
+  showTrigger?: boolean;
+}) {
   const [step, setStep] = useState<number | null>(null);
+  useEffect(() => {
+    if (request > 0) setStep(0);
+  }, [request]);
   useEffect(() => {
     if (!new URLSearchParams(location.search).has("tour")) return;
     try {
@@ -51,9 +62,11 @@ export function Tour({ onView }: { onView: (view: WorkspaceView) => void }) {
   }
   return (
     <>
-      <button className="chip micro" aria-haspopup="dialog" onClick={() => setStep(0)}>
-        Tour
-      </button>
+      {showTrigger && (
+        <button className="chip micro" aria-haspopup="dialog" onClick={() => setStep(0)}>
+          Tour
+        </button>
+      )}
       <Drawer open={step !== null} onClose={finish} title="AeroForge tour">
         {step !== null && (
           <>

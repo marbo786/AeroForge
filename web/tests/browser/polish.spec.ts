@@ -13,6 +13,7 @@ test("landing enters a skippable tour and remembers its completion", async ({ pa
   await tour.getByRole("button", { name: "Start designing" }).click();
   await page.goto("/studio/?tour=1");
   await expect(tour).not.toBeVisible();
+  await page.getByRole("button", { name: "View", exact: true }).click();
   await page.getByRole("button", { name: "Tour", exact: true }).click();
   await expect(tour).toBeVisible();
   await tour.getByRole("button", { name: "Skip tour" }).click();
@@ -21,12 +22,14 @@ test("landing enters a skippable tour and remembers its completion", async ({ pa
 
 test("theme persists across engineering views and reloads", async ({ page }) => {
   await page.goto("/studio/?view=airfoil");
+  await page.getByRole("button", { name: "View", exact: true }).click();
   const theme = page.getByRole("button", { name: "Light theme", exact: true });
   await expect(theme).toHaveAttribute("aria-pressed", "false");
   await theme.click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await page.getByRole("button", { name: "Analysis", exact: true }).click();
   await page.reload();
+  await page.getByRole("button", { name: "View", exact: true }).click();
   await expect(theme).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
     "content",

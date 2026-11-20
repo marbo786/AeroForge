@@ -1,0 +1,242 @@
+[
+  {
+    "width": 320,
+    "theme": "dark",
+    "view": "studio",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1555
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "view": "view-menu",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1555
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "view": "tour",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1555
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "view": "studio",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1555
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "view": "view-menu",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1555
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "view": "tour",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1555
+  },
+  {
+    "width": 390,
+    "theme": "dark",
+    "view": "studio",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1227
+  },
+  {
+    "width": 390,
+    "theme": "dark",
+    "view": "view-menu",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1227
+  },
+  {
+    "width": 390,
+    "theme": "dark",
+    "view": "tour",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1227
+  },
+  {
+    "width": 390,
+    "theme": "light",
+    "view": "studio",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1227
+  },
+  {
+    "width": 390,
+    "theme": "light",
+    "view": "view-menu",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1227
+  },
+  {
+    "width": 390,
+    "theme": "light",
+    "view": "tour",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1227
+  },
+  {
+    "width": 768,
+    "theme": "dark",
+    "view": "studio",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1157
+  },
+  {
+    "width": 768,
+    "theme": "dark",
+    "view": "view-menu",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1157
+  },
+  {
+    "width": 768,
+    "theme": "dark",
+    "view": "tour",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1157
+  },
+  {
+    "width": 768,
+    "theme": "light",
+    "view": "studio",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1157
+  },
+  {
+    "width": 768,
+    "theme": "light",
+    "view": "view-menu",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1157
+  },
+  {
+    "width": 768,
+    "theme": "light",
+    "view": "tour",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1157
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "view": "studio",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1063
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "view": "view-menu",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1063
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "view": "tour",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1063
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "view": "studio",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1063
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "view": "view-menu",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1063
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "view": "tour",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1063
+  },
+  {
+    "width": 1920,
+    "theme": "dark",
+    "view": "studio",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1064
+  },
+  {
+    "width": 1920,
+    "theme": "dark",
+    "view": "view-menu",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1064
+  },
+  {
+    "width": 1920,
+    "theme": "dark",
+    "view": "tour",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1064
+  },
+  {
+    "width": 1920,
+    "theme": "light",
+    "view": "studio",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1064
+  },
+  {
+    "width": 1920,
+    "theme": "light",
+    "view": "view-menu",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1064
+  },
+  {
+    "width": 1920,
+    "theme": "light",
+    "view": "tour",
+    "violations": [],
+    "overflow": false,
+    "documentHeight": 1064
+  }
+]

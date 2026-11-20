@@ -72,6 +72,7 @@ try {
           if (width > 740) await page.locator('[data-render-status="ready"]').waitFor();
           await audit("landing");
           await page.goto("http://127.0.0.1:4175/studio/");
+          await page.getByRole("button", { name: "View", exact: true }).click();
           await page.getByRole("button", { name: "Tour", exact: true }).click();
           await page.getByRole("dialog", { name: "AeroForge tour" }).waitFor();
           await audit("tour");

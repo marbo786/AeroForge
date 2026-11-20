@@ -1132,3 +1132,69 @@
     min-height: 0;
   }
 }
+
+.view-menu {
+  position: relative;
+}
+.view-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  inset-inline-start: 0;
+  z-index: 50;
+  display: grid;
+  gap: 8px;
+  min-width: 160px;
+  max-width: calc(100vw - 20px);
+  padding: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: 0 12px 30px rgb(0 0 0 / 0.22);
+}
+.view-popover[hidden] {
+  display: none;
+}
+.v2-header-actions .view-popover .chip {
+  min-height: 40px;
+  justify-content: center;
+}
+@media (min-width: 1121px) {
+  .v2-layout > .v2-controls {
+    position: sticky;
+    top: 10px;
+  }
+}
+.rail-operating-point {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.rail-operating-point h3 {
+  font-size: 12px;
+}
+.rail-operating-point dl {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border: 0;
+  margin: 10px 0;
+  padding: 0;
+}
+.rail-operating-point dl > div {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.rail-operating-point dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+.rail-operating-point dd {
+  font:
+    600 13px var(--font-mono),
+    monospace;
+  margin: 0;
+}
+.rail-operating-point p {
+  color: var(--muted);
+  font-size: 11px;
+}
