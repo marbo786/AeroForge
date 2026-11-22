@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-22",
+  "applicationCommit": "0966bda3abdd945d06251d8620ab79bce7e5d7f0",
+  "deploymentId": "2329de47-34de-4b34-81f7-81818b1a746d",
+  "immutableUrl": "https://2329de47.aeroforge-9tf.pages.dev/",
+  "productionUrl": "https://aeroforge-9tf.pages.dev/",
+  "ci": {
+    "run": 45044336034,
+    "conclusion": "success",
+    "pythonPassed": 115,
+    "nodePassed": 29,
+    "browserPassed": 127,
+    "browserSkipped": 22
+  },
+  "smokes": [
+    {
+      "origin": "https://2329de47.aeroforge-9tf.pages.dev",
+      "browser": "157.0.8103.79",
+      "routes": 5,
+      "sameOriginInference": true,
+      "modelAndPreprocessingVerified": true,
+      "headers": "MIME, nosniff, immutable",
+      "missingAssetStatus": 404,
+      "browserErrors": 0
+    },
+    {
+      "origin": "https://aeroforge-9tf.pages.dev",
+      "browser": "157.0.8103.79",
+      "routes": 5,
+      "sameOriginInference": true,
+      "modelAndPreprocessingVerified": true,
+      "headers": "MIME, nosniff, immutable",
+      "missingAssetStatus": 404,
+      "browserErrors": 0
+    }
+  ],
+  "publishedAssets": {
+    "storySectionPresent": true,
+    "socialImageSha256": "dadc9ba40593ec38aa7f748908632c814debef81ed1b2a060ff69aea783b2b38",
+    "socialImageMime": "image/png",
+    "lenisNoticePresent": true
+  },
+  "additionalPublicFeatureRun": {
+    "passed": 10,
+    "flaky": 6,
+    "failed": 4,
+    "skipped": 2,
+    "method": "Exact immutable deployment; normal browser negotiation, 20-second assertion waits and two retries. All four final failures ended at page.goto with ERR_QUIC_PROTOCOL_ERROR on this host. Forcing HTTP/2 or HTTP/1.1 produced connection resets. No production protocol setting or application behavior was changed to hide those transport failures."
+  }
+}

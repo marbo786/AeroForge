@@ -4,6 +4,8 @@ Last updated 2026-11-22 (Asia/Karachi).
 
 ## Scroll polish
 
+- Published the scroll-polish application from `main` at `0966bda`, Pages deployment `2329de47`. Linux CI passed 115 Python / 29 Node / 127 browser tests (22 skips). Both public URLs passed route/inference integrity smoke with zero browser errors. Additional isolated-browser probes were transport-limited; all four final failures were navigation QUIC errors. [Release provenance and rollback](docs/PORTFOLIO_RELEASE.md).
+
 - Phase E verification passed: 29 Node / 127 browser tests, with 22 viewport skips; the landing matrix and recaptured ten-state audit are clean. The new 20.4-second WebP, social preview and current-status docs are refreshed. Initial application JS is down 64,296 / 70,107 gzip bytes from baseline (desktop / phone); scroll p95 is 17.0 / 17.4 ms, with cold activation outliers retained in the report. Corrected Lighthouse performance medians are 92.5 desktop / 85.5 mobile, with 100 for accessibility, best practices and SEO. The initial contrast failure and mobile-score drop remain documented. [Final evidence](docs/polish/README.md#scroll-polish--phase-e).
 
 - Phase D complete: 13px bold telemetry deltas, arrow/word state labels, observed-range sectors and reduced-motion-safe result ticks. Full verification passed 29 Node / 121 browser tests with 20 skips. Forty audited states are clean. Initial landing JS phase delta is −1 / −1 gzip bytes; full-story chunks grew by 9 bytes. [Evidence](docs/polish/README.md#scroll-polish--phase-d).
