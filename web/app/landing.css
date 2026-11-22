@@ -466,7 +466,7 @@
 }
 .landing[data-scroll-motion="enabled"] .story-step:not([data-entered]) > *,
 .landing[data-scroll-motion="enabled"] .story-tiles > a:not([data-entered]) {
-  opacity: 0.15;
+  opacity: 1;
   transform: translateY(18px);
 }
 .landing[data-scroll-motion="enabled"] .story-step:focus-within > * {
