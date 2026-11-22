@@ -1,0 +1,24 @@
+[
+  {
+    "width": 1440,
+    "initialJsGzip": 429960,
+    "storyJsGzip": 440532,
+    "frameMs": {
+      "p50": 16.699999999999818,
+      "p95": 17,
+      "max": 100
+    },
+    "environment": "Chrome on Windows; phone emulation, not a physical device"
+  },
+  {
+    "width": 390,
+    "initialJsGzip": 148569,
+    "storyJsGzip": 159141,
+    "frameMs": {
+      "p50": 16.699999999999818,
+      "p95": 17.40000000000009,
+      "max": 50
+    },
+    "environment": "Chrome on Windows; phone emulation, not a physical device"
+  }
+]

@@ -1,6 +1,6 @@
 # AeroForge architecture and browser studio
 
-The v2 Studio and its AF–02 inspection bay are live on Cloudflare Pages. GitHub `main` includes the implementation through PR #1 at `075bf74`. Public browser and asset checks passed on 2026-11-16. V2.6 still needs deployment metadata and the separate preview and rollback checks. [Release evidence](RELEASE_CHECKLIST.md) · [Product specifications](SPEC.md) · [V2 architecture and budgets](V2_SPEC.md)
+The portfolio Studio and its illustrative AF–02 inspection bay are published through the Cloudflare Pages project connected to GitHub `main`. [Release provenance and rollback target](PORTFOLIO_RELEASE.md) · [Product specifications](SPEC.md) · [Architecture and budgets](V2_SPEC.md)
 
 ## Browser workspace
 
@@ -92,7 +92,7 @@ The spike uses ordinary anchors between exported documents. During investigation
 
 ## Verification boundaries
 
-The production verification suite runs formatting, lint, strict TypeScript, 29 Node tests and 109 applicable Playwright tests, with 18 viewport-specific skips. The separate Python evidence audit and frozen scientific artifacts are unchanged by portfolio polish. Browser tests exercise real same-origin ONNX, direct links, chart gaps, camera return and the graphics fallback. V2.5 Lighthouse lab performance was 92 mobile and 86 desktop, with 100 for accessibility, best practices and SEO in both profiles. These measurements are local. The separately tested public release and pending deployment checks are recorded in the release checklist. [V2.5 audit](v2-5/README.md) · [Release checklist](RELEASE_CHECKLIST.md)
+The production verification suite covers formatting, lint, strict TypeScript, Node geometry/inference/search checks and real-browser tests. The [polish report](polish/README.md) records current counts, viewport audits, bundle changes and landing Lighthouse measurements. The Python evidence audit and frozen scientific artifacts remain unchanged. Browser tests exercise same-origin ONNX, direct links, withheld outputs, chart gaps, camera return, smooth-scroll focus, native dialogs and the graphics fallback. Physical-phone timing and WebKit remain unverified.
 
 ## Portfolio presentation
 
@@ -116,3 +116,5 @@ The [main-plane-plus-flap design note](MULTI_ELEMENT_WING.md) is a plan only. In
 ## Scroll-driven introduction
 
 The landing route owns an optional Lenis instance and a mutable scroll-camera store. The inspection camera subscribes to that store, interpolates its existing view framing, and invalidates demand frames only when progress changes. The store is absent from ordinary studio camera control. Coarse-pointer/compact layouts use normal document flow and native scrolling; reduced motion keeps the same readable story without choreography. Intersection observers mount the below-fold story lab, which reuses existing geometry, coefficient inference, pressure eligibility and share-card components. Legacy root design parameters still select the studio rather than the story.
+
+The landing morph regenerates the same NACA geometry with a small presentation-only RAF interpolation; it does not import the studio animation library. Landing counters stop at the real model value when motion preference changes. Lenis is also destroyed on pagehide and recreated on a back/forward-cache return. Explicit colorway parameters carry a landing selection into the editor even when storage is unavailable.

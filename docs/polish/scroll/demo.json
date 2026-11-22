@@ -1,0 +1,22 @@
+{
+  "width": 1280,
+  "height": 800,
+  "durationMs": 20373,
+  "webpBytes": 1428052,
+  "gifCandidateBytes": 3824071,
+  "chapters": [
+    "Explore the AF–02",
+    "Shape the section",
+    "See the pressure",
+    "Compare and share",
+    "Choose an original fictional colorway",
+    "Save a baseline",
+    "Drag the live section",
+    "Inspect ML-predicted Surface Cp",
+    "Compare isolated sections on the illustrative car"
+  ],
+  "method": "Edited real-browser captures, with model-ready waits. A visible pointer drag changes live coefficients; car comparison asserts two different section geometries. Images contain real model output, with an illustrative-car / isolated-section limits caption. Optimized WebP chosen over the GIF candidate.",
+  "inputFrames": 64,
+  "encodedFrames": 43,
+  "encodedDurationMs": 20373
+}

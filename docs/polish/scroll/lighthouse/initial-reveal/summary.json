@@ -1,0 +1,141 @@
+{
+  "method": "Two cold-cache samples per profile and version, Lighthouse 13.6.0 simulated throttling. Both exports use the same local gzip server. Baseline snapshot provenance is retained separately. Lab results do not establish physical-phone or WebKit performance.",
+  "runs": [
+    {
+      "stage": "before",
+      "profile": "desktop",
+      "sample": 1,
+      "version": "13.6.0",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "scores": {
+        "performance": 84,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "agentic-browsing": 100
+      },
+      "lcpMs": 836.8008,
+      "tbtMs": 352.5,
+      "cls": 0.00006761703586959694
+    },
+    {
+      "stage": "before",
+      "profile": "mobile",
+      "sample": 1,
+      "version": "13.6.0",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "scores": {
+        "performance": 77,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "agentic-browsing": 100
+      },
+      "lcpMs": 3950.953,
+      "tbtMs": 428.9999999999998,
+      "cls": 0
+    },
+    {
+      "stage": "before",
+      "profile": "desktop",
+      "sample": 2,
+      "version": "13.6.0",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "agentic-browsing": 100
+      },
+      "lcpMs": 786.5306,
+      "tbtMs": 161.38265,
+      "cls": 0.00006761703586959694
+    },
+    {
+      "stage": "before",
+      "profile": "mobile",
+      "sample": 2,
+      "version": "13.6.0",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "scores": {
+        "performance": 84,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "agentic-browsing": 100
+      },
+      "lcpMs": 3788.097600000001,
+      "tbtMs": 256,
+      "cls": 0
+    },
+    {
+      "stage": "after",
+      "profile": "desktop",
+      "sample": 1,
+      "version": "13.6.0",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "scores": {
+        "performance": 83,
+        "accessibility": 96,
+        "best-practices": 100,
+        "seo": 100,
+        "agentic-browsing": 100
+      },
+      "lcpMs": 280.61250000000007,
+      "tbtMs": 396,
+      "cls": 0.007848996167234182
+    },
+    {
+      "stage": "after",
+      "profile": "mobile",
+      "sample": 1,
+      "version": "13.6.0",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "scores": {
+        "performance": 82,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "agentic-browsing": 100
+      },
+      "lcpMs": 3472.72935,
+      "tbtMs": 388.711775,
+      "cls": 0.009503805461083883
+    },
+    {
+      "stage": "after",
+      "profile": "desktop",
+      "sample": 2,
+      "version": "13.6.0",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "scores": {
+        "performance": 95,
+        "accessibility": 96,
+        "best-practices": 100,
+        "seo": 100,
+        "agentic-browsing": 100
+      },
+      "lcpMs": 278.7219,
+      "tbtMs": 190.13905,
+      "cls": 0.007848996167234182
+    },
+    {
+      "stage": "after",
+      "profile": "mobile",
+      "sample": 2,
+      "version": "13.6.0",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "scores": {
+        "performance": 73,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "agentic-browsing": 100
+      },
+      "lcpMs": 3525.2309,
+      "tbtMs": 744,
+      "cls": 0
+    }
+  ]
+}

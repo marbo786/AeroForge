@@ -8,9 +8,9 @@ AeroForge is an airfoil design studio with a 3D inspection bay for the illustrat
 
 The car and wing pitch are illustrative. Predictions describe isolated NACA sections within **−4° to 8°** and **Re 100,000 to 500,000**, below typical full-scale Formula 1 front-wing conditions. [Formula 1 front-wing study](https://link.springer.com/article/10.1007/s00348-026-04191-5)
 
-![AeroForge landing page with the original AF–02, studio entry and honest limits](docs/polish/phase-3/1440-dark-landing.png)
+![AeroForge scroll story with the original AF–02 and honest limits](docs/polish/scroll-e/1440-motion-start.png)
 
-[Interaction demo](docs/media/aeroforge-demo.gif) · [Studio](docs/polish/phase-5/1440-dark-studio.png) · [Mobile Analysis](docs/polish/phase-5/390-dark-analysis.png)
+[Scroll and interaction demo](docs/media/aeroforge-demo.webp) · [Studio](docs/polish/scroll-d/1440-dark-studio.png) · [Mobile studio](docs/polish/scroll-d/390-dark-studio.png)
 
 ## Model accuracy
 
@@ -54,7 +54,7 @@ To reproduce training, create a fresh recovery plan with `scripts/plan_recovery.
 
 The portfolio-polish updates are published on Cloudflare Pages. [Release record and rollback target](docs/PORTFOLIO_RELEASE.md).
 
-The v2 Studio is live on Cloudflare Pages. On 2026-11-16 the public smoke test passed and the served vehicle assets matched GitHub `main` at merge `075bf74` (PR #1). V2.6 remains pending for deployment metadata and the separate preview and rollback checks. The static export runs browser inference without an inference API. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Deployment guide](docs/DEPLOYMENT.md)
+The portfolio studio is published from GitHub `main` through the existing Cloudflare Pages project. Deployment provenance and the rollback target are recorded in the release record above. The static export runs browser inference without an inference API. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Deployment guide](docs/DEPLOYMENT.md)
 
 The plan-only [multi-element wing design note](docs/MULTI_ELEMENT_WING.md) outlines future data and validation needs. The [engineering case study](docs/CASE_STUDY.md#limits-and-roadmap) describes future validation work. See the [progress record](PROGRESS.md) for completed milestones.
 

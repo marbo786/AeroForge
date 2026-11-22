@@ -1,0 +1,153 @@
+{
+  "origin": "https://99297676.aeroforge-9tf.pages.dev",
+  "source": "4f5ee786d82fe0f740d9709194999a220b46e684",
+  "capturedAt": "2026-11-20T12:30:44.845Z",
+  "method": "Read-only snapshot of successful same-origin responses from the previously deployed landing. Serve locally with the same static server for a matched Lighthouse transport.",
+  "files": [
+    {
+      "path": "/_next/static/chunks/209-f7e831d11482b8b2.js",
+      "bytes": 19085,
+      "sha256": "b41344fdf4e65b01535f59bd496dd2253e1065f7df7443ccb3e181368d1faea1"
+    },
+    {
+      "path": "/_next/static/chunks/349-6e489871a4197316.js",
+      "bytes": 136174,
+      "sha256": "ac6bc7696f0a9f0545d59d0611dd94a2183ad7f2003430df1c174e8777ce029b"
+    },
+    {
+      "path": "/_next/static/chunks/4bd1b696-c7408084347438ae.js",
+      "bytes": 203721,
+      "sha256": "7d5ccf185a6f85ab38ce400a7f10aa0a3496eb4e9aee1e500a85e01c4222fcec"
+    },
+    {
+      "path": "/_next/static/chunks/508.da7708263311fae0.js",
+      "bytes": 80660,
+      "sha256": "95fbb83a3fa77e46a51d74d5f1ebcbc41e1a72d760f9aa3c910ba9a75a8e0406"
+    },
+    {
+      "path": "/_next/static/chunks/580-e4a2877331689130.js",
+      "bytes": 16827,
+      "sha256": "3408c945e9f2a248e7622666cc92a38f385bc56285995d25d25d8daeda5804c1"
+    },
+    {
+      "path": "/_next/static/chunks/652.2f84def4ff34f880.js",
+      "bytes": 23367,
+      "sha256": "c2eaef9271abdacd6a34d9c955cd6198e3959cd5d644e9515a68011f231a08e2"
+    },
+    {
+      "path": "/_next/static/chunks/794-8d371aeb1948ae36.js",
+      "bytes": 242282,
+      "sha256": "ae0780e04bddf5f3f9111ee7ed693ea14b83f8279ec74272752ca70be7cf19e9"
+    },
+    {
+      "path": "/_next/static/chunks/844-d79f67562e25d674.js",
+      "bytes": 68485,
+      "sha256": "c18234c86e4706acd516e94d33631cf078ccac05d29295ba546f94e89bc0c6b5"
+    },
+    {
+      "path": "/_next/static/chunks/app/layout-b40bc91ee33d6b06.js",
+      "bytes": 2167,
+      "sha256": "3dc8501ee1f2275d7b07f03d0ff565a254cecb77db497be2f5e58cef011c49b7"
+    },
+    {
+      "path": "/_next/static/chunks/app/page-c6d0cc66b7ff392d.js",
+      "bytes": 1842,
+      "sha256": "d1ba202ff363e608af417b9c23f746703648e26adf0c36c1d7e0bd987fce0dc5"
+    },
+    {
+      "path": "/_next/static/chunks/b536a0f1.f06e169bf8dc9367.js",
+      "bytes": 368083,
+      "sha256": "e701242b3072af5864bcf85d6cbf9fb8706df53acda752c56368124a7ead5e87"
+    },
+    {
+      "path": "/_next/static/chunks/bd904a5c.56e65ed4abb36c15.js",
+      "bytes": 385859,
+      "sha256": "aede04a8083af853757aa40b9399e47dd214d9c821f824c9cadac96256fc6fd8"
+    },
+    {
+      "path": "/_next/static/chunks/e49654ac.d6d12062836beaee.js",
+      "bytes": 165750,
+      "sha256": "84801eaad66da96565fe71816270f04a7629fbd6b1e9ba038d2efa39c2cadb01"
+    },
+    {
+      "path": "/_next/static/chunks/main-app-df0647a34814dd0b.js",
+      "bytes": 511,
+      "sha256": "8b39a68dc132b998fa2a3d3a2f15197212c9679f82642c53a24c9d53ea340fe9"
+    },
+    {
+      "path": "/_next/static/chunks/webpack-e57da4b18372eec6.js",
+      "bytes": 4990,
+      "sha256": "cb6b00f4bf9b08eaae822e581d37ebce96f357023687dbfd1e51e0440890ee71"
+    },
+    {
+      "path": "/_next/static/css/069853cda1720166.css",
+      "bytes": 20221,
+      "sha256": "f211d3da9db03a9ec67f450e7aeff2e78a49cca97db1c35decc6a5a3779bbe09"
+    },
+    {
+      "path": "/_next/static/css/18defe18f17fe6de.css",
+      "bytes": 18188,
+      "sha256": "11b5f14c07369e673967a4bc2b9e0ace60c7bf8fde81b58ad9883c2406f7e32b"
+    },
+    {
+      "path": "/_next/static/css/1c628dc4da6f2f1b.css",
+      "bytes": 3280,
+      "sha256": "bd060b863057358b47f0d1412fc29033ffd1c7b0f10b2ae7b5dc42fecf9e65d3"
+    },
+    {
+      "path": "/_next/static/css/3c2c27ec8c0d730a.css",
+      "bytes": 2850,
+      "sha256": "6de05d19db91ca99fbc47d8ead95259d99d650d16a6beca9b0cbb54265469a22"
+    },
+    {
+      "path": "/_next/static/css/a41e877afb643c2a.css",
+      "bytes": 10606,
+      "sha256": "c242624e580b8899b2ac7fdd3bbb20d1711ba1cc9251fbbbfc6d2337790040c9"
+    },
+    {
+      "path": "/_next/static/css/cc5030afdaf94a3d.css",
+      "bytes": 1983,
+      "sha256": "bb7ae622668e385b0663ee3497aee952bb09721cb9b3dc4d378533413b5e40fc"
+    },
+    {
+      "path": "/_next/static/media/1e0424eb5dd8cb13-s.p.woff2",
+      "bytes": 92380,
+      "sha256": "f1a7a03672cdd494ce0d5543fac6e4360fe22403c6de297fdc2e55a815f7baff"
+    },
+    {
+      "path": "/_next/static/media/515948fd7a25a6d4-s.p.ttf",
+      "bytes": 111772,
+      "sha256": "5bd6757e459a110da81b44532f0f43058e2dab2401688abca84f2fdbde193cbb"
+    },
+    {
+      "path": "/_next/static/media/569ce4b8f30dc480-s.p.woff2",
+      "bytes": 28356,
+      "sha256": "1b5ebfb3a01a97343ac96873e6d59a8cb285c66012b6a1ac509cb2765e995ba8"
+    },
+    {
+      "path": "/icon.svg",
+      "bytes": 202,
+      "sha256": "5b30ee91fd6db109e3a2eeb6be6d4fefbbc04876c2fee5edc0a05354eef1dd67"
+    },
+    {
+      "path": "/index.html",
+      "bytes": 12966,
+      "sha256": "7342f6416b63afeca14842104715d50be09c8ad3053b47df73b4976ff3f3b4fe"
+    },
+    {
+      "path": "/vehicle/af02-v1/car.glb",
+      "bytes": 828248,
+      "sha256": "98730eb9b526bb7b0be824c75ff9e5e76255d32da8e7ef73ab92e9150f2b8f7f"
+    },
+    {
+      "path": "/vehicle/af02-v1/poster.webp",
+      "bytes": 34884,
+      "sha256": "68b5c3b745b3cd6a5049a45203fc44bcf22c10de77d620e64a5c5382751ad8e3"
+    },
+    {
+      "path": "/vehicle/lighting-v1/room.rgba16f.gz",
+      "bytes": 82928,
+      "sha256": "16b96d74025400ce1c8bf2183ae6bebbd1a03a3522ac9c10b34cd2a888eb0cbf"
+    }
+  ]
+}

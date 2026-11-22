@@ -1,8 +1,10 @@
 # AeroForge progress
 
-Last updated 2026-11-20 (Asia/Karachi).
+Last updated 2026-11-22 (Asia/Karachi).
 
 ## Scroll polish
+
+- Phase E verification passed: 29 Node / 127 browser tests, with 22 viewport skips; the landing matrix and recaptured ten-state audit are clean. The new 20.4-second WebP, social preview and current-status docs are refreshed. Initial application JS is down 64,296 / 70,107 gzip bytes from baseline (desktop / phone); scroll p95 is 17.0 / 17.4 ms, with cold activation outliers retained in the report. Corrected Lighthouse performance medians are 92.5 desktop / 85.5 mobile, with 100 for accessibility, best practices and SEO. The initial contrast failure and mobile-score drop remain documented. [Final evidence](docs/polish/README.md#scroll-polish--phase-e).
 
 - Phase D complete: 13px bold telemetry deltas, arrow/word state labels, observed-range sectors and reduced-motion-safe result ticks. Full verification passed 29 Node / 121 browser tests with 20 skips. Forty audited states are clean. Initial landing JS phase delta is −1 / −1 gzip bytes; full-story chunks grew by 9 bytes. [Evidence](docs/polish/README.md#scroll-polish--phase-d).
 
@@ -10,12 +12,12 @@ Last updated 2026-11-20 (Asia/Karachi).
 
 - Phase B complete: shared keyboard-native swatches preserve URL/local colorways. Full verification: 29 Node and 116 browser tests passed; 19 skips. Twenty audited landing/studio states are clean. Application JS phase delta: +418 / +287 gzip bytes, desktop / phone. [Captures and evidence](docs/polish/README.md#scroll-polish--phase-b).
 
-- Phase A complete on `codex/scroll-polish`: continuous landing, one scroll-driven desktop renderer, lazy live model panels, native phone/reduced-motion layouts. Full verification: 29 Node and 114 browser tests passed; 19 viewport skips. Ten audited width/theme states have zero WCAG A/AA violations or overflow. Initial application JS fell 65,325 / 71,005 gzip bytes (desktop / phone); cold panel activation still has isolated longer frames. [Evidence and captures](docs/polish/README.md#scroll-polish--phase-a).
+- Phase A complete: continuous landing, one scroll-driven desktop renderer, lazy live model panels, native phone/reduced-motion layouts. Full verification: 29 Node and 114 browser tests passed; 19 viewport skips. Ten audited width/theme states have zero WCAG A/AA violations or overflow. Initial application JS fell 65,325 / 71,005 gzip bytes (desktop / phone); cold panel activation still has isolated longer frames. [Evidence and captures](docs/polish/README.md#scroll-polish--phase-a).
 
 ## Current status
 
-- The v2 Studio is live on Cloudflare Pages. The local `main` and cached `origin/main` both pointed to Cleanup Phase F at `28741d8` when `codex/aeroforge-v3` branched. The exact Pages deployment identity remains pending. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md)
-- The accepted ONNX model predicts isolated 2D sections. The AF–02 car and front-wing motion are illustrative. [Model evidence](docs/ML.md) · [Phase D demo](docs/media/aeroforge-demo.gif)
+- The portfolio studio is published from GitHub `main` through the Git-connected Cloudflare Pages project. Exact application source, deployment provenance and rollback target are recorded in the [release record](docs/PORTFOLIO_RELEASE.md). [Live Studio](https://aeroforge-9tf.pages.dev/)
+- The accepted ONNX model predicts isolated 2D sections. The AF–02 car and front-wing motion are illustrative. [Model evidence](docs/ML.md) · [Scroll and interaction demo](docs/media/aeroforge-demo.webp)
 
 ## Portfolio publication
 

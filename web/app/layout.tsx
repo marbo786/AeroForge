@@ -23,13 +23,13 @@ const condensed = localFont({
 export const metadata: Metadata = {
   title: "AeroForge | Aerodynamic Design Studio",
   description:
-    "Edit accurate NACA airfoil geometry and evaluate lift and drag with local browser inference. Explore aerodynamic design with transparent model limitations.",
+    "Scroll from shape to pressure, then design isolated NACA sections with real browser inference. An illustrative AF–02 car, original colorways and honest model limits.",
   metadataBase: new URL("https://aeroforge-9tf.pages.dev"),
   openGraph: {
     type: "website",
     title: "AeroForge | Aerodynamic Design Studio",
     description:
-      "Explore the AF–02. Design isolated NACA sections with live browser predictions and honest limits.",
+      "Shape. Pressure. Your next iteration. Explore the illustrative AF–02 and design isolated NACA sections with honest limits.",
     images: [
       {
         url: "/social-preview.png",
