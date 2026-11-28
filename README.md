@@ -1,29 +1,120 @@
-# AeroForge
+<h1 align="center">AeroForge</h1>
 
-AeroForge is an airfoil design studio with a 3D inspection bay for the illustrative AF–02 car, an interactive NACA editor, and live ONNX predictions for an isolated 2D section.
+<p align="center">Edit an airfoil in your browser and see how its shape changes predicted lift and drag.</p>
 
-[Open the live studio](https://aeroforge-9tf.pages.dev/) · [Architecture](docs/ARCHITECTURE.md) · [Release checklist](docs/RELEASE_CHECKLIST.md)
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-475569" alt="MIT license"></a>
+  <a href="https://aeroforge-9tf.pages.dev/"><img src="https://img.shields.io/badge/demo-Live_Studio-c45118" alt="Open the live Studio"></a>
+  <a href="https://github.com/marbo786/AeroForge/actions/workflows/ci.yml"><img src="https://github.com/marbo786/AeroForge/actions/workflows/ci.yml/badge.svg?branch=main" alt="Production export CI status on main"></a>
+  <img src="https://img.shields.io/badge/Next.js-16.4.5-222222" alt="Next.js 16.4.5">
+  <img src="https://img.shields.io/badge/TypeScript-5.9.3-3178c6" alt="TypeScript 5.9.3">
+  <img src="https://img.shields.io/badge/ONNX_Runtime_Web-1.31.1-475569" alt="ONNX Runtime Web 1.31.1">
+  <img src="https://img.shields.io/badge/Python-3.11-3776ab" alt="Python 3.11 in CI">
+</p>
+
+<p align="center">
+  <a href="https://aeroforge-9tf.pages.dev/"><strong>Live Studio</strong></a> ·
+  <a href="docs/CASE_STUDY.md">Case study</a> ·
+  <a href="docs/ARCHITECTURE.md">Architecture</a> ·
+  <a href="artifacts/recovery-v1-complete/final-evaluation.json">Model evidence</a>
+</p>
+
+<p align="center">
+  <a href="https://aeroforge-9tf.pages.dev/"><img src="docs/media/aeroforge-demo.webp" width="840" alt="Animated Studio walkthrough showing an airfoil edit, surface pressure and a baseline comparison"></a>
+</p>
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="docs/polish/scroll-e/1440-motion-start.png" width="360" alt="AF-02 landing scene in the Ember livery"></td>
+    <td align="center"><img src="docs/polish/phase-4/1440-dark-wing-cp.png" width="260" alt="Dark Studio focused on the front wing with the airfoil section plotted below"></td>
+    <td align="center"><img src="docs/polish/scroll-d/390-dark-studio.png" width="80" alt="Phone layout with the car preview above section telemetry"></td>
+  </tr>
+  <tr>
+    <td align="center">AF-02 inspection bay</td>
+    <td align="center">Front-wing section</td>
+    <td align="center">Mobile Studio</td>
+  </tr>
+</table>
+
+## What it is
+
+AeroForge is a design studio for four-digit NACA airfoils. Save a baseline, change the camber, and compare the lift and drag of the two sections at the same angle of attack.
+Two neural networks trained offline on viscous XFOIL 6.99 results predict the coefficients of an isolated section. ONNX Runtime Web runs both networks in the browser without an inference API.
 
 ## Honest limits
 
-The car and wing pitch are illustrative. Predictions describe isolated NACA sections within **−4° to 8°** and **Re 100,000 to 500,000**, below typical full-scale Formula 1 front-wing conditions. [Formula 1 front-wing study](https://link.springer.com/article/10.1007/s00348-026-04191-5)
+> [!IMPORTANT]
+> The AF-02 car, its front-wing assembly and its pitch are illustrative. Predictions cover isolated 2D NACA sections within sampled geometry bounds, angles of attack from **−4° to 8°**, and **Reynolds numbers from 100,000 to 500,000**.
+> Full-scale Formula 1 front-wing conditions lie outside this envelope. Reported errors measure agreement with XFOIL. Experimental validation, post-stall performance and calibrated uncertainty remain open.
 
-![AeroForge scroll story with the original AF–02 and honest limits](docs/polish/scroll-e/1440-motion-start.png)
+## Features
 
-[Scroll and interaction demo](docs/media/aeroforge-demo.webp) · [Studio](docs/polish/scroll-d/1440-dark-studio.png) · [Mobile studio](docs/polish/scroll-d/390-dark-studio.png)
+| In the Studio | What you can do                                                                                                                                                                            |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Inspect       | Switch AF-02 liveries, select the front wing and inspect its section cut. View predicted surface pressure coefficient (Cp) at supported operating points or turn on schematic smoke paths. |
+| Edit          | Drag the NACA geometry handles or edit camber, camber position and thickness. Adjust angle of attack and Reynolds number to see lift (CL), drag (CD) and lift-to-drag ratio (L/D).         |
+| Compare       | Save a baseline and compare the two sections on the car or inspect their lift and drag curves in Analysis.                                                                                 |
+| Optimize      | Search candidate sections, apply a result and share the completed search as a challenge card.                                                                                              |
+| Share         | Copy a URL that restores the design and livery, or export a PNG design card.                                                                                                               |
+| View          | Switch between light and dark themes. Phones start with a still preview and can enable 3D on demand.                                                                                       |
 
 ## Model accuracy
 
-The frozen final test measures agreement with XFOIL on 165 eligible cases from eight unseen geometries. [Frozen evaluation](artifacts/recovery-v1-complete/final-evaluation.json)
+The dataset contains **1,046 eligible XFOIL cases across 52 geometries**. Model selection used validation data only. The model and preprocessing were frozen before XFOIL generated the final **165 cases from 8 unseen geometries**.
 
-| Coefficient | MAE | MAE target | RMSE | R² |
-| --- | ---: | ---: | ---: | ---: |
-| Lift (CL) | **0.01484** | 0.05000 | 0.02553 | 0.99733 |
-| Drag (CD) | **0.000683** | 0.001500 | 0.001165 | 0.98260 |
+| Predicted coefficient | Mean absolute error (MAE) | Root mean squared error |      R² |
+| --------------------- | ------------------------: | ----------------------: | ------: |
+| Lift (CL)             |               **0.01484** |                 0.02553 | 0.99733 |
+| Drag (CD)             |              **0.000683** |                0.001165 | 0.98260 |
 
-## Run locally
+All three models below were evaluated on the same final cases. Lower MAE means closer agreement with XFOIL.
 
-Use Node.js 24.11.0 and npm 11.6.1.
+| Model                     |      CL MAE |       CD MAE |
+| ------------------------- | ----------: | -----------: |
+| Original pilot MLP        |     0.04259 |     0.001821 |
+| Matérn Gaussian process   |     0.01951 |     0.000896 |
+| Selected independent MLPs | **0.01484** | **0.000683** |
+| Acceptance maximum        |     0.05000 |     0.001500 |
+
+Drag at low Reynolds numbers and highly cambered sections were harder to predict. [Frozen evaluation](artifacts/recovery-v1-complete/final-evaluation.json) · [Training and error analysis](docs/ML.md)
+
+## How it works
+
+```mermaid
+flowchart TD
+  N[NACA sections and flow conditions] --> X[Offline XFOIL 6.99]
+  X --> F[Filter solver results and split by geometry]
+  F --> T[Train and select on validation]
+  T --> O[Freeze ONNX and evaluate final cases]
+  O --> P[Cloudflare Pages static assets]
+  P --> W[Browser WASM proxy worker]
+  U[Studio inputs and domain checks] --> W
+  U --> G[Analytic SVG airfoil]
+  W --> R["CL, CD, L/D and angle sweeps"]
+```
+
+- **Split by geometry.** All operating points for one airfoil stay in the same partition, so the final test measures generalization to new shapes.
+- **Verify the model before loading it.** The browser checks the SHA-256 digest of the **49,781-byte** coefficient model. The ONNX graph includes the fitted input and output transforms.
+- **Keep inference off the UI thread.** A proxy worker initializes the runtime and runs inference with one WebAssembly thread while the editor handles input.
+
+[Browser architecture](docs/ARCHITECTURE.md) · [Solver data generation](docs/DATA.md) · [Geometry, units and conventions](docs/PHYSICS.md)
+
+## Tech stack
+
+| Layer                | Implementation                                                                            |
+| -------------------- | ----------------------------------------------------------------------------------------- |
+| Frontend             | Next.js 16.4.5, React 19.3.1, TypeScript 5.9.3, Tailwind CSS 4.3.5                        |
+| 3D and animation     | Three.js 0.187.0, React Three Fiber 9.8.2, Motion 14.10.1, Lenis 1.3.27                   |
+| ML runtime           | ONNX Runtime Web 1.31.1 with WebAssembly                                                  |
+| Data and ML pipeline | XFOIL 6.99, pandas 2.3.3, PyArrow 22.0.0, scikit-learn 1.7.2, PyTorch 2.12.0, ONNX 1.19.1 |
+| Testing and CI       | Node.js test runner, Playwright 1.65.0, pytest 9.0.2, GitHub Actions                      |
+| Hosting              | Next.js static export on Cloudflare Pages                                                 |
+
+## Quick start
+
+### Run the Studio
+
+Use **Node.js 24.11.0** and **npm 11.6.1**. From the repository root, run the following commands.
 
 ```sh
 cd web
@@ -32,30 +123,50 @@ npm run build
 npm run serve
 ```
 
-Start with the AF–02 landing scene and choose **Enter design studio** for a short, skippable tour. Studio, Airfoil and Analysis share the same section and live coefficients. Phones start with a still preview and offer **Enable 3D** and **Edit parameters**.
+Open `localhost:4173` and choose **Enter design studio**. [Deployment guide](docs/DEPLOYMENT.md)
 
-Choose an original fictional colorway, toggle the remembered light theme, and use **Inspect front wing** to see the live representative NACA surface and section cut. **Surface Cp** uses the existing pressure model at sampled operating points; smoke paths are explicitly schematic. Save a baseline and choose **Compare on car** for side-by-side inspection, or compare section curves in Analysis. **Share** provides a restorable design/colorway URL and a designed PNG card. Completed optimizer searches include a shareable challenge card; track briefs remain illustrative. **Details / evidence** explains model applicability. [Local Studio](http://127.0.0.1:4173/) · [Portfolio polish and screenshots](docs/polish/README.md)
+### Audit the Python evidence
 
+From the repository root, use a Python 3.11 environment and install the pinned dependencies. Install PyTorch from its CPU wheel index first, as CI does.
 
-Run `npm run verify` from `web` for formatting, lint, strict TypeScript, static export checks, 29 Node tests and 109 executed Playwright tests (18 viewport-specific skips). These presentation changes leave Python code and all frozen coefficient/pressure artifacts untouched; the Python evidence audit remains a separate check. Historical V2.5 Lighthouse lab performance was 92 on mobile and 86 on desktop, with 100 for accessibility, best practices and SEO in both profiles. Playwright uses installed Chrome on Windows and matching Chromium on Linux. The separate `/spike/` route is an inference fixture. [V2.5 measurements](docs/v2-5/README.md) · [Current local verification](docs/polish/README.md)
+```sh
+python -m pip install torch==2.12.0 --index-url https://download.pytorch.org/whl/cpu
+python -m pip install -r requirements-test.txt -r requirements-data.txt -r requirements-ml.txt
+python -m pytest -q
+```
 
+The audit uses the saved evidence and runs without the XFOIL executable.
 
-## Model and evidence
+## Project structure
 
-The model uses two independently fitted neural networks for lift and drag. The recovery dataset contains 1,046 eligible cases across 52 geometries from viscous XFOIL 6.99 runs. The 49,781-byte ONNX graph embeds the fitted transforms and accepts `[m, canonical_p, t, alpha_deg, log10(Re)]`.
+```text
+web/               Studio, browser inference, static export and browser tests
+python/aeroforge/  NACA geometry, solver integration and model training
+scripts/           Data generation, model selection and evaluation commands
+artifacts/         Exported models, frozen metrics and model evidence
+data/              Solver runs, accepted operating points and provenance
+configs/           Solver settings, training configurations and split plans
+shared/            Geometry and optimizer contracts
+tests/             Python tests and reference geometry fixtures
+docs/              Architecture, methods, case study and deployment guides
+```
 
-Prediction bounds also depend on the section geometry. Intermediate Reynolds values are interpolations, and low-Re drag and high-camber cases are harder to predict. Experimental accuracy, post-stall behavior and calibrated uncertainty remain unverified.
+## Verification
 
-See [model training, evaluation and reproduction](docs/ML.md), [XFOIL data generation](docs/DATA.md), [the recovery dataset](data/recovery-v1/README.md), and [the geometry and units contract](docs/PHYSICS.md). To rerun the Python evidence audit, install the pinned requirements documented there, then run `python -m pytest -q` from the repository root. Existing evidence can be audited without running XFOIL.
+- `npm run verify` from `web/` checks formatting, lint, types, Node tests, the production build, Pages export and Playwright workflows. Playwright uses installed Chrome on Windows. On Linux, CI provisions Chromium with `npx playwright install --with-deps chromium`.
+- `python -m pytest -q` from the root checks geometry, solver handling, model evidence, pressure, reliability and optimizer behavior.
 
-To reproduce training, create a fresh recovery plan with `scripts/plan_recovery.py`, generate the development labels with the documented `scripts/run_pilot.py` configurations, then run `scripts/tune_recovery.py`. Follow the freeze, simulation and evaluation steps in the [recovery protocol](docs/ML.md) with new output paths and an independent final reservation.
+[CI runs and test results](https://github.com/marbo786/AeroForge/actions/workflows/ci.yml) · [Release checklist](docs/RELEASE_CHECKLIST.md)
 
-## Hosting and license
+## Roadmap
 
-The portfolio-polish updates are published on Cloudflare Pages. [Release record and rollback target](docs/PORTFOLIO_RELEASE.md).
+- Define and validate a solver and dataset for a main plane and flap before extending the editor. [Multi-element wing plan](docs/MULTI_ELEMENT_WING.md)
+- Compare predictions with independent experimental measurements.
+- Evaluate post-stall behavior before extending the angle-of-attack range.
+- Calibrate prediction uncertainty across the supported operating envelope.
 
-The portfolio studio is published from GitHub `main` through the existing Cloudflare Pages project. Deployment provenance and the rollback target are recorded in the release record above. The static export runs browser inference without an inference API. [Live Studio](https://aeroforge-9tf.pages.dev/) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Deployment guide](docs/DEPLOYMENT.md)
+## License and acknowledgements
 
-The plan-only [multi-element wing design note](docs/MULTI_ELEMENT_WING.md) outlines future data and validation needs. The [engineering case study](docs/CASE_STUDY.md#limits-and-roadmap) describes future validation work. See the [progress record](PROGRESS.md) for completed milestones.
+The [MIT license](LICENSE) covers AeroForge’s original code and documentation. XFOIL runs offline under its upstream GPL license. The distribution excludes its executable.
 
-Original application code and documentation use the [MIT License](LICENSE). The browser export includes third-party notices for the runtime, framework, animation packages and fonts. XFOIL uses its upstream license and runs offline. The binary is excluded from this distribution.
+The browser export includes the upstream notices for its fonts, ONNX runtime and other third-party components.
